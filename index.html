@@ -4,1012 +4,379 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TeQx PWA</title>
-    
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b0b0b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TeQx">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
-    <!-- Google Fonts & FontAwesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
+    
+    <!-- Tailwind CSS & FontAwesome Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --bg-color: #0b0b0b;
-            --surface-color: #141414;
-            --surface-card: #1c1c1e;
-            --accent-orange: #ff5500;
-            --accent-gradient: linear-gradient(135deg, #ff7700 0%, #ff3300 100%);
-            --text-main: #ffffff;
-            --text-muted: #8e8e93;
-            --border-color: #2c2c2e;
-        }
-
-        /* Light theme overrides for Orders screen or general light cards if needed */
-        .light-theme {
-            --bg-color: #f7f7f7;
-            --surface-color: #ffffff;
-            --surface-card: #ffffff;
-            --text-main: #111111;
-            --text-muted: #666666;
-            --border-color: #e5e5ea;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            transition: background 0.3s ease;
-        }
-
-        /* Mobile App Frame Container */
-        .app-container {
-            width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            max-height: 932px;
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-        }
-
-        @media (min-width: 431px) {
-            .app-container {
-                border-radius: 40px;
-                border: 8px solid #222;
-                height: 88vh;
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teqxDark: '#0b0b0b',
+                        teqxCard: '#161616',
+                        teqxOrange: '#FF5722',
+                        teqxOrangeHover: '#E64A19'
+                    }
+                }
             }
         }
-
-        /* Status Bar simulated */
-        .status-bar {
-            height: 44px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-            font-size: 14px;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        /* App Header */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            flex-shrink: 0;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: var(--text-main);
-        }
-        .logo span {
-            color: var(--accent-orange);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            font-size: 18px;
-            color: var(--text-main);
-        }
-
-        /* Main Content Scrollable Area */
-        .app-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px 90px 16px;
-            scroll-behavior: smooth;
-        }
-
-        .app-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Views (Tabs) */
-        .view {
-            display: none;
-            animation: fadeIn 0.25s ease-in-out;
-        }
-        .view.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- SCREEN 1: INBOX --- */
-        .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .active-stores-scroll {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding-bottom: 16px;
-            margin-bottom: 8px;
-            scrollbar-width: none;
-        }
-        .active-stores-scroll::-webkit-scrollbar { display: none; }
-
-        .store-story {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .story-ring {
-            width: 62px;
-            height: 62px;
-            border-radius: 50%;
-            padding: 2.5px;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            position: relative;
-        }
-        .story-ring.luxe { background: linear-gradient(135deg, #f2994a, #f2c94c); }
-        .story-ring.nova { background: linear-gradient(135deg, #eb3349, #f45c43); }
-        .story-ring.fresh { background: linear-gradient(135deg, #11998e, #38ef7d); }
-        .story-ring.sole { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
-
-        .story-avatar {
-            width: 100%;
-            height: 100%;
-            background: var(--surface-card);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #fff;
-            border: 2px solid var(--bg-color);
-        }
-
-        .story-dot {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            background: #34c759;
-            border: 2px solid var(--bg-color);
-            border-radius: 50%;
-        }
-
-        .store-story span {
-            font-size: 12px;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .message-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-top: 12px;
-        }
-
-        .message-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 8px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .message-item:active { background: rgba(255,255,255,0.05); }
-
-        .msg-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .msg-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .msg-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .msg-name {
-            font-weight: 700;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .msg-name i { color: #007aff; font-size: 13px; }
-
-        .msg-time {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .msg-snippet {
-            font-size: 13.5px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .badge-count {
-            background: var(--accent-orange);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 10px;
-        }
-
-        /* --- SCREEN 2: DISCOVER (Live Video Feed) --- */
-        .discover-header-tags {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .live-pill {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .live-dot { width: 7px; height: 7px; background: #fff; border-radius: 50%; }
-
-        .video-card-wrapper {
-            position: relative;
-            height: 60vh;
-            background: radial-gradient(circle at center, #3a1c38 0%, #11051c 100%);
-            border-radius: 24px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .video-actions {
-            position: absolute;
-            right: 16px;
-            bottom: 140px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            align-items: center;
-        }
-        .v-action-btn {
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(8px);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .v-action-btn span { font-size: 10px; font-weight: 600; margin-top: 2px; }
-
-        .product-overlay-card {
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .overlay-store-name {
-            font-weight: 700;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .overlay-desc {
-            font-size: 12.5px;
-            color: #d1d1d6;
-            line-height: 1.4;
-        }
-        .tags-row {
-            display: flex;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--accent-orange);
-            font-weight: 600;
-        }
-        .shop-now-btn {
-            background: var(--accent-gradient);
-            border: none;
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(255,85,0,0.4);
-        }
-
-        /* --- SCREEN 3: ORDERS --- */
-        .orders-sub-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 8px 0 16px 0;
-        }
-        .orders-sub-header span:first-child { color: var(--accent-orange); font-weight: 800; font-size: 13px; letter-spacing: 0.5px; }
-        .orders-sub-header span:last-child { color: var(--accent-orange); font-weight: 700; font-size: 12px; }
-
-        .order-card {
-            background: var(--surface-card);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid var(--border-color);
-        }
-        .order-card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .order-store-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 15px;
-        }
-        .order-status-pill {
-            font-weight: 800;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .order-item-detail {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(255,120,0,0.03);
-            padding: 12px;
-            border-radius: 14px;
-        }
-        .order-thumb {
-            width: 54px;
-            height: 54px;
-            background: #fff5ec;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: var(--accent-orange);
-            flex-shrink: 0;
-        }
-        .order-item-text {
-            flex: 1;
-            min-width: 0;
-        }
-        .item-title-qty {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .item-title-qty span { color: var(--text-muted); font-size: 12px; margin-left: 6px; }
-        .order-date-sub {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .order-price {
-            font-weight: 800;
-            font-size: 15px;
-            color: var(--accent-orange);
-            flex-shrink: 0;
-        }
-
-        /* --- SCREEN 4: ALERTS --- */
-        .alerts-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .alerts-title { font-size: 18px; font-weight: 700; }
-        .alert-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
-        }
-        .alert-icon-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: rgba(255,85,0,0.15);
-            color: var(--accent-orange);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .alert-body { flex: 1; }
-        .alert-text { font-size: 13.5px; line-height: 1.4; font-weight: 500; margin-bottom: 6px; }
-        .alert-time { font-size: 11.5px; color: var(--text-muted); }
-        .alert-dot-new { width: 8px; height: 8px; background: var(--accent-orange); border-radius: 50%; margin-top: 4px; }
-
-
-        /* --- SUB-VIEW: CHAT INTERACTION VIEW --- */
-        .chat-view {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .chat-view.open {
-            transform: translateX(0);
-        }
-        .chat-topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--surface-color);
-        }
-        .chat-store-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .chat-store-title img, .chat-store-title .cs-av {
-            width: 36px; height: 36px; border-radius: 50%; background: #007aff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
-        }
-        .chat-messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .chat-bubble {
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 16px;
-            max-width: 85%;
-            font-size: 13.5px;
-            line-height: 1.4;
-        }
-        .chat-product-card {
-            background: #111;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-top: 10px;
-        }
-        .chat-product-img {
-            height: 140px;
-            background: linear-gradient(135deg, #222, #111);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: var(--accent-orange);
-            position: relative;
-        }
-        .chat-product-badge {
-            position: absolute;
-            top: 10px; right: 10px;
-            background: rgba(255,85,0,0.8);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-        .chat-product-details {
-            padding: 12px;
-        }
-        .chat-product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .chat-input-bar {
-            padding: 12px 16px;
-            background: var(--surface-color);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-        }
-        .chat-input-bar input {
-            flex: 1;
-            background: var(--surface-card);
-            border: 1px solid var(--border-color);
-            padding: 10px 14px;
-            border-radius: 20px;
-            color: white;
-            outline: none;
-            font-size: 14px;
-        }
-        .send-btn {
-            width: 38px; height: 38px; border-radius: 50%; background: var(--accent-gradient); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-
-
-        /* Bottom Navigation Bar */
-        .bottom-nav {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            height: 75px;
-            background: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-bottom: 12px;
-            z-index: 50;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            background: none;
-            border: none;
-            flex: 1;
-        }
-
-        .nav-item i {
-            font-size: 19px;
-        }
-
-        .nav-item.active {
-            color: var(--accent-orange);
-        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #f3f3f3; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .glow-orange { box-shadow: 0 4px 20px rgba(255, 87, 34, 0.3); }
     </style>
 </head>
-<body>
+<body class="flex justify-center items-center min-h-screen m-0">
 
-    <div class="app-container" id="appContainer">
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <span>9:41</span>
-            <div style="display: flex; gap: 6px; font-size: 12px;">
-                <i class="fa-solid fa-moon"></i>
-                <i class="fa-solid fa-signal"></i>
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-battery-full"></i>
+    <!-- App Container Frame (Mobile simulation wrapper) -->
+    <div id="app-frame" class="w-full max-w-md h-screen max-h-[900px] bg-teqxDark flex flex-col relative overflow-hidden shadow-2xl border border-neutral-800 sm:rounded-3xl">
+        
+        <!-- Status Bar Simulation -->
+        <div class="h-8 bg-teqxDark flex justify-between items-center px-6 pt-2 text-xs text-neutral-400 select-none z-50">
+            <span id="clock" class="font-semibold text-white">9:41 AM</span>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-moon text-[10px]"></i>
+                <i class="fa-solid fa-signal text-[10px]"></i>
+                <i class="fa-solid fa-wifi text-[10px]"></i>
+                <i class="fa-solid fa-battery-full text-[10px]"></i>
             </div>
         </div>
 
-        <!-- App Header -->
-        <header class="app-header">
-            <div class="logo">Te<span>Q</span>x</div>
-            <div class="header-actions">
-                <i class="fa-solid fa-magnifying-glass" id="searchBtn" style="cursor: pointer;"></i>
-                <i class="fa-solid fa-bars-staggered" style="cursor: pointer;"></i>
+        <!-- Dynamic Main Header -->
+        <header id="main-header" class="px-5 py-3 flex justify-between items-center z-40 bg-teqxDark/90 backdrop-blur-md border-b border-neutral-900">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-2xl font-black tracking-tight text-white">Te<span class="text-teqxOrange">Q</span>x</h1>
+            </div>
+            <div id="header-action" class="flex items-center space-x-4">
+                <button onclick="openSearchModal()" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
+                <button class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
             </div>
         </header>
 
-        <!-- Dynamic Main Content Views -->
-        <div class="app-content">
-
-            <!-- TAB 1: INBOX -->
-            <div id="view-inbox" class="view active">
-                <div class="section-title">Active Stores</div>
-                <div class="active-stores-scroll">
-                    <div class="store-story" onclick="openChat('Apex Tech', '#007aff', 'fa-bolt')">
-                        <div class="story-ring"><div class="story-avatar" style="background:#007aff;"><i class="fa-solid fa-bolt"></i></div><div class="story-dot"></div></div>
-                        <span>Apex</span>
-                    </div>
-                    <div class="store-story" onclick="openChat('Luxe Attire', '#f2994a', 'fa-layer-group')">
-                        <div class="story-ring luxe"><div class="story-avatar" style="background:#d4af37;"><i class="fa-solid fa-layer-group"></i></div><div class="story-dot"></div></div>
-                        <span>Luxe</span>
-                    </div>
-                    <div class="store-story" onclick="openChat('Nova Beauty', '#eb3349', 'fa-star')">
-                        <div class="story-ring nova"><div class="story-avatar" style="background:#8e44ad;"><i class="fa-solid fa-star"></i></div><div class="story-dot"></div></div>
-                        <span>Nova</span>
-                    </div>
-                    <div class="store-story" onclick="openChat('Fresh Drops', '#11998e', 'fa-droplet')">
-                        <div class="story-ring fresh"><div class="story-avatar" style="background:#27ae60;"><i class="fa-solid fa-droplet"></i></div><div class="story-dot"></div></div>
-                        <span>Fresh</span>
-                    </div>
-                    <div class="store-story" onclick="openChat('Sole Search', '#ff416c', 'fa-circle-stop')">
-                        <div class="story-ring sole"><div class="story-avatar" style="background:#c0392b;"><i class="fa-solid fa-circle-stop"></i></div><div class="story-dot"></div></div>
-                        <span>Sole</span>
-                    </div>
-                </div>
-
-                <div class="message-list">
-                    <div class="message-item" onclick="openChat('Apex Tech', '#007aff', 'fa-bolt')">
-                        <div class="msg-avatar" style="background:#007aff;"><i class="fa-solid fa-bolt"></i></div>
-                        <div class="msg-info">
-                            <div class="msg-header-row">
-                                <div class="msg-name">Apex Tech <i class="fa-solid fa-circle-check"></i></div>
-                                <div class="msg-time">10:42 AM</div>
-                            </div>
-                            <div class="msg-snippet">Your order #APX-8821 has been shipped...</div>
-                        </div>
-                        <div class="badge-count">1</div>
-                    </div>
-
-                    <div class="message-item" onclick="openChat('Luxe Attire', '#f2994a', 'fa-layer-group')">
-                        <div class="msg-avatar" style="background:#d4af37;"><i class="fa-solid fa-layer-group"></i></div>
-                        <div class="msg-info">
-                            <div class="msg-header-row">
-                                <div class="msg-name">Luxe Attire <i class="fa-solid fa-circle-check"></i></div>
-                                <div class="msg-time">9:15 AM</div>
-                            </div>
-                            <div class="msg-snippet">Check out our new premium autumn drop lookbook...</div>
-                        </div>
-                        <div class="badge-count">3</div>
-                    </div>
-
-                    <div class="message-item" onclick="openChat('Nova Beauty', '#eb3349', 'fa-star')">
-                        <div class="msg-avatar" style="background:#8e44ad;"><i class="fa-solid fa-star"></i></div>
-                        <div class="msg-info">
-                            <div class="msg-header-row">
-                                <div class="msg-name">Nova Beauty <i class="fa-solid fa-circle-check"></i></div>
-                                <div class="msg-time">Yesterday</div>
-                            </div>
-                            <div class="msg-snippet">Get 20% off on your next glow kit refill.</div>
-                        </div>
-                    </div>
-
-                    <div class="message-item" onclick="openChat('Fresh Drops', '#11998e', 'fa-droplet')">
-                        <div class="msg-avatar" style="background:#27ae60;"><i class="fa-solid fa-droplet"></i></div>
-                        <div class="msg-info">
-                            <div class="msg-header-row">
-                                <div class="msg-name">Fresh Drops <i class="fa-solid fa-circle-check"></i></div>
-                                <div class="msg-time">2 days ago</div>
-                            </div>
-                            <div class="msg-snippet">Organic natural refreshers are back in stock!</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: DISCOVER -->
-            <div id="view-discover" class="view">
-                <div class="discover-header-tags">
-                    <div class="live-pill"><div class="live-dot" style="background:var(--accent-orange)"></div> LIVE VIDEO FEED</div>
-                    <div style="font-size: 11px; font-weight: 700; color: #aaa;"><i class="fa-solid fa-circle" style="color:var(--accent-orange); font-size:6px;"></i> Stream native</div>
-                </div>
-
-                <div class="video-card-wrapper">
-                    <div class="video-actions">
-                        <div class="v-action-btn"><i class="fa-solid fa-heart" style="color:#ff3b30;"></i><span>1.4K</span></div>
-                        <div class="v-action-btn"><i class="fa-regular fa-comment-dots"></i><span>Discuss</span></div>
-                        <div class="v-action-btn"><i class="fa-regular fa-bookmark"></i><span>Save</span></div>
-                    </div>
-
-                    <div class="product-overlay-card">
-                        <div class="overlay-store-name">
-                            <div style="width:24px; height:24px; border-radius:50%; background:var(--accent-orange); display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fa-solid fa-star"></i></div>
-                            Nova Beauty <i class="fa-solid fa-circle-check" style="color:#007aff; font-size:12px;"></i>
-                        </div>
-                        <div class="overlay-desc">HydraGlow Vitamin Serum & deep antioxidant repair cream.</div>
-                        <div class="tags-row"><span>#NovaBeauty</span> <span>#GlowKit</span></div>
-                        <button class="shop-now-btn" onclick="openChat('Nova Beauty', '#8e44ad', 'fa-star')"><i class="fa-solid fa-bag-shopping"></i> SHOP NOW</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: ORDERS -->
-            <div id="view-orders" class="view">
-                <div class="orders-sub-header">
-                    <span>PLACED</span>
-                    <span>SHOWING ALL ORDERS</span>
-                </div>
-
-                <!-- Order 1 -->
-                <div class="order-card">
-                    <div class="order-card-top">
-                        <div class="order-store-info">
-                            <div style="width:24px; height:24px; border-radius:50%; background:#007aff; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fa-solid fa-bolt"></i></div>
-                            Apex Tech <i class="fa-solid fa-circle-check" style="color:#007aff; font-size:13px;"></i>
-                        </div>
-                        <div class="order-status-pill">PLACED</div>
-                    </div>
-                    <div class="order-item-detail">
-                        <div class="order-thumb"><i class="fa-solid fa-headphones"></i></div>
-                        <div class="order-item-text">
-                            <div class="item-title-qty">Wireless Noise-Canc... <span>x1</span></div>
-                            <div class="order-date-sub">Ordered: Today, 10:42 AM</div>
-                        </div>
-                        <div class="order-price">KSH 15,000</div>
-                    </div>
-                </div>
-
-                <!-- Order 2 -->
-                <div class="order-card">
-                    <div class="order-card-top">
-                        <div class="order-store-info">
-                            <div style="width:24px; height:24px; border-radius:50%; background:#f2994a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fa-solid fa-layer-group"></i></div>
-                            Luxe Attire <i class="fa-solid fa-circle-check" style="color:#007aff; font-size:13px;"></i>
-                        </div>
-                        <div class="order-status-pill">PLACED</div>
-                    </div>
-                    <div class="order-item-detail">
-                        <div class="order-thumb"><i class="fa-solid fa-shirt"></i></div>
-                        <div class="order-item-text">
-                            <div class="item-title-qty">Premium Cotton Hoo... <span>x1</span></div>
-                            <div class="order-date-sub">Ordered: Yesterday</div>
-                        </div>
-                        <div class="order-price">KSH 12,500</div>
-                    </div>
-                </div>
-
-                <!-- Order 3 -->
-                <div class="order-card">
-                    <div class="order-card-top">
-                        <div class="order-store-info">
-                            <div style="width:24px; height:24px; border-radius:50%; background:#8e44ad; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fa-solid fa-star"></i></div>
-                            Nova Beauty <i class="fa-solid fa-circle-check" style="color:#007aff; font-size:13px;"></i>
-                        </div>
-                        <div class="order-status-pill">PLACED</div>
-                    </div>
-                    <div class="order-item-detail">
-                        <div class="order-thumb"><i class="fa-solid fa-face-smile"></i></div>
-                        <div class="order-item-text">
-                            <div class="item-title-qty">HydraGlow Vitamin S... <span>x2</span></div>
-                            <div class="order-date-sub">Ordered: 2 days ago</div>
-                        </div>
-                        <div class="order-price">KSH 6,800</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: ALERTS -->
-            <div id="view-alerts" class="view">
-                <div class="alerts-header-row">
-                    <div class="alerts-title">Recent Alerts</div>
-                    <i class="fa-solid fa-check-double" style="color:var(--accent-orange); font-size: 16px;"></i>
-                </div>
-
-                <div class="alert-card">
-                    <div class="alert-icon-box"><i class="fa-solid fa-headphones"></i></div>
-                    <div class="alert-body">
-                        <div class="alert-text">CRITICAL: Apex Tech uploaded 3 high-demand items to live catalog</div>
-                        <div class="alert-time">10 min ago</div>
-                    </div>
-                    <div class="alert-dot-new"></div>
-                </div>
-
-                <div class="alert-card">
-                    <div class="alert-icon-box"><i class="fa-solid fa-shirt"></i></div>
-                    <div class="alert-body">
-                        <div class="alert-text">FLASH DROPS: Luxe Attire released an exclusive autumn stream lookbook</div>
-                        <div class="alert-time">1 hour ago</div>
-                    </div>
-                    <div class="alert-dot-new"></div>
-                </div>
-
-                <div class="alert-card">
-                    <div class="alert-icon-box"><i class="fa-solid fa-tag"></i></div>
-                    <div class="alert-body">
-                        <div class="alert-text">PRICE DROP: Nova Beauty unlocked 20% off flash event on glow kits</div>
-                        <div class="alert-time">5 hours ago</div>
-                    </div>
-                </div>
-
-                <div class="alert-card">
-                    <div class="alert-icon-box"><i class="fa-solid fa-box-open"></i></div>
-                    <div class="alert-body">
-                        <div class="alert-text">STOCK ALERT: Fresh Organic Vitality Pack successfully restocked</div>
-                        <div class="alert-time">Yesterday</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Interactive Store Chat Screen Drawer -->
-        <div class="chat-view" id="chatView">
-            <div class="chat-topbar">
-                <div class="chat-store-title">
-                    <div class="cs-av" id="chatAvIcon"><i class="fa-solid fa-bolt"></i></div>
-                    <div>
-                        <div id="chatStoreName" style="font-weight: 700; font-size: 15px;">Apex Tech</div>
-                        <div style="font-size: 11px; color: #34c759; display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle" style="font-size: 6px;"></i> Automated Store</div>
-                    </div>
-                </div>
-                <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer; padding: 4px;" onclick="closeChat()"></i>
-            </div>
-            
-            <div class="chat-messages-area">
-                <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Just now</div>
-                <div class="chat-bubble">Welcome to <span id="chatWelcomeStore">Apex Tech</span> Automated Assistant! Browse our featured products below.</div>
-                
-                <div class="chat-product-card">
-                    <div class="chat-product-img">
-                        <div class="chat-product-badge">Catalog</div>
-                        <i class="fa-solid fa-headphones"></i>
-                    </div>
-                    <div class="chat-product-details">
-                        <div style="font-weight: 700; font-size: 14px;" id="chatProdTitle">Wireless Noise-Canceling...</div>
-                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Hybrid ANC with 40h battery life.</div>
-                        <div class="chat-product-footer">
-                            <div style="font-weight: 800; font-size: 15px; color: var(--accent-orange);" id="chatProdPrice">$149.99</div>
-                            <button class="shop-now-btn" style="padding: 8px 16px; font-size: 13px;" onclick="alert('Order item placed successfully!')">Buy Now</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat-input-bar">
-                <i class="fa-solid fa-plus" style="font-size: 18px; color: var(--text-muted);"></i>
-                <input type="text" id="chatInputText" placeholder="Message store..." onkeypress="handleChatEnter(event)">
-                <button class="send-btn" onclick="sendChatMessage()"><i class="fa-solid fa-arrow-up"></i></button>
-            </div>
-        </div>
+        <!-- Dynamic Content Router Viewport -->
+        <main id="viewport" class="flex-1 overflow-y-auto pb-24">
+            <!-- Injected dynamically via JS router -->
+        </main>
 
         <!-- Bottom Navigation Bar -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" onclick="switchTab('inbox', this)">
-                <i class="fa-solid fa-comment-sms"></i>
-                <span>Inbox</span>
+        <nav class="absolute bottom-0 left-0 right-0 h-20 bg-teqxDark/95 backdrop-blur-lg border-t border-neutral-900 flex justify-around items-center px-2 z-50">
+            <button onclick="switchTab('inbox')" id="nav-inbox" class="nav-btn flex flex-col items-center text-teqxOrange transition">
+                <i class="fa-solid fa-comment-sms text-xl mb-1"></i>
+                <span class="text-[11px] font-medium">Inbox</span>
             </button>
-            <button class="nav-item" onclick="switchTab('discover', this)">
-                <i class="fa-solid fa-compass"></i>
-                <span>Discover</span>
+            <button onclick="switchTab('discover')" id="nav-discover" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+                <i class="fa-solid fa-compass text-xl mb-1"></i>
+                <span class="text-[11px] font-medium">Discover</span>
             </button>
-            <button class="nav-item" onclick="switchTab('orders', this)">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span>Orders</span>
+            <button onclick="switchTab('orders')" id="nav-orders" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+                <i class="fa-solid fa-bag-shopping text-xl mb-1"></i>
+                <span class="text-[11px] font-medium">Orders</span>
             </button>
-            <button class="nav-item" onclick="switchTab('alerts', this)">
-                <i class="fa-solid fa-bell"></i>
-                <span>Alerts</span>
+            <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+                <i class="fa-solid fa-bell text-xl mb-1"></i>
+                <span class="text-[11px] font-medium">Alerts</span>
             </button>
         </nav>
     </div>
 
+    <!-- Application Logic & PWA Registration -->
     <script>
-        // Tab switching logic
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // State Management
+        let currentTab = 'inbox';
+        let activeChatStore = null;
 
-            document.getElementById('view-' + tabName).classList.add('active');
-            element.classList.add('active');
+        // Mock Datasets matching your screenshots
+        const stores = [
+            { id: 'apex', name: 'Apex Tech', icon: 'fa-bolt', color: 'bg-blue-600', badge: '1', time: '10:42 AM', preview: 'Your order #APX-8821 has been shipped...' },
+            { id: 'luxe', name: 'Luxe Attire', icon: 'fa-layer-group', color: 'bg-amber-600', badge: '3', time: '9:15 AM', preview: 'Check out our new premium autumn ...' },
+            { id: 'nova', name: 'Nova Beauty', icon: 'fa-star', color: 'bg-purple-600', badge: '', time: 'Yesterday', preview: 'Get 20% off on your next glow kit refill.' },
+            { id: 'fresh', name: 'Fresh Drops', icon: 'fa-droplet', color: 'bg-emerald-600', badge: '', time: '2 days ago', preview: 'Organic natural refreshers are back in stock!' },
+            { id: 'sole', name: 'Sole Search', icon: 'fa-circle-stop', color: 'bg-orange-600', badge: '', time: '3 days ago', preview: 'Your premium raffle entry is now active.' }
+        ];
 
-            // Toggle Light/Dark background styling specifically for Orders screen design match
-            if(tabName === 'orders') {
-                document.getElementById('appContainer').classList.add('light-theme');
-            } else {
-                document.getElementById('appContainer').classList.remove('light-theme');
+        const ordersList = [
+            { store: 'Apex Tech', icon: 'fa-bolt', color: 'bg-blue-600', item: 'Wireless Noise-Canc...', qty: 1, price: 'KSH 15,000', date: 'Today, 10:42 AM', status: 'PLACED' },
+            { store: 'Luxe Attire', icon: 'fa-layer-group', color: 'bg-amber-600', item: 'Premium Cotton Hoo...', qty: 1, price: 'KSH 12,500', date: 'Yesterday', status: 'PLACED' },
+            { store: 'Nova Beauty', icon: 'fa-star', color: 'bg-purple-600', item: 'HydraGlow Vitamin S...', qty: 2, price: 'KSH 6,800', date: '2 days ago', status: 'PLACED' }
+        ];
+
+        const alertsList = [
+            { title: 'CRITICAL: Apex Tech uploaded 3 high-demand items to live catalog', time: '10 min ago', unread: true },
+            { title: 'FLASH DROPS: Luxe Attire released an exclusive autumn stream lookbook', time: '1 hour ago', unread: true },
+            { title: 'PRICE DROP: Nova Beauty unlocked 20% off flash event on glow kits', time: '5 hours ago', unread: false },
+            { title: 'STOCK ALERT: Fresh Organic Vitality Pack successfully restocked', time: 'Yesterday', unread: false }
+        ];
+
+        // Clock updater
+        setInterval(() => {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            document.getElementById('clock').innerText = `${hours}:${minutes} ${ampm}`;
+        }, 1000);
+
+        // Router & View Switcher
+        function switchTab(tab) {
+            currentTab = tab;
+            activeChatStore = null;
+            
+            // Update Nav visual indicators
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.replace('text-teqxOrange', 'text-neutral-500');
+            });
+            document.getElementById(`nav-${tab}`).classList.replace('text-neutral-500', 'text-teqxOrange');
+
+            renderView();
+        }
+
+        function renderView() {
+            const viewport = document.getElementById('viewport');
+            const headerAction = document.getElementById('header-action');
+
+            if (activeChatStore) {
+                renderChatView(viewport, headerAction);
+                return;
+            }
+
+            // Restore header action buttons
+            headerAction.innerHTML = `
+                <button onclick="alert('Search feature activated')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
+                <button class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+            `;
+
+            if (tab === 'inbox') {
+                viewport.innerHTML = `
+                    <div class="px-4 pt-3">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Active Stores</p>
+                        <div class="flex space-x-4 overflow-x-auto pb-4 pt-1">
+                            ${stores.map(s => `
+                                <div onclick="openChat('${s.id}')" class="flex flex-col items-center flex-shrink-0 cursor-pointer">
+                                    <div class="w-14 h-14 rounded-full ${s.color} flex items-center justify-center text-white text-xl relative ring-2 ring-neutral-700 shadow-lg">
+                                        <i class="fa-solid ${s.icon}"></i>
+                                        <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-teqxDark"></div>
+                                    </div>
+                                    <span class="text-xs mt-1.5 text-neutral-300 font-medium">${s.name.split(' ')[0]}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="divide-y divide-neutral-900/60 mt-2">
+                        ${stores.map(s => `
+                            <div onclick="openChat('${s.id}')" class="px-4 py-3.5 flex items-center space-x-3 hover:bg-neutral-900/40 cursor-pointer transition">
+                                <div class="w-12 h-12 rounded-full ${s.color} flex items-center justify-center text-white text-lg flex-shrink-0">
+                                    <i class="fa-solid ${s.icon}"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between items-center mb-0.5">
+                                        <h4 class="text-sm font-semibold text-white flex items-center space-x-1">
+                                            <span>${s.name}</span>
+                                            <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+                                        </h4>
+                                        <span class="text-[11px] text-neutral-500">${s.time}</span>
+                                    </div>
+                                    <p class="text-xs text-neutral-400 truncate">${s.preview}</p>
+                                </div>
+                                ${s.badge ? `<span class="bg-teqxOrange text-white text-[10px] font-bold px-2 py-0.5 rounded-full">${s.badge}</span>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (tab === 'discover') {
+                viewport.innerHTML = `
+                    <div class="relative h-full flex flex-col justify-between p-4 bg-gradient-to-b from-purple-950/40 via-teqxDark to-teqxDark min-h-[500px]">
+                        <div class="flex justify-between items-center z-10">
+                            <span class="bg-neutral-800/80 backdrop-blur text-neutral-300 text-xs px-3 py-1 rounded-full border border-neutral-700"><i class="fa-solid fa-circle text-[8px] text-neutral-400 mr-1.5"></i> LIVE VIDEO FEED</span>
+                            <span class="text-xs text-neutral-400"><i class="fa-solid fa-circle text-[8px] text-teqxOrange mr-1"></i> Stream native</span>
+                        </div>
+                        <div class="absolute right-4 bottom-32 flex flex-col items-center space-y-4 z-20">
+                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-heart text-sm"></i></button>
+                            <span class="text-[11px] font-semibold text-neutral-300">1.4K</span>
+                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-comment text-sm"></i></button>
+                            <span class="text-[11px] font-semibold text-neutral-300">Discuss</span>
+                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-bookmark text-sm"></i></button>
+                            <span class="text-[11px] font-semibold text-neutral-300">Save</span>
+                        </div>
+                        <div class="bg-neutral-900/90 backdrop-blur border border-neutral-800 p-4 rounded-2xl z-10 mb-4">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <div class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-star"></i></div>
+                                <span class="font-bold text-sm text-white">Nova Beauty</span>
+                                <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+                            </div>
+                            <p class="text-xs text-neutral-300 mb-2">HydraGlow Vitamin Serum & deep antioxidant repair cream.</p>
+                            <div class="flex space-x-2 text-xs text-teqxOrange font-medium mb-3">
+                                <span>#NovaBeauty</span>
+                                <span>#GlowKit</span>
+                            </div>
+                            <button onclick="alert('Redirecting to Checkout')" class="w-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>SHOP NOW</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'orders') {
+                viewport.innerHTML = `
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-black tracking-widest text-teqxOrange">PLACED</span>
+                            <span class="text-xs font-semibold text-teqxOrange">SHOWING ALL ORDERS</span>
+                        </div>
+                        <div class="space-y-4">
+                            ${ordersList.map(o => `
+                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-4 shadow-md">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-8 h-8 rounded-full ${o.color} flex items-center justify-center text-white text-xs">
+                                                <i class="fa-solid ${o.icon}"></i>
+                                            </div>
+                                            <span class="font-bold text-sm text-white">${o.store}</span>
+                                            <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+                                        </div>
+                                        <span class="font-bold text-xs tracking-wider text-white bg-neutral-800 px-2.5 py-1 rounded-md">${o.status}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3 bg-neutral-900/60 p-2.5 rounded-xl">
+                                        <div class="w-12 h-12 bg-orange-50/10 rounded-lg flex items-center justify-center text-teqxOrange text-xl">
+                                            <i class="fa-solid ${o.icon}"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex justify-between items-start">
+                                                <h4 class="text-xs font-semibold text-white truncate">${o.item} <span class="text-neutral-500">x${o.qty}</span></h4>
+                                                <span class="text-xs font-bold text-teqxOrange">${o.price}</span>
+                                            </div>
+                                            <p class="text-[11px] text-neutral-400 mt-0.5">Ordered: ${o.date}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'alerts') {
+                viewport.innerHTML = `
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-sm font-semibold text-neutral-300">Recent Alerts</h2>
+                            <button class="text-xs text-neutral-400 hover:text-white"><i class="fa-solid fa-check-double text-base"></i></button>
+                        </div>
+                        <div class="space-y-3">
+                            ${alertsList.map(a => `
+                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-4 flex items-start space-x-3 shadow-sm">
+                                    <div class="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-teqxOrange flex-shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-bell text-sm"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-medium text-neutral-200 leading-relaxed">${a.title}</p>
+                                        <span class="text-[10px] text-neutral-500 mt-1.5 block">${a.time}</span>
+                                    </div>
+                                    ${a.unread ? '<span class="w-2 h-2 rounded-full bg-teqxOrange mt-1.5"></span>' : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        // Chat sheet controller
-        function openChat(storeName, colorHex, iconClass) {
-            document.getElementById('chatStoreName').innerText = storeName;
-            document.getElementById('chatWelcomeStore').innerText = storeName;
-            const av = document.getElementById('chatAvIcon');
-            av.style.background = colorHex;
-            av.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
-
-            document.getElementById('chatView').classList.add('open');
+        // Detailed Simulated Chat / Automated Store Window
+        function openChat(storeId) {
+            activeChatStore = stores.find(s => s.id === storeId);
+            renderView();
         }
 
-        function closeChat() {
-            document.getElementById('chatView').classList.remove('open');
+        function renderChatView(viewport, headerAction) {
+            headerAction.innerHTML = `
+                <button onclick="switchTab('inbox')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            `;
+
+            viewport.innerHTML = `
+                <div class="flex flex-col h-full bg-teqxDark">
+                    <!-- Chat Header Profile Info -->
+                    <div class="px-4 py-3 bg-neutral-900/80 border-b border-neutral-800 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full ${activeChatStore.color} flex items-center justify-center text-white">
+                                <i class="fa-solid ${activeChatStore.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white flex items-center space-x-1">
+                                    <span>${activeChatStore.name}</span>
+                                    <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
+                                </h3>
+                                <p class="text-[10px] text-emerald-400 font-medium">● Automated Store</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3 text-neutral-400">
+                            <button><i class="fa-solid fa-phone"></i></button>
+                            <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Bubbles Content -->
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div class="flex space-x-2">
+                            <div class="w-7 h-7 rounded-full ${activeChatStore.color} flex items-center justify-center text-white text-xs flex-shrink-0 mt-1">
+                                <i class="fa-solid ${activeChatStore.icon}"></i>
+                            </div>
+                            <div>
+                                <div class="bg-teqxCard border border-neutral-800 p-3.5 rounded-2xl rounded-tl-none max-w-[260px]">
+                                    <p class="text-xs text-neutral-200">Welcome to ${activeChatStore.name} Automated Assistant! Browse our featured products below.</p>
+                                </div>
+                                <span class="text-[10px] text-neutral-500 mt-1 block">Just now</span>
+                            </div>
+                        </div>
+
+                        <!-- Product Card Module inside chat -->
+                        <div class="pl-9">
+                            <div class="bg-gradient-to-b from-neutral-900 to-teqxCard border border-neutral-800 rounded-2xl p-3 max-w-[240px] shadow-lg">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="bg-teqxOrange/20 text-teqxOrange text-[9px] font-bold px-2 py-0.5 rounded-md">Catalog</span>
+                                </div>
+                                <div class="w-full h-24 bg-neutral-950 rounded-xl flex items-center justify-center mb-3 text-teqxOrange text-3xl">
+                                    <i class="fa-solid ${activeChatStore.icon}"></i>
+                                </div>
+                                <h4 class="text-xs font-bold text-white truncate mb-1">Featured Item Collection</h4>
+                                <p class="text-[10px] text-neutral-400 mb-3">High grade operational stock item.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-black text-white">$149.99</span>
+                                    <button onclick="alert('Item added to active order queue!')" class="bg-gradient-to-r from-amber-500 to-teqxOrange text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input Field Bar -->
+                    <div class="p-3 bg-neutral-950 border-t border-neutral-900 flex items-center space-x-2">
+                        <button class="w-9 h-9 rounded-full bg-neutral-900 text-neutral-400 flex items-center justify-center"><i class="fa-solid fa-plus text-xs"></i></button>
+                        <input type="text" placeholder="Message ${activeChatStore.name}..." class="flex-1 bg-neutral-900 border border-neutral-800 rounded-full px-4 py-2 text-xs text-white focus:outline-none focus:border-teqxOrange">
+                        <button class="w-9 h-9 rounded-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white flex items-center justify-center shadow"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    </div>
+                </div>
+            `;
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chatInputText');
-            if(!input.value.trim()) return;
-            
-            const area = document.querySelector('.chat-messages-area');
-            const newMsg = document.createElement('div');
-            newMsg.className = 'chat-bubble';
-            newMsg.style.marginLeft = 'auto';
-            newMsg.style.background = 'var(--accent-orange)';
-            newMsg.style.color = '#fff';
-            newMsg.innerText = input.value;
-            area.appendChild(newMsg);
-            
-            input.value = '';
-            area.scrollTop = area.scrollHeight;
-        }
-
-        function handleChatEnter(e) {
-            if(e.key === 'Enter') sendChatMessage();
-        }
-
-        // Register Service Worker for PWA functionality
+        // PWA Service Worker Registration using Blob
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.io.js')
-                    .then(reg => console.log('ServiceWorker registered! Scope:', reg.scope))
-                    .catch(err => console.log('ServiceWorker registration failed:', err));
-            });
+            const swCode = `
+                self.addEventListener('install', e => self.skipWaiting());
+                self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+                self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).then(() => console.log('PWA ServiceWorker operational.'));
         }
+
+        // Initial Load
+        renderView();
     </script>
 </body>
 </html>
