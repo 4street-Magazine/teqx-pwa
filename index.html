@@ -29,71 +29,53 @@
         }
     </script>
     <style>
-        body { background-color: #050505; color: #f3f3f3; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+        body { background-color: #0b0b0b; color: #f3f3f3; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        .glow-orange { box-shadow: 0 4px 20px rgba(255, 87, 34, 0.3); }
     </style>
 </head>
-<body class="flex justify-center items-center min-h-screen m-0">
+<body class="w-screen h-screen m-0 overflow-hidden flex flex-col bg-teqxDark">
 
-    <!-- App Container Frame (Mobile simulation wrapper) -->
-    <div id="app-frame" class="w-full max-w-md h-screen max-h-[900px] bg-teqxDark flex flex-col relative overflow-hidden shadow-2xl border border-neutral-800 sm:rounded-3xl">
-        
-        <!-- Status Bar Simulation -->
-        <div class="h-8 bg-teqxDark flex justify-between items-center px-6 pt-2 text-xs text-neutral-400 select-none z-50">
-            <span id="clock" class="font-semibold text-white">9:41 AM</span>
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-moon text-[10px]"></i>
-                <i class="fa-solid fa-signal text-[10px]"></i>
-                <i class="fa-solid fa-wifi text-[10px]"></i>
-                <i class="fa-solid fa-battery-full text-[10px]"></i>
-            </div>
+    <!-- Operational Main Header -->
+    <header class="px-6 py-4 flex justify-between items-center z-40 bg-teqxDark/95 backdrop-blur-md border-b border-neutral-900">
+        <div class="flex items-center space-x-2">
+            <h1 class="text-2xl font-black tracking-tight text-white">Te<span class="text-teqxOrange">Q</span>x</h1>
         </div>
+        <div id="header-action" class="flex items-center space-x-5">
+            <button onclick="alert('Search feature activated')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-xl"></i></button>
+            <button onclick="alert('Menu options')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-xl"></i></button>
+        </div>
+    </header>
 
-        <!-- Dynamic Main Header -->
-        <header id="main-header" class="px-5 py-3 flex justify-between items-center z-40 bg-teqxDark/90 backdrop-blur-md border-b border-neutral-900">
-            <div class="flex items-center space-x-2">
-                <h1 class="text-2xl font-black tracking-tight text-white">Te<span class="text-teqxOrange">Q</span>x</h1>
-            </div>
-            <div id="header-action" class="flex items-center space-x-4">
-                <button onclick="openSearchModal()" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
-                <button class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
-            </div>
-        </header>
+    <!-- Dynamic Content Router Viewport -->
+    <main id="viewport" class="flex-1 overflow-y-auto pb-24">
+        <!-- Injected dynamically via JS router -->
+    </main>
 
-        <!-- Dynamic Content Router Viewport -->
-        <main id="viewport" class="flex-1 overflow-y-auto pb-24">
-            <!-- Injected dynamically via JS router -->
-        </main>
-
-        <!-- Bottom Navigation Bar -->
-        <nav class="absolute bottom-0 left-0 right-0 h-20 bg-teqxDark/95 backdrop-blur-lg border-t border-neutral-900 flex justify-around items-center px-2 z-50">
-            <button onclick="switchTab('inbox')" id="nav-inbox" class="nav-btn flex flex-col items-center text-teqxOrange transition">
-                <i class="fa-solid fa-comment-sms text-xl mb-1"></i>
-                <span class="text-[11px] font-medium">Inbox</span>
-            </button>
-            <button onclick="switchTab('discover')" id="nav-discover" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
-                <i class="fa-solid fa-compass text-xl mb-1"></i>
-                <span class="text-[11px] font-medium">Discover</span>
-            </button>
-            <button onclick="switchTab('orders')" id="nav-orders" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
-                <i class="fa-solid fa-bag-shopping text-xl mb-1"></i>
-                <span class="text-[11px] font-medium">Orders</span>
-            </button>
-            <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
-                <i class="fa-solid fa-bell text-xl mb-1"></i>
-                <span class="text-[11px] font-medium">Alerts</span>
-            </button>
-        </nav>
-    </div>
+    <!-- Bottom Navigation Bar (Operational App Navigation) -->
+    <nav class="absolute bottom-0 left-0 right-0 h-20 bg-teqxDark/95 backdrop-blur-lg border-t border-neutral-900 flex justify-around items-center px-4 z-50">
+        <button onclick="switchTab('inbox')" id="nav-inbox" class="nav-btn flex flex-col items-center text-teqxOrange transition">
+            <i class="fa-solid fa-comment-sms text-xl mb-1"></i>
+            <span class="text-[11px] font-medium">Inbox</span>
+        </button>
+        <button onclick="switchTab('discover')" id="nav-discover" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+            <i class="fa-solid fa-compass text-xl mb-1"></i>
+            <span class="text-[11px] font-medium">Discover</span>
+        </button>
+        <button onclick="switchTab('orders')" id="nav-orders" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+            <i class="fa-solid fa-bag-shopping text-xl mb-1"></i>
+            <span class="text-[11px] font-medium">Orders</span>
+        </button>
+        <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn flex flex-col items-center text-neutral-500 hover:text-neutral-300 transition">
+            <i class="fa-solid fa-bell text-xl mb-1"></i>
+            <span class="text-[11px] font-medium">Alerts</span>
+        </button>
+    </nav>
 
     <!-- Application Logic & PWA Registration -->
     <script>
-        // State Management
         let currentTab = 'inbox';
         let activeChatStore = null;
 
-        // Mock Datasets matching your screenshots
         const stores = [
             { id: 'apex', name: 'Apex Tech', icon: 'fa-bolt', color: 'bg-blue-600', badge: '1', time: '10:42 AM', preview: 'Your order #APX-8821 has been shipped...' },
             { id: 'luxe', name: 'Luxe Attire', icon: 'fa-layer-group', color: 'bg-amber-600', badge: '3', time: '9:15 AM', preview: 'Check out our new premium autumn ...' },
@@ -115,22 +97,10 @@
             { title: 'STOCK ALERT: Fresh Organic Vitality Pack successfully restocked', time: 'Yesterday', unread: false }
         ];
 
-        // Clock updater
-        setInterval(() => {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            document.getElementById('clock').innerText = `${hours}:${minutes} ${ampm}`;
-        }, 1000);
-
-        // Router & View Switcher
         function switchTab(tab) {
             currentTab = tab;
             activeChatStore = null;
             
-            // Update Nav visual indicators
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.replace('text-teqxOrange', 'text-neutral-500');
             });
@@ -148,104 +118,103 @@
                 return;
             }
 
-            // Restore header action buttons
             headerAction.innerHTML = `
-                <button onclick="alert('Search feature activated')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
-                <button class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-lg"></i></button>
+                <button onclick="alert('Search feature activated')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-magnifying-glass text-xl"></i></button>
+                <button onclick="alert('Menu options')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-ellipsis-vertical text-xl"></i></button>
             `;
 
-            if (tab === 'inbox') {
+            if (currentTab === 'inbox') {
                 viewport.innerHTML = `
-                    <div class="px-4 pt-3">
+                    <div class="max-w-2xl mx-auto px-4 pt-4">
                         <p class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Active Stores</p>
-                        <div class="flex space-x-4 overflow-x-auto pb-4 pt-1">
+                        <div class="flex space-x-5 overflow-x-auto pb-4 pt-1">
                             ${stores.map(s => `
                                 <div onclick="openChat('${s.id}')" class="flex flex-col items-center flex-shrink-0 cursor-pointer">
-                                    <div class="w-14 h-14 rounded-full ${s.color} flex items-center justify-center text-white text-xl relative ring-2 ring-neutral-700 shadow-lg">
+                                    <div class="w-16 h-16 rounded-full ${s.color} flex items-center justify-center text-white text-2xl relative ring-2 ring-neutral-700 shadow-lg">
                                         <i class="fa-solid ${s.icon}"></i>
-                                        <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-teqxDark"></div>
+                                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-teqxDark"></div>
                                     </div>
-                                    <span class="text-xs mt-1.5 text-neutral-300 font-medium">${s.name.split(' ')[0]}</span>
+                                    <span class="text-xs mt-2 text-neutral-300 font-medium">${s.name.split(' ')[0]}</span>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
-                    <div class="divide-y divide-neutral-900/60 mt-2">
+                    <div class="max-w-2xl mx-auto divide-y divide-neutral-900/80 mt-2">
                         ${stores.map(s => `
-                            <div onclick="openChat('${s.id}')" class="px-4 py-3.5 flex items-center space-x-3 hover:bg-neutral-900/40 cursor-pointer transition">
-                                <div class="w-12 h-12 rounded-full ${s.color} flex items-center justify-center text-white text-lg flex-shrink-0">
+                            <div onclick="openChat('${s.id}')" class="px-4 py-4 flex items-center space-x-4 hover:bg-neutral-900/40 cursor-pointer transition">
+                                <div class="w-14 h-14 rounded-full ${s.color} flex items-center justify-center text-white text-xl flex-shrink-0">
                                     <i class="fa-solid ${s.icon}"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex justify-between items-center mb-0.5">
+                                    <div class="flex justify-between items-center mb-1">
                                         <h4 class="text-sm font-semibold text-white flex items-center space-x-1">
                                             <span>${s.name}</span>
                                             <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
                                         </h4>
-                                        <span class="text-[11px] text-neutral-500">${s.time}</span>
+                                        <span class="text-xs text-neutral-500">${s.time}</span>
                                     </div>
                                     <p class="text-xs text-neutral-400 truncate">${s.preview}</p>
                                 </div>
-                                ${s.badge ? `<span class="bg-teqxOrange text-white text-[10px] font-bold px-2 py-0.5 rounded-full">${s.badge}</span>` : ''}
+                                ${s.badge ? `<span class="bg-teqxOrange text-white text-xs font-bold px-2.5 py-0.5 rounded-full">${s.badge}</span>` : ''}
                             </div>
                         `).join('')}
                     </div>
                 `;
-            } else if (tab === 'discover') {
+            } else if (currentTab === 'discover') {
                 viewport.innerHTML = `
-                    <div class="relative h-full flex flex-col justify-between p-4 bg-gradient-to-b from-purple-950/40 via-teqxDark to-teqxDark min-h-[500px]">
-                        <div class="flex justify-between items-center z-10">
-                            <span class="bg-neutral-800/80 backdrop-blur text-neutral-300 text-xs px-3 py-1 rounded-full border border-neutral-700"><i class="fa-solid fa-circle text-[8px] text-neutral-400 mr-1.5"></i> LIVE VIDEO FEED</span>
+                    <div class="relative w-full h-full flex flex-col justify-between p-6 bg-gradient-to-b from-purple-950/40 via-teqxDark to-teqxDark">
+                        <div class="flex justify-between items-center z-10 max-w-2xl mx-auto w-full">
+                            <span class="bg-neutral-800/80 backdrop-blur text-neutral-300 text-xs px-3 py-1.5 rounded-full border border-neutral-700"><i class="fa-solid fa-circle text-[8px] text-neutral-400 mr-2"></i> LIVE VIDEO FEED</span>
                             <span class="text-xs text-neutral-400"><i class="fa-solid fa-circle text-[8px] text-teqxOrange mr-1"></i> Stream native</span>
                         </div>
-                        <div class="absolute right-4 bottom-32 flex flex-col items-center space-y-4 z-20">
-                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-heart text-sm"></i></button>
-                            <span class="text-[11px] font-semibold text-neutral-300">1.4K</span>
-                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-comment text-sm"></i></button>
-                            <span class="text-[11px] font-semibold text-neutral-300">Discuss</span>
-                            <button class="w-10 h-10 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-bookmark text-sm"></i></button>
-                            <span class="text-[11px] font-semibold text-neutral-300">Save</span>
+                        <div class="absolute right-6 bottom-32 flex flex-col items-center space-y-4 z-20">
+                            <button class="w-12 h-12 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-heart text-base"></i></button>
+                            <span class="text-xs font-semibold text-neutral-300">1.4K</span>
+                            <button class="w-12 h-12 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-comment text-base"></i></button>
+                            <span class="text-xs font-semibold text-neutral-300">Discuss</span>
+                            <button class="w-12 h-12 rounded-full bg-neutral-900/80 backdrop-blur flex items-center justify-center text-white hover:bg-teqxOrange transition"><i class="fa-solid fa-bookmark text-base"></i></button>
+                            <span class="text-xs font-semibold text-neutral-300">Save</span>
                         </div>
-                        <div class="bg-neutral-900/90 backdrop-blur border border-neutral-800 p-4 rounded-2xl z-10 mb-4">
-                            <div class="flex items-center space-x-2 mb-2">
-                                <div class="w-7 h-7 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-star"></i></div>
+                        <div class="max-w-md mx-auto w-full bg-neutral-900/90 backdrop-blur border border-neutral-800 p-5 rounded-3xl z-10 mb-6 shadow-xl">
+                            <div class="flex items-center space-x-2.5 mb-2">
+                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs"><i class="fa-solid fa-star"></i></div>
                                 <span class="font-bold text-sm text-white">Nova Beauty</span>
                                 <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
                             </div>
-                            <p class="text-xs text-neutral-300 mb-2">HydraGlow Vitamin Serum & deep antioxidant repair cream.</p>
-                            <div class="flex space-x-2 text-xs text-teqxOrange font-medium mb-3">
+                            <p class="text-xs text-neutral-300 mb-2.5">HydraGlow Vitamin Serum & deep antioxidant repair cream.</p>
+                            <div class="flex space-x-2 text-xs text-teqxOrange font-medium mb-4">
                                 <span>#NovaBeauty</span>
                                 <span>#GlowKit</span>
                             </div>
-                            <button onclick="alert('Redirecting to Checkout')" class="w-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 transition flex items-center justify-center space-x-2">
+                            <button onclick="alert('Redirecting to Checkout')" class="w-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white font-bold py-3 rounded-2xl shadow-lg hover:opacity-95 transition flex items-center justify-center space-x-2">
                                 <i class="fa-solid fa-bag-shopping"></i>
                                 <span>SHOP NOW</span>
                             </button>
                         </div>
                     </div>
                 `;
-            } else if (tab === 'orders') {
+            } else if (currentTab === 'orders') {
                 viewport.innerHTML = `
-                    <div class="p-4">
+                    <div class="max-w-2xl mx-auto p-4">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-xs font-black tracking-widest text-teqxOrange">PLACED</span>
                             <span class="text-xs font-semibold text-teqxOrange">SHOWING ALL ORDERS</span>
                         </div>
                         <div class="space-y-4">
                             ${ordersList.map(o => `
-                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-4 shadow-md">
+                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-5 shadow-md">
                                     <div class="flex justify-between items-center mb-3">
-                                        <div class="flex items-center space-x-2">
-                                            <div class="w-8 h-8 rounded-full ${o.color} flex items-center justify-center text-white text-xs">
+                                        <div class="flex items-center space-x-2.5">
+                                            <div class="w-9 h-9 rounded-full ${o.color} flex items-center justify-center text-white text-xs">
                                                 <i class="fa-solid ${o.icon}"></i>
                                             </div>
                                             <span class="font-bold text-sm text-white">${o.store}</span>
                                             <i class="fa-solid fa-circle-check text-blue-400 text-xs"></i>
                                         </div>
-                                        <span class="font-bold text-xs tracking-wider text-white bg-neutral-800 px-2.5 py-1 rounded-md">${o.status}</span>
+                                        <span class="font-bold text-xs tracking-wider text-white bg-neutral-800 px-3 py-1 rounded-md">${o.status}</span>
                                     </div>
-                                    <div class="flex items-center space-x-3 bg-neutral-900/60 p-2.5 rounded-xl">
-                                        <div class="w-12 h-12 bg-orange-50/10 rounded-lg flex items-center justify-center text-teqxOrange text-xl">
+                                    <div class="flex items-center space-x-4 bg-neutral-900/60 p-3 rounded-xl">
+                                        <div class="w-14 h-14 bg-orange-50/10 rounded-xl flex items-center justify-center text-teqxOrange text-2xl">
                                             <i class="fa-solid ${o.icon}"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
@@ -253,7 +222,7 @@
                                                 <h4 class="text-xs font-semibold text-white truncate">${o.item} <span class="text-neutral-500">x${o.qty}</span></h4>
                                                 <span class="text-xs font-bold text-teqxOrange">${o.price}</span>
                                             </div>
-                                            <p class="text-[11px] text-neutral-400 mt-0.5">Ordered: ${o.date}</p>
+                                            <p class="text-[11px] text-neutral-400 mt-1">Ordered: ${o.date}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -261,24 +230,24 @@
                         </div>
                     </div>
                 `;
-            } else if (tab === 'alerts') {
+            } else if (currentTab === 'alerts') {
                 viewport.innerHTML = `
-                    <div class="p-4">
+                    <div class="max-w-2xl mx-auto p-4">
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-sm font-semibold text-neutral-300">Recent Alerts</h2>
                             <button class="text-xs text-neutral-400 hover:text-white"><i class="fa-solid fa-check-double text-base"></i></button>
                         </div>
                         <div class="space-y-3">
                             ${alertsList.map(a => `
-                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-4 flex items-start space-x-3 shadow-sm">
-                                    <div class="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-teqxOrange flex-shrink-0 mt-0.5">
-                                        <i class="fa-solid fa-bell text-sm"></i>
+                                <div class="bg-teqxCard border border-neutral-800/80 rounded-2xl p-4 flex items-start space-x-4 shadow-sm">
+                                    <div class="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-teqxOrange flex-shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-bell text-base"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-xs font-medium text-neutral-200 leading-relaxed">${a.title}</p>
-                                        <span class="text-[10px] text-neutral-500 mt-1.5 block">${a.time}</span>
+                                        <span class="text-[11px] text-neutral-500 mt-2 block">${a.time}</span>
                                     </div>
-                                    ${a.unread ? '<span class="w-2 h-2 rounded-full bg-teqxOrange mt-1.5"></span>' : ''}
+                                    ${a.unread ? '<span class="w-2.5 h-2.5 rounded-full bg-teqxOrange mt-1.5"></span>' : ''}
                                 </div>
                             `).join('')}
                         </div>
@@ -287,7 +256,6 @@
             }
         }
 
-        // Detailed Simulated Chat / Automated Store Window
         function openChat(storeId) {
             activeChatStore = stores.find(s => s.id === storeId);
             renderView();
@@ -295,12 +263,11 @@
 
         function renderChatView(viewport, headerAction) {
             headerAction.innerHTML = `
-                <button onclick="switchTab('inbox')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="switchTab('inbox')" class="text-neutral-300 hover:text-white transition"><i class="fa-solid fa-xmark text-xl"></i></button>
             `;
 
             viewport.innerHTML = `
-                <div class="flex flex-col h-full bg-teqxDark">
-                    <!-- Chat Header Profile Info -->
+                <div class="max-w-2xl mx-auto flex flex-col h-full bg-teqxDark">
                     <div class="px-4 py-3 bg-neutral-900/80 border-b border-neutral-800 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-full ${activeChatStore.color} flex items-center justify-center text-white">
@@ -314,56 +281,53 @@
                                 <p class="text-[10px] text-emerald-400 font-medium">● Automated Store</p>
                             </div>
                         </div>
-                        <div class="flex space-x-3 text-neutral-400">
+                        <div class="flex space-x-4 text-neutral-400">
                             <button><i class="fa-solid fa-phone"></i></button>
                             <button><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
 
-                    <!-- Chat Bubbles Content -->
                     <div class="flex-1 overflow-y-auto p-4 space-y-4">
-                        <div class="flex space-x-2">
-                            <div class="w-7 h-7 rounded-full ${activeChatStore.color} flex items-center justify-center text-white text-xs flex-shrink-0 mt-1">
+                        <div class="flex space-x-3">
+                            <div class="w-8 h-8 rounded-full ${activeChatStore.color} flex items-center justify-center text-white text-xs flex-shrink-0 mt-1">
                                 <i class="fa-solid ${activeChatStore.icon}"></i>
                             </div>
                             <div>
-                                <div class="bg-teqxCard border border-neutral-800 p-3.5 rounded-2xl rounded-tl-none max-w-[260px]">
+                                <div class="bg-teqxCard border border-neutral-800 p-4 rounded-2xl rounded-tl-none max-w-sm">
                                     <p class="text-xs text-neutral-200">Welcome to ${activeChatStore.name} Automated Assistant! Browse our featured products below.</p>
                                 </div>
                                 <span class="text-[10px] text-neutral-500 mt-1 block">Just now</span>
                             </div>
                         </div>
 
-                        <!-- Product Card Module inside chat -->
-                        <div class="pl-9">
-                            <div class="bg-gradient-to-b from-neutral-900 to-teqxCard border border-neutral-800 rounded-2xl p-3 max-w-[240px] shadow-lg">
+                        <div class="pl-11">
+                            <div class="bg-gradient-to-b from-neutral-900 to-teqxCard border border-neutral-800 rounded-2xl p-4 max-w-xs shadow-lg">
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="bg-teqxOrange/20 text-teqxOrange text-[9px] font-bold px-2 py-0.5 rounded-md">Catalog</span>
+                                    <span class="bg-teqxOrange/20 text-teqxOrange text-[10px] font-bold px-2.5 py-0.5 rounded-md">Catalog</span>
                                 </div>
-                                <div class="w-full h-24 bg-neutral-950 rounded-xl flex items-center justify-center mb-3 text-teqxOrange text-3xl">
+                                <div class="w-full h-32 bg-neutral-950 rounded-xl flex items-center justify-center mb-3 text-teqxOrange text-4xl">
                                     <i class="fa-solid ${activeChatStore.icon}"></i>
                                 </div>
                                 <h4 class="text-xs font-bold text-white truncate mb-1">Featured Item Collection</h4>
                                 <p class="text-[10px] text-neutral-400 mb-3">High grade operational stock item.</p>
                                 <div class="flex justify-between items-center">
                                     <span class="text-xs font-black text-white">$149.99</span>
-                                    <button onclick="alert('Item added to active order queue!')" class="bg-gradient-to-r from-amber-500 to-teqxOrange text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow">Buy Now</button>
+                                    <button onclick="alert('Item added to active order queue!')" class="bg-gradient-to-r from-amber-500 to-teqxOrange text-white text-xs font-bold px-4 py-2 rounded-xl shadow">Buy Now</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Chat Input Field Bar -->
-                    <div class="p-3 bg-neutral-950 border-t border-neutral-900 flex items-center space-x-2">
-                        <button class="w-9 h-9 rounded-full bg-neutral-900 text-neutral-400 flex items-center justify-center"><i class="fa-solid fa-plus text-xs"></i></button>
-                        <input type="text" placeholder="Message ${activeChatStore.name}..." class="flex-1 bg-neutral-900 border border-neutral-800 rounded-full px-4 py-2 text-xs text-white focus:outline-none focus:border-teqxOrange">
-                        <button class="w-9 h-9 rounded-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white flex items-center justify-center shadow"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <div class="p-4 bg-neutral-950 border-t border-neutral-900 flex items-center space-x-3">
+                        <button class="w-10 h-10 rounded-full bg-neutral-900 text-neutral-400 flex items-center justify-center"><i class="fa-solid fa-plus text-sm"></i></button>
+                        <input type="text" placeholder="Message ${activeChatStore.name}..." class="flex-1 bg-neutral-900 border border-neutral-800 rounded-full px-5 py-2.5 text-xs text-white focus:outline-none focus:border-teqxOrange">
+                        <button class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-teqxOrange text-white flex items-center justify-center shadow"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                     </div>
                 </div>
             `;
         }
 
-        // PWA Service Worker Registration using Blob
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             const swCode = `
                 self.addEventListener('install', e => self.skipWaiting());
@@ -375,7 +339,6 @@
             navigator.serviceWorker.register(swUrl).then(() => console.log('PWA ServiceWorker operational.'));
         }
 
-        // Initial Load
         renderView();
     </script>
 </body>
