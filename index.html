@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeQx - Conversational Social Commerce Network</title>
+    
+    <!-- Tailwind CSS Production CDN Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM Standalone Production Scripts -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel Script Compiler for Inline JSX Compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Global Layout Styling Rules Override -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0b0f;
+            margin: 0;
+            padding: 0;
+        }
+        /* Custom scrollbar suppression helper */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-500 selection:text-white">
+
+    <!-- Primary React Injection Anchor Node Container -->
+    <div id="teqx-root-workspace"></div>
+
+    <!-- Live Core Script Application Compilation Setup Layer -->
+    <script type="text/babel">
+        // Extracted Core SVG Asset Paths to bypass external bundle dependencies
+        const Icons = {
+            Sun: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>,
+            Moon: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
+            Inbox: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class={className}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
+            Discover: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class={className}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>,
+            ShoppingBag: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class={className}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
+            Alerts: ({className}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>,
+            Heart: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+            MessageCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
+            Bookmark: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>,
+            Share: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+            Send: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+            Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        };
+
+        function TeQxApp() {
+            // Global Reactive View Engines
+            const [darkMode, setDarkMode] = React.useState(true);
+            const [activeTab, setActiveTab] = React.useState('inbox');
+            const [activeChat, setActiveChat] = React.useState(null);
+            const [chatMessage, setChatMessage] = React.useState('');
+
+            // Production Merchant Infrastructure Mock Data Array (5 Localized Stores)
+            const stores = [
+                { id: 'apex', name: 'Apex Tech', tag: '#TechGear', icon: '⚡', msg: 'Your order KSH 18,500 has been logged.', price: 'KSH 18,500', unread: 2, item: 'AcousticMax Headphones', img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80' },
+                { id: 'luxe', name: 'Luxe Attire', tag: '#Streetwear', icon: '👕', msg: 'New dynamic catalogs drop tonight!', price: 'KSH 6,200', unread: 0, item: 'Premium Cotton Hoodie', img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80' },
+                { id: 'nova', name: 'Nova Beauty', tag: '#Skincare', icon: '💄', msg: 'Check out your customized beauty tray.', price: 'KSH 4,800', unread: 1, item: 'Hydrating Glow Serum', img: 'https://images.unsplash.com/photo-1608248597481-496100c80836?w=500&q=80' },
+                { id: 'fresh', name: 'Fresh Drops', tag: '#Essentials', icon: '🍏', msg: 'Your organic produce crate is ready.', price: 'KSH 3,500', unread: 0, item: 'Fresh Fruit Basket', img: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500&q=80' },
+                { id: 'sole', name: 'Sole Search', tag: '#Kicks', icon: '👟', msg: 'Restock validation alert on retro sneakers!', price: 'KSH 14,000', unread: 3, item: 'Air Max Retro Horizon', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80' }
+            ];
+
+            return (
+                <div className={`w-full max-w-md mx-auto h-[100dvh] flex flex-col relative overflow-hidden transition-colors duration-300 ${darkMode ? 'bg-black text-white' : 'bg-white text-gray-900'}`}>
+                    
+                    {/* ────────────────────────────────────────────────────────
+                        GLOBAL SYSTEM HEADER BAR 
+                        (Detached on Discover Feed view to enforce full-bleed)
+                       ──────────────────────────────────────────────────────── */}
+                    {activeTab !== 'discover' && (
+                        <header className={`px-4 pt-4 pb-3 flex items-center justify-between border-b ${darkMode ? 'border-zinc-900 bg-black' : 'border-gray-100 bg-white'}`}>
+                            <div className="text-2xl font-black tracking-tight">
+                                Te<span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Q</span>x
+                            </div>
+                            <button 
+                                onClick={() => setDarkMode(!darkMode)} 
+                                className={`p-2 rounded-full border transition-all ${darkMode ? 'border-zinc-800 bg-zinc-950 text-orange-400' : 'border-gray-200 bg-gray-50 text-amber-600'}`}
+                            >
+                                {darkMode ? <Icons.Sun /> : <Icons.Moon />}
+                            </button>
+                        </header>
+                    )}
+
+                    {/* ────────────────────────────────────────────────────────
+                        PRIMARY ROUTER CONTAINER WINDOW
+                       ──────────────────────────────────────────────────────── */}
+                    <main className="flex-1 overflow-y-auto relative">
+                        
+                        {/* VIEW 1: INBOX SUB-SHELL SCREEN */}
+                        {activeTab === 'inbox' && !activeChat && (
+                            <div className="transition-all duration-300">
+                                {/* Horizontal Active Stores Profile Tray */}
+                                <div className="p-4 border-b border-zinc-900/50">
+                                    <div className="flex space-x-4 overflow-x-auto pb-1 scrollbar-none">
+                                        {stores.map((store) => (
+                                            <div key={store.id} className="flex flex-col items-center flex-shrink-0 cursor-pointer" onClick={() => setActiveChat(store)}>
+                                                <div className="relative w-14 h-14 rounded-full bg-gradient-to-tr from-orange-500 to-red-500 p-[2px]">
+                                                    <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center text-xl shadow-inner">
+                                                        {store.icon}
+                                                    </div>
+                                                    {/* Glowing Green Live Indicator Status Dot Anchor */}
+                                                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 rounded-full shadow-md" style={{ borderColor: darkMode ? '#000' : '#fff' }}></span>
+                                                </div>
+                                                <span className="text-xs mt-1.5 font-medium opacity-80 max-w-[65px] truncate">{store.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Vertical Merchant Conversations Stream */}
+                                <div className={`divide-y ${darkMode ? 'divide-zinc-900' : 'divide-gray-100'}`}>
+                                    {stores.map((store) => (
+                                        <div 
+                                            key={store.id} 
+                                            onClick={() => setActiveChat(store)}
+                                            className={`p-4 flex items-center space-x-3 cursor-pointer transition-colors ${darkMode ? 'hover:bg-zinc-950' : 'hover:bg-gray-50'}`}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-lg flex-shrink-0">{store.icon}</div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center space-x-1">
+                                                    <h3 className="font-bold text-sm truncate">{store.name}</h3>
+                                                    {/* Blue Verification Mark Token */}
+                                                    <svg className="w-4 h-4 text-sky-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <p className={`text-xs truncate mt-0.5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{store.msg}</p>
+                                            </div>
+                                            <div className="flex flex-col items-end space-y-1 flex-shrink-0">
+                                                <span className="text-[10px] opacity-40">19:54</span>
+                                                {store.unread > 0 && (
+                                                    <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 min-w-[18px] text-center">
+                                                        {store.unread}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* SUB-LAYER WORKSPACE: AUTOMATED STORE MESSENGER PANEL */}
+                        {activeTab === 'inbox' && activeChat && (
+                            <div className="absolute inset-0 flex flex-col bg-opacity-5 z-40 transition-all">
+                                {/* Interactive Merchant Room Title Header */}
+                                <div className={`p-3 flex items-center space-x-3 border-b ${darkMode ? 'border-zinc-900 bg-black' : 'border-gray-100 bg-gray-50'}`}>
+                                    <button onClick={() => setActiveChat(null)} className="text-xs font-semibold px-2 py-1 rounded bg-orange-500/10 text-orange-500 hover:bg-orange-500/20">◀ Back</button>
+                                    <div className="w-9 h-9 rounded-full bg-zinc-800 flex items-center justify-center text-base">{activeChat.icon}</div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center space-x-1">
+                                            <h4 className="font-bold text-sm truncate">{activeChat.name}</h4>
+                                            <svg className="w-3.5 h-3.5 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <p className="text-[10px] text-green-500 font-medium">Automated Store Engine</p>
+                                    </div>
+                                </div>
+
+                                {/* Chat Output Flow Frame */}
+                                <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-none">
+                                    <div className={`p-3 max-w-[85%] rounded-2xl text-xs leading-relaxed ${darkMode ? 'bg-zinc-900 text-gray-200' : 'bg-gray-100 text-gray-800'}`}>
+                                        Sasa! Welcome to the {activeChat.name} automated commerce node. Swipe across our dynamic product catalogs to order:
+                                    </div>
+
+                                    {/* Real-time Horizontally Scrollable Catalog Slider */}
+                                    <div className="flex space-x-4 overflow-x-auto py-2 scrollbar-none">
+                                        {[0, 1, 2].map((idx) => (
+                                            <div key={idx} className={`w-52 flex-shrink-0 rounded-2xl overflow-hidden border shadow-lg ${darkMode ? 'bg-zinc-950 border-zinc-900' : 'bg-white border-gray-100'}`}>
+                                                <div className="w-full h-32 relative bg-zinc-900">
+                                                    <img src={activeChat.img} alt="Product Card Item" className="w-full h-full object-cover" />
+                                                    <span className="absolute top-2 right-2 text-[10px] bg-black/70 text-white font-mono px-1.5 py-0.5 rounded-md backdrop-blur-sm">In Stock</span>
+                                                </div>
+                                                <div className="p-3 space-y-1">
+                                                    <h5 className="font-bold text-xs truncate">{activeChat.item} Batch {idx+1}</h5>
+                                                    <p className="text-[11px] font-black text-orange-500">{activeChat.price}</p>
+                                                    <button className="w-full mt-2 py-1.5 text-[11px] font-black text-white rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-95 shadow-md shadow-orange-600/10">
+                                                        Buy Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <!-- Core Message Dispatch Action Bar -->
+                                <div className={`p-3 border-t flex items-center space-x-2 ${darkMode ? 'border-zinc-900 bg-black' : 'border-gray-100 bg-white'}`}>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Type an instant message..." 
+                                        value={chatMessage}
+                                        onChange={(e) => setChatMessage(e.target.value)}
+                                        className={`flex-1 px-3 py-2 text-xs rounded-xl border focus:outline-none ${darkMode ? 'bg-zinc-900 border-zinc-800 text-white focus:border-orange-500' : 'bg-gray-50 border-gray-200 text-gray-900 focus:border-orange-500'}`}
+                                    />
+                                    <button className="p-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md">
+                                        <Icons.Send />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* VIEW 2: 100% FULL-BLEED DISCOVER SCREEN CANVAS */}
+                        {activeTab === 'discover' && (
+                            <div className="absolute inset-0 w-full h-full overflow-hidden bg-zinc-950">
+                                {/* Fully Immersive Background Lookbook Imagery Content */}
+                                <img 
+                                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80" 
+                                    alt="Lookbook Media Frame" 
+                                    className="w-full h-full object-cover filter brightness-[0.9]"
+                                />
+
+                                {/* Top Left Edge Floating Brand Logo Name */}
+                                <div className="absolute top-4 left-4 z-50 text-2xl font-black tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                    Te<span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Q</span>x
+                                </div>
+
+                                {/* Floating Header Light Theme Controller Module */}
+                                <button 
+                                    onClick={() => setDarkMode(!darkMode)} 
+                                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/40 text-white border border-white/10 backdrop-blur-xl shadow-xl shadow-black/40"
+                                >
+                                    {darkMode ? <Icons.Sun /> : <Icons.Moon />}
+                                </button>
+
+                                {/* Right Side Social Metric Action Stack */}
+                                <div className="absolute right-3 bottom-28 z-30 flex flex-col items-center space-y-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+                                    <div className="flex flex-col items-center cursor-pointer">
+                                        <div className="p-2.5 rounded-full bg-black/30 border border-white/10 backdrop-blur-xl"><Icons.Heart /></div>
+                                        <span className="text-[10px] font-bold font-mono mt-1">4.8k</span>
+                                    </div>
+                                    <div className="flex flex-col items-center cursor-pointer">
+                                        <div className="p-2.5 rounded-full bg-black/30 border border-white/10 backdrop-blur-xl"><Icons.MessageCircle /></div>
+                                        <span className="text-[10px] font-bold font-mono mt-1">293</span>
+                                    </div>
+                                    <div className="flex flex-col items-center cursor-pointer">
+                                        <div className="p-2.5 rounded-full bg-black/30 border border-white/10 backdrop-blur-xl"><Icons.Bookmark /></div>
+                                        <span className="text-[10px] font-bold mt-1">Save</span>
+                                    </div>
+                                    <div className="flex flex-col items-center cursor-pointer">
+                                        <div className="p-2.5 rounded-full bg-black/30 border border-white/10 backdrop-blur-xl"><Icons.Share /></div>
+                                        <span className="text-[10px] font-bold font-mono mt-1">94</span>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Left - Totally Transparent Clear Glass Merchant Card Frame */}
+                                <div className="absolute left-4 bottom-24 right-16 z-30 bg-white/[0.03] dark:bg-black/[0.03] backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
+                                    <div className="flex items-center space-x-3 mb-3">
+                                        <div className="w-10 h-10 rounded-full bg-zinc-950 border border-white/20 flex items-center justify-center text-lg shadow-md">👕</div>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center space-x-1">
+                                                <h4 className="text-sm font-black text-white truncate drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">Luxe Attire</h4>
+                                                <svg className="w-4 h-4 text-sky-400 flex-shrink-0 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <p className="text-[11px] text-white/90 font-medium truncate mt-0.5">#Streetwear #PremiumDrops #NairobiFashion</p>
+                                        </div>
+                                    </div>
+                                    {/* Embedded Orange Action Trigger */}
+                                    <button 
+                                        onClick={() => { setActiveTab('inbox'); setActiveChat(stores[1]); }}
+                                        className="w-full py-2.5 rounded-xl text-xs font-black text-white bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-95 shadow-md shadow-orange-600/20 tracking-wider uppercase"
+                                    >
+                                        Shop Now
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* VIEW 3: MINIMALIST ORDERS LOG SHEET TAB */}
+                        {activeTab === 'orders' && (
+                            <div className="p-4 space-y-4 transition-all">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-black uppercase tracking-widest opacity-40">Orders Directory</span>
+                                    <button className={`p-1.5 rounded-lg border ${darkMode ? 'border-zinc-800 bg-zinc-950 text-gray-400' : 'border-gray-200 bg-gray-50 text-gray-600'}`}>
+                                        <Icons.Filter />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {stores.slice(0, 3).map((store) => (
+                                        <div 
+                                            key={store.id} 
+                                            className={`p-4 rounded-xl border shadow-sm ${darkMode ? 'bg-black border-zinc-900 text-white' : 'bg-white border-gray-200 text-gray-950'}`}
+                                        >
+                                            <div className={`flex items-center justify-between pb-3 border-b border-dashed ${darkMode ? 'border-zinc-800' : 'border-gray-100'}`}>
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="text-base">{store.icon}</span>
+                                                    <div className="flex items-center space-x-1">
+                                                        <span className="text-xs font-bold">{store.name}</span>
+                                                        <svg className="w-3.5 h-3.5 text-sky-500" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                {/* Capitalized Node String */}
+                                                <span className="text-[10px] font-black tracking-widest text-orange-500">PLACED</span>
+                                            </div>
+                                            <div className="pt-3 flex justify-between items-center">
+                                                <div>
+                                                    <p className="text-xs font-bold">{store.item}</p>
+                                                    <p className="text-[10px] opacity-40 mt-0.5">Quantity: 1</p>
+                                                </div>
+                                                {/* Localized KSH Financial Node Indicator */}
+                                                <span className="text-xs font-mono font-black">{store.price}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* VIEW 4: ACTIVE ALERTS TIMELINE TIMELINE TAB */}
+                        {activeTab === 'alerts' && (
+                            <div className="p-4 space-y-4 transition-all">
+                                <div className="space-y-3">
+                                    {stores.map((store, idx) => (
+                                        <div 
+                                            key={store.id}
+                                            className={`p-3 rounded-xl border flex items-start space-x-3 ${darkMode ? 'bg-zinc-950 border-zinc-900/60' : 'bg-gray-50 border-gray-100'}`}
+                                        >
+                                            <div className="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-500 flex-shrink-0 mt-0.5">
+                                                <Icons.Alerts />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs font-bold">{store.name}</span>
+                                                    <span className="text-[9px] opacity-40 font-mono">{idx + 2}h ago</span>
+                                                </div>
+                                                <p className={`text-xs mt-1 leading-normal ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                    {idx % 2 === 0 
+                                                        ? `Uploaded a fresh batch of items to their conversational interactive product catalog. Open chat to view prices in KSH.` 
+                                                        : `Dropped a premium social commerce lookbook image card loop onto your floating Discover feed dashboard.`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* ────────────────────────────────────────────────────────
+                        GLOBAL FOUR-PILLAR NAVIGATION FOOTER BAR 
+                        (Shifts to a totally transparent glass layer on the Discover Tab)
+                       ──────────────────────────────────────────────────────── */}
+                    <nav className={`px-2 py-2.5 flex justify-around items-center border-t transition-all z-50 ${
+                        activeTab === 'discover' 
+                            ? 'absolute bottom-0 left-0 right-0 bg-black/5 dark:bg-white/5 backdrop-blur-xl border-white/20' 
+                            : (darkMode ? 'bg-black border-zinc-900' : 'bg-white border-gray-100')
+                    }`}>
+                        
+                        {/* BUTTON NODE 1: INBOX */}
+                        <button 
+                            onClick={() => { setActiveTab('inbox'); setActiveChat(null); }}
+                            className={`flex flex-col items-center justify-center flex-1 py-0.5 transition-transform active:scale-95 ${
+                                activeTab === 'inbox' 
+                                    ? 'text-orange-500 font-bold' 
+                                    : (activeTab === 'discover' ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600')
+                            }`}
+                        >
+                            <Icons.Inbox className={activeTab === 'inbox' ? 'stroke-orange-500' : ''} />
+                            <span className="text-[10px] mt-1 font-medium tracking-tight">Inbox</span>
+                        </button>
+
+                        {/* BUTTON NODE 2: DISCOVER */}
+                        <button 
+                            onClick={() => setActiveTab('discover')}
+                            className={`flex flex-col items-center justify-center flex-1 py-0.5 transition-transform active:scale-95 ${
+                                activeTab === 'discover' 
+                                    ? 'text-orange-500 font-bold' 
+                                    : (activeTab === 'discover' ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600')
+                            }`}
+                        >
+                            <Icons.Discover className={activeTab === 'discover' ? 'stroke-orange-500' : ''} />
+                            <span className="text-[10px] mt-1 font-medium tracking-tight">Discover</span>
+                        </button>
+
+                        {/* BUTTON NODE 3: ORDERS (SHOPPING BAG ANCHOR) */}
+                        <button 
+                            onClick={() => setActiveTab('orders')}
+                            className={`flex flex-col items-center justify-center flex-1 py-0.5 transition-transform active:scale-95 ${
+                                activeTab === 'orders' 
+                                    ? 'text-orange-500 font-bold' 
+                                    : (activeTab === 'discover' ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600')
+                            }`}
+                        >
+                            <Icons.ShoppingBag className={activeTab === 'orders' ? 'stroke-orange-500' : ''} />
+                            <span className="text-[10px] mt-1 font-medium tracking-tight">Orders</span>
+                        </button>
+
+                        {/* BUTTON NODE 4: ALERTS */}
+                        <button 
+                            onClick={() => setActiveTab('alerts')}
+                            className={`flex flex-col items-center justify-center flex-1 py-0.5 transition-transform active:scale-95 ${
+                                activeTab === 'alerts' 
+                                    ? 'text-orange-500 font-bold' 
+                                    : (activeTab === 'discover' ? 'text-white/50 hover:text-white' : 'text-gray-400 hover:text-gray-600')
+                            }`}
+                        >
+                            <Icons.Alerts className={activeTab === 'alerts' ? 'stroke-orange-500' : ''} />
+                            <span className="text-[10px] mt-1 font-medium tracking-tight">Alerts</span>
+                        </button>
+                    </nav>
+
+                </div>
+            );
+        }
+
+        // Initialize and lock application DOM state mapping configurations
+        const root = ReactDOM.createRoot(document.getElementById('teqx-root-workspace'));
+        root.render(<TeQxApp />);
+    </script>
+</body>
+</html>
