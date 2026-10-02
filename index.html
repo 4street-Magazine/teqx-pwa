@@ -10,7 +10,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 :root{--grad:linear-gradient(135deg,#ffa31a 0%,#ff6a00 55%,#f04e00 100%);--accent:#ff6a00;--glow:0 6px 18px rgba(255,106,0,.35)}
-[data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.08);--nav:#18181d;--shadow:0 -6px 30px rgba(0,0,0,.6),0 8px 24px rgba(0,0,0,.5)}
+[data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.1);--nav:#000;--shadow:0 -6px 30px rgba(0,0,0,.6),0 8px 24px rgba(0,0,0,.5)}
 [data-theme=light]{--bg:#faf7f4;--surf:#fff;--surf2:#f3eee9;--text:#17120e;--mut:#6f655c;--line:rgba(30,20,10,.09);--nav:#fff;--shadow:0 -4px 24px rgba(40,25,10,.08),0 8px 24px rgba(40,25,10,.14)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg)}
@@ -20,13 +20,15 @@ input{font:inherit}
 .scroll{overflow-y:auto;scrollbar-width:none}.scroll::-webkit-scrollbar,.hs::-webkit-scrollbar{display:none}
 .hs{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none}
 .app{max-width:448px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg);transition:background .3s}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px}
+.hdr{padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px;border-bottom:1px solid var(--line);background:var(--bg);z-index:10}
+.hrow{display:flex;align-items:center;justify-content:space-between}
+.hdr .sub{margin:8px 0 0}
 .brand{font-size:26px;font-weight:800;letter-spacing:-.03em}
 .brand b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .ico{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--surf);border:1px solid var(--line);color:var(--accent);transition:transform .15s}
 .ico:active{transform:scale(.92)}
 main{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-.page{flex:1;overflow-y:auto;scrollbar-width:none;padding:4px 20px 24px}
+.page{flex:1;overflow-y:auto;scrollbar-width:none;padding:18px 20px 24px}
 h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .sub{color:var(--mut);font-size:13px;margin:0 0 20px}
 .stories{padding:6px 20px 18px}
@@ -83,23 +85,40 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .st.ok{background:rgba(34,197,94,.14);color:#22c55e}
 .al{display:flex;gap:14px;align-items:flex-start}
 .ai{width:40px;height:40px;border-radius:14px;background:rgba(255,106,0,.13);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
-.disc{position:absolute;inset:0;background:#000}
-.disc>img{width:100%;height:100%;object-fit:cover}
-.disc:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 25%,transparent 45%,rgba(0,0,0,.75) 100%)}
-.dtop{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 16px);left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;color:#fff}
-.dtop .ico{background:rgba(0,0,0,.4);border-color:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(14px)}
-.side{position:absolute;z-index:5;right:16px;bottom:210px;display:flex;flex-direction:column;gap:18px;align-items:center;color:#fff}
-.side button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:700}
-.side span.c{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(14px)}
-.glass{position:absolute;z-index:5;left:20px;right:20px;bottom:110px;padding:18px;border-radius:24px;background:rgba(15,15,18,.45);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.18);color:#fff}
+.feed{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;background:#000;overscroll-behavior:contain}
+.feed::-webkit-scrollbar{display:none}
+.slide{position:relative;height:100%;width:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#111;color:#fff}
+.slide>img,.slide>.fb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 14s ease-in-out infinite alternate}
+.fb{display:grid;place-items:center;font-size:96px;background:linear-gradient(160deg,#2a1608,#000)}
+@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.14)}}
+.slide:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.55) 0,transparent 24%,transparent 38%,rgba(0,0,0,.88) 100%)}
+.dtop{position:absolute;z-index:6;top:calc(env(safe-area-inset-top,0px) + 16px);left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;color:#fff;pointer-events:none}
+.dtop>*{pointer-events:auto}
+.dtop .ico{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(14px)}
+.live{position:absolute;z-index:6;top:calc(env(safe-area-inset-top,0px) + 26px);left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;display:flex;gap:6px;align-items:center;pointer-events:none;opacity:.9}
+.live:before{content:"";width:6px;height:6px;border-radius:50%;background:#ff6a00;box-shadow:0 0 10px #ff6a00}
+.dots{position:absolute;z-index:6;left:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px}
+.dots i{width:4px;height:4px;border-radius:99px;background:rgba(255,255,255,.4);transition:all .25s}
+.dots i.on{height:20px;background:var(--grad)}
+.side{position:absolute;z-index:6;right:14px;bottom:128px;display:flex;flex-direction:column;gap:16px;align-items:center;color:#fff}
+.side button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.side span.c{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);transition:transform .15s}
+.side button:active span.c{transform:scale(.88)}
+.pwrap{position:absolute;z-index:6;left:0;right:76px;bottom:104px;padding:0 0 0 18px;transition:transform .4s cubic-bezier(.3,.8,.3,1);touch-action:pan-y}
+.pwrap.out{transform:translateX(calc(-100% + 0px))}
+.price{display:inline-block;font-size:13px;font-weight:800;padding:5px 12px;border-radius:99px;background:var(--grad);box-shadow:var(--glow);margin-bottom:10px}
+.hl{font-size:26px;line-height:1.15;font-weight:800;letter-spacing:-.02em;margin:0 0 6px;text-shadow:0 2px 14px rgba(0,0,0,.5)}
+.cap{font-size:13.5px;color:rgba(255,255,255,.82);margin:0 0 14px}
+.glass{padding:16px;border-radius:24px;background:rgba(18,18,22,.4);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.2);box-shadow:0 12px 40px rgba(0,0,0,.4)}
 .glass .btn{margin-top:14px}
-.navw{padding:6px 14px calc(env(safe-area-inset-bottom,0px) + 14px);z-index:30;background:transparent}
-.nav{display:flex;padding:8px;border-radius:26px;background:var(--nav);border:1px solid var(--line);box-shadow:var(--shadow)}
-.navw.d{position:absolute;left:0;right:0;bottom:0}
-.navw.d .nav{background:rgba(20,20,24,.55);backdrop-filter:blur(22px);border-color:rgba(255,255,255,.18)}
-.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0;border-radius:18px;color:var(--mut);font-size:11.5px;font-weight:600;transition:all .2s}
-.navw.d .nav button{color:rgba(255,255,255,.65)}
-.nav button.act{color:#fff;background:var(--grad);box-shadow:var(--glow)}
+.grip{display:flex;justify-content:center;margin:-4px 0 10px}.grip i{width:36px;height:4px;border-radius:9px;background:rgba(255,255,255,.35)}
+.pull{position:absolute;z-index:6;left:0;bottom:150px;display:flex;align-items:center;gap:6px;padding:10px 14px 10px 8px;border-radius:0 20px 20px 0;background:rgba(18,18,22,.55);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.2);border-left:0;font-size:20px;color:#fff;transition:transform .4s cubic-bezier(.3,.8,.3,1)}
+.pull.hide{transform:translateX(-110%)}
+.navw{z-index:30;background:var(--nav);border-top:1px solid var(--line)}
+.nav{display:flex;padding:10px 8px calc(env(safe-area-inset-bottom,0px) + 10px)}
+.navw.d{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);backdrop-filter:blur(22px);border-top-color:rgba(255,255,255,.14)}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;color:#98a2b8;font-size:13px;font-weight:600;transition:color .2s,transform .15s}
+.nav button.act{color:#ff5a14}
 .nav button:active{transform:scale(.94)}
 </style>
 </head>
@@ -109,12 +128,13 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 const {useState,useEffect,useRef}=React;
 const I=({s=20,f='none',children})=><svg width={s} height={s} viewBox="0 0 24 24" fill={f} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>;
 const Ic={
+
  Sun:()=><I s={19}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></I>,
  Moon:()=><I s={19}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></I>,
- Inbox:()=><I s={22}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>,
- Discover:()=><I s={22}><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9"/></I>,
- Bag:()=><I s={22}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></I>,
- Bell:()=><I s={22}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a2 2 0 0 0 3.4 0"/></I>,
+ Inbox:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><path d="M3 4h12a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H8l-4 3.500V13a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" transform="translate(0 0)"/><path d="M18 8h2a1 1 0 0 1 1 1v8.500L17.500 15H11a1 1 0 0 1-1-1v-.500h6a2 2 0 0 0 2-2z"/></svg>,
+ Discover:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="m16 8-2 6-6 2 2-6z" fill="var(--nav)" stroke="var(--nav)"/></svg>,
+ Bag:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><path d="M6 7h12l1.200 13a1 1 0 0 1-1 1.100H5.800a1 1 0 0 1-1-1.100z"/><path d="M9 9V6.500a3 3 0 0 1 6 0V9" fill="none"/></svg>,
+ Bell:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.500 7.500 2.500 7.500h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0" fill="none"/></svg>,
  Heart:({on})=><I s={22} f={on?'#ff4d2e':'none'}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
  Msg:()=><I s={22}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>,
  Mark:({on})=><I s={22} f={on?'currentColor':'none'}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></I>,
@@ -133,6 +153,10 @@ const STORES=[
  {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]}
 ];
 const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
+const TAG={inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow'};
+const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
+const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.'};
+const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
@@ -154,9 +178,11 @@ function App(){
  const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,s.unread])));
  const [orders,setOrders]=useState([
   {id:'TQ-4821',store:STORES[0],item:STORES[0].prods[0][0],price:18500,status:'Out for delivery'},
-  {id:'TQ-4790',store:STORES[1],item:STORES[1].prods[0][0],price:6200,status:'Delivered'},
-  {id:'TQ-4755',store:STORES[2],item:STORES[2].prods[0][0],price:4800,status:'Delivered'}]);
- const [liked,setLiked]=useState(false),[saved,setSaved]=useState(false);
+  {id:'TQ-4790',store:STORES[1],item:STORES[1].prods[0][0],price:6200,status:'Placed'},
+  {id:'TQ-4755',store:STORES[2],item:STORES[2].prods[0][0],price:4800,status:'Placed'}]);
+ const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
+ const [cardOpen,setCardOpen]=useState(true),[dx,setDx]=useState(0),x0=useRef(null);
+ const drag={onPointerDown:e=>{x0.current=e.clientX;e.currentTarget.setPointerCapture(e.pointerId)},onPointerMove:e=>{if(x0.current!==null){const v=e.clientX-x0.current;setDx(Math.min(0,v))}},onPointerUp:()=>{if(dx<-70)setCardOpen(false);x0.current=null;setDx(0)},onPointerCancel:()=>{x0.current=null;setDx(0)}};
  const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
 
  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
@@ -166,7 +192,7 @@ function App(){
  const say=async(id,msgs)=>{setTyping(true);for(const m of msgs){await wait(800);push(id,m);}setTyping(false)};
 
  const open=s=>{setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
-  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the store's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
+  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the shop's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
 
  const reply=(s,t)=>{const q=t.toLowerCase();
   if(/catalog|show|price|cost|item|product/.test(q))return[{from:'bot',text:'Here are our top picks right now:'},{from:'bot',catalog:true}];
@@ -195,10 +221,9 @@ function App(){
  const nav=[['inbox','Inbox',Ic.Inbox],['discover','Discover',Ic.Discover],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell]];
 
  return <div className="app">
-  {!d&&!chat&&<header className="hdr">{brand}{toggle}</header>}
+  {!d&&!chat&&<header className="hdr"><div className="hrow">{brand}{toggle}</div><p className="sub">{TAG[tab]}</p></header>}
   <main>
-   {tab==='inbox'&&<div className="page" style={{padding:0}}>
-    <div style={{padding:'0 20px'}}><h1>Messages</h1><p className="sub">Chat with your favourite stores</p></div>
+   {tab==='inbox'&&<div className="page" style={{padding:'16px 0 24px'}}>
     <div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
     <div className="sect">Conversations</div>
     {STORES.map(s=>{const m=chats[s.id]&&[...chats[s.id]].reverse().find(x=>x.text);return <button key={s.id} className="row" onClick={()=>open(s)}>
@@ -220,28 +245,40 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<div className="disc">
-    <img src={STORES[1].img} alt="Streetwear lookbook"/>
-    <div className="dtop">{brand}{toggle}</div>
-    <div className="side">
-     <button onClick={()=>setLiked(!liked)}><span className="c"><Ic.Heart on={liked}/></span>{(4812+(liked?1:0)).toLocaleString()}</button>
-     <button><span className="c"><Ic.Msg/></span>293</button>
-     <button onClick={()=>setSaved(!saved)} style={saved?{color:'#ffa31a'}:null}><span className="c"><Ic.Mark on={saved}/></span>{saved?'Saved':'Save'}</button>
-     <button><span className="c"><Ic.Share/></span>94</button>
-    </div>
-    <div className="glass">
-     <div style={{display:'flex',gap:12,alignItems:'center'}}><div className="av" style={{width:46,height:46,fontSize:22,background:'rgba(0,0,0,.4)'}}>👕</div>
-      <div className="grow"><div className="nm" style={{fontSize:16}}><span>Luxe Attire</span><Verified/></div><div className="pv" style={{color:'rgba(255,255,255,.8)'}}>#Streetwear #PremiumDrops #NairobiFashion</div></div></div>
-     <button className="btn" onClick={()=>open(STORES[1])}>Shop now</button>
-    </div>
-   </div>}
+   {d&&<><div className="feed" onScroll={e=>setIdx(Math.round(e.target.scrollTop/e.target.clientHeight))}>
+    {STORES.map(s=>{const[p,price]=s.prods[0],L=liked[s.id],V=saved[s.id];return <section key={s.id} className="slide">
+     <div className="fb">{s.icon}</div><img src={s.img} alt={p} onError={e=>{e.target.style.display='none'}}/>
+     <div className="side">
+      <button onClick={()=>flip(setLiked,s.id)}><span className="c"><Ic.Heart on={L}/></span>{(4800+STORES.indexOf(s)*730+(L?1:0)).toLocaleString()}</button>
+      <button onClick={()=>open(s)}><span className="c"><Ic.Msg/></span>Chat</button>
+      <button onClick={()=>flip(setSaved,s.id)} style={V?{color:'#ffa31a'}:null}><span className="c"><Ic.Mark on={V}/></span>{V?'Saved':'Save'}</button>
+      <button><span className="c"><Ic.Share/></span>Share</button>
+     </div>
+     <div className={'pwrap'+(out&&idx===STORES.indexOf(s)?' out':'')} onTouchStart={e=>{tx.current=e.touches[0].clientX}} onTouchEnd={e=>{if(e.changedTouches[0].clientX-tx.current<-50)setOut(true)}}>
+      <span className="price">{ksh(price)}</span>
+      <h2 className="hl">{p}</h2>
+      <p className="cap">{s.tag} · Fresh drop from {s.name}</p>
+      <div className="glass">
+       <div className="grip"><i/></div>
+       <div style={{display:'flex',gap:12,alignItems:'center'}}><div className="av" style={{width:46,height:46,fontSize:22,background:'rgba(0,0,0,.4)'}}>{s.icon}</div>
+        <div className="grow"><div className="nm" style={{fontSize:16}}><span>{s.name}</span><Verified/></div><div className="pv" style={{color:'rgba(255,255,255,.75)'}}>{s.tag} #NairobiMade</div></div>
+        <button aria-label="Hide shop card" onClick={()=>setOut(true)} style={{color:'rgba(255,255,255,.7)',fontSize:22,padding:'0 4px'}}>‹</button></div>
+       <button className="btn" onClick={()=>{setOut(false);open(s)}}>Shop now</button>
+      </div>
+     </div>
+     <button className={'pull'+(out&&idx===STORES.indexOf(s)?'':' hide')} aria-label="Show shop card" onClick={()=>setOut(false)}>{s.icon}<span style={{fontSize:18,fontWeight:700}}>›</span></button>
+    </section>})}
+   </div>
+   <div className="dtop">{brand}{toggle}</div>
+   <div className="live">For you</div>
+   <div className="dots">{STORES.map((x,i)=><i key={x.id} className={i===idx?'on':''}/>)}</div></>}
 
-   {tab==='orders'&&<div className="page"><h1>Your orders</h1><p className="sub">Track everything you've bought</p>
-    {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
+   {tab==='orders'&&<div className="page">
+    {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Placed'?' ok':'')}>{o.status}</span></div>
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1</div></div><div style={{fontWeight:800,fontSize:15}}>{ksh(o.price)}</div></div></div>)}
    </div>}
 
-   {tab==='alerts'&&<div className="page"><h1>Alerts</h1><p className="sub">Updates from the stores you follow</p>
+   {tab==='alerts'&&<div className="page">
     {STORES.map((s,i)=><div key={s.id} className="card al"><div className="ai"><Ic.Bell/></div><div className="grow"><div style={{display:'flex',justifyContent:'space-between'}}><b style={{fontSize:14.5}}>{s.name}</b><span className="tm">{i+2}h ago</span></div>
      <p style={{margin:'5px 0 0',fontSize:13.5,color:'var(--mut)'}}>{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div></div>)}
    </div>}
