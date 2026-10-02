@@ -372,6 +372,34 @@ h1{font-size:24px;margin-bottom:6px}
 .acc.open .acch .chev{transform:rotate(180deg)}
 .accb{padding:0 18px 16px;animation:pop .22s ease}
 .acc.open .acch{padding-bottom:10px}
+
+/* ===== v5: post menu + image fallback ===== */
+.post .ph{position:relative}
+.kw{position:relative;flex-shrink:0}
+.kb{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--text);transition:background .15s}
+.kb:active{background:var(--surf2)}
+.kback{position:fixed;inset:0;z-index:30}
+.kmenu{position:absolute;right:0;top:42px;z-index:31;min-width:210px;background:var(--surf);border:1px solid var(--cardline);border-radius:16px;box-shadow:0 14px 34px rgba(0,0,0,.35);padding:6px;animation:pop .15s ease}
+.kmenu button{display:block;width:100%;text-align:left;padding:12px 14px;border-radius:12px;font-size:13.5px;font-weight:600}
+.kmenu button:active{background:var(--surf2)}.kmenu .dg{color:#ef4444}
+.slx{position:relative;z-index:1;font-size:72px;padding:70px 0}
+
+/* ===== v6: icons in profile ===== */
+.pbig i{color:var(--accent)}
+.pstick .pbig i{font-size:0}
+.plus{font-size:0}
+.kpi .ke{color:var(--accent);display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:var(--surf2);margin-bottom:6px}
+.qa button span{color:var(--accent);display:grid;place-items:center;height:22px}
+.opill:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+.okc{display:flex;align-items:center;gap:6px;color:#16a34a;font-weight:600}
+.pv .mi{display:inline-flex;align-items:center;gap:4px;margin-right:12px;vertical-align:middle}
+.row .av svg{color:var(--accent)}
+
+/* ===== v7: menu + drop bar icons ===== */
+.kmenu button{display:flex;align-items:center;gap:12px}
+.kmenu button svg{width:18px;height:18px;flex-shrink:0;color:var(--mut)}
+.kmenu .dg svg{color:#ef4444}
+.acci{display:grid;place-items:center;flex-shrink:0;color:var(--accent);margin-right:6px;overflow:visible!important}
 </style>
 </head>
 <body>
@@ -395,7 +423,27 @@ const Ic={
  Mark:({on})=><I s={22} f={on?'currentColor':'none'}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></I>,
  Share:()=><I s={22}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></I>,
  Send:()=><I s={18}><path d="m22 2-11 11M22 2l-7 20-4-9-9-4z"/></I>,
- Back:()=><I s={18}><path d="m15 18-6-6 6-6"/></I>
+ Back:()=><I s={18}><path d="m15 18-6-6 6-6"/></I>,
+ Store:({s=20})=><I s={s}><path d="M3 9.5 5 4h14l2 5.5"/><path d="M3 9.5a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12.5V20h14v-7.5"/><path d="M10 20v-4.5h4V20"/></I>,
+ Person:({s=20})=><I s={s}><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.8 3.4-6.5 7.5-6.5s7.5 2.7 7.5 6.5"/></I>,
+ Wallet:({s=20})=><I s={s}><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H19v3"/><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="16.5" cy="13.5" r="1.2"/></I>,
+ Pkg:({s=20})=><I s={s}><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></I>,
+ Pen:({s=20})=><I s={s}><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></I>,
+ Tag:({s=20})=><I s={s}><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></I>,
+ Camera:({s=20})=><I s={s}><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></I>,
+ Eye:({s=20})=><I s={s}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></I>,
+ Link:({s=20})=><I s={s}><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></I>,
+ Check:({s=20})=><I s={s}><path d="m5 12.5 4.5 4.5L19 7.5"/></I>,
+ Gear:({s=20})=><I s={s}><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></I>,
+ Chart:({s=20})=><I s={s}><path d="M5 20V11M12 20V5M19 20v-8"/></I>,
+ Users:({s=20})=><I s={s}><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2.2.6 3.5 2.4 3.5 5.2"/></I>,
+ Help:({s=20})=><I s={s}><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7"/><path d="M12 17h.01"/></I>,
+ Flag:({s=20})=><I s={s}><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></I>,
+ Trash:({s=20})=><I s={s}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></I>,
+ UserMinus:({s=20})=><I s={s}><circle cx="9" cy="8" r="4"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6M17 8h5"/></I>,
+ Chev:({s=20})=><I s={s}><path d="m9 6 6 6-6 6"/></I>,
+ HeartS:({s=14})=><I s={s}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
+ MsgS:({s=14})=><I s={s}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>
 };
 const Verified=({s=16})=><svg width={s} height={s} viewBox="0 0 24 24" style={{flexShrink:0}} aria-label="Verified shop"><path fill="#0b3fd1" d="M22.250 12c0-1.430-.88-2.670-2.190-3.340.46-1.390.2-2.900-.81-3.910s-2.520-1.270-3.910-.81c-.66-1.310-1.910-2.190-3.340-2.190s-2.670.88-3.330 2.190c-1.400-.46-2.910-.2-3.920.81s-1.260 2.520-.8 3.910C2.640 9.330 1.750 10.570 1.750 12s.89 2.670 2.200 3.340c-.46 1.390-.21 2.900.8 3.910s2.520 1.260 3.910.81c.67 1.310 1.910 2.190 3.340 2.190s2.680-.88 3.340-2.190c1.390.45 2.900.2 3.910-.81s1.270-2.520.81-3.910c1.310-.67 2.190-1.910 2.190-3.340z"/><path d="m8.500 12.300 2.400 2.400 4.700-4.900" fill="none" stroke="#fff" strokeWidth="2.200" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const ksh=n=>'KSh '+n.toLocaleString('en-KE');
@@ -405,13 +453,37 @@ const STORES=[
  {id:'luxe',name:'Luxe Attire',tag:'#Streetwear',icon:'👕',msg:'New styles drop tonight!',time:'18:30',unread:0,img:U('photo-1515886657613-9f3515b0c78f'),prods:[['Premium Cotton Hoodie',6200],['Essential Oversized Tee',2400],['Street Cargo Joggers',4800]]},
  {id:'nova',name:'Nova Beauty',tag:'#Skincare',icon:'💄',msg:'Your beauty picks are ready to view.',time:'16:12',unread:1,img:U('photo-1608248597481-496100c80836'),prods:[['Hydrating Glow Serum',4800],['Vitamin C Brightening Cream',3900],['Daily Mineral Sunscreen',2700]]},
  {id:'fresh',name:'Fresh Drops',tag:'#Essentials',icon:'🍏',msg:'Your organic produce crate is ready.',time:'Yesterday',unread:0,img:U('photo-1610832958506-aa56368176cf'),prods:[['Fresh Fruit Basket',3500],['Organic Veggie Crate',2800],['Cold-Pressed Juice Pack',1900]]},
- {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]}
+ {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]},
+ {id:'zuri',name:'Zuri Home',tag:'#HomeDecor',icon:'🛋️',msg:'Your living room refresh is on the way.',time:'Mon',unread:0,img:U('photo-1555041469-a586c61ea9bc'),prods:[['Velvet Accent Chair',24500],['Ceramic Vase Set',3200],['Linen Cushion Pair',2900]]},
+ {id:'peak',name:'Peak Fitness',tag:'#Fitness',icon:'🏋️',msg:'New gym gear just landed.',time:'Mon',unread:0,img:U('photo-1534438327276-14e5300c3a48'),prods:[['Adjustable Dumbbell Set',9800],['Yoga Mat Pro',2600],['Resistance Band Kit',1800]]},
+ {id:'sav',name:'Savanna Bags',tag:'#Accessories',icon:'👜',msg:'Handcrafted leather, made in Nairobi.',time:'Sun',unread:0,img:U('photo-1548036328-c9fa89d128fa'),prods:[['Leather Tote Bag',7800],['Everyday Backpack',4500],['Mini Crossbody',3900]]}
 ];
 const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
 const TAG={profile:'Your account & settings',inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow'};
 const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
-const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.'};
-const COL={apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']]};
+const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.',zuri:'Make every room feel like home.',peak:'Train harder at home with gym-grade gear.',sav:'Handcrafted leather, made to carry your day.'};
+const COL={apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']],zuri:[['Grey','#888'],['Cream','#eee'],['Green','#3a7']],peak:[['Black','#111'],['Grey','#777'],['Blue','#36c']],sav:[['Tan','#b5835a'],['Black','#111'],['Brown','#5a3a22']]};
+
+const F=(pid,sid,name,price,cap,ago,ids,cols)=>({pid,sid,name,price,cap,ago,imgs:ids.map(U),cols});
+const FEED=[
+ F('apex1','apex','AcousticMax Headphones',18500,'Studio-grade sound with all-day battery. Drop 01 is live.','2h ago',['photo-1505740420928-5e560c06d30e','photo-1484704849700-f032a568e944','photo-1583394838336-acd977736f90'],['Black','Silver','Blue']),
+ F('luxe1','luxe','Premium Cotton Hoodie',6200,'Heavyweight fleece, cut for the city. Limited pieces only.','3h ago',['photo-1556821840-3a63f95609a7','photo-1515886657613-9f3515b0c78f'],['Charcoal','Sand']),
+ F('nova1','nova','Hydrating Glow Serum',4800,'Glow-first skincare made for everyday routines.','4h ago',['photo-1608248597481-496100c80836','photo-1556228720-195a672e8a03'],['30ml','50ml']),
+ F('sole1','sole','Air Max Retro Horizon',14000,'Retro silhouettes are back. Grab your size before they go.','5h ago',['photo-1542291026-7eec264c27ff','photo-1491553895911-0055eca6402d','photo-1549298916-b41d501d3772'],['Red','Grey','Crimson']),
+ F('fresh1','fresh','Fresh Fruit Basket',3500,'Farm-fresh fruit delivered to your door, same day.','6h ago',['photo-1610832958506-aa56368176cf','photo-1567306226416-28f0efdc88ce'],['Citrus mix','Tropical mix']),
+ F('zuri1','zuri','Velvet Accent Chair',24500,'Make every room feel like home. Free delivery in Nairobi.','7h ago',['photo-1555041469-a586c61ea9bc','photo-1586023492125-27b2c045efd7'],['Grey velvet','Living room set']),
+ F('peak1','peak','Adjustable Dumbbell Set',9800,'Train harder at home with gym-grade gear.','8h ago',['photo-1534438327276-14e5300c3a48','photo-1517836357463-d25dfeac3438'],['Pair set','Home gym']),
+ F('sav1','sav','Leather Tote Bag',7800,'Handcrafted leather, made to carry your day.','9h ago',['photo-1548036328-c9fa89d128fa','photo-1584917865442-de89df76afd3'],['Tan','Black']),
+ F('apex2','apex','Smart Watch Series X',12900,'Track workouts, sleep and calls from your wrist.','10h ago',['photo-1523275335684-37898b6baf30','photo-1546868871-7041f2a55e12'],['Silver','Black']),
+ F('luxe2','luxe','Essential Oversized Tee',2400,'Soft, boxy and built for layering. Three colours in stock.','11h ago',['photo-1521572163474-6864f9cf17ab','photo-1583743814966-8936f5b7be1a'],['White','Black']),
+ F('nova2','nova','Lip & Palette Set',3600,'Everyday colour that works from desk to dinner.','12h ago',['photo-1596462502278-27bfdc403348','photo-1522335789203-aabd1fc54bc9'],['Lip shades','Eye palette']),
+ F('sole2','sole','Classic Court Low',8500,'Clean court style that goes with everything.','13h ago',['photo-1595950653106-6c9ebd614d3a','photo-1460353581641-37baddab0fa2'],['White','Multi']),
+ F('fresh2','fresh','Organic Veggie Crate',2800,'Crisp greens and market-fresh veg, packed to order.','14h ago',['photo-1540420773420-3366772f4999','photo-1542838132-92c53300491e'],['Salad box','Market crate']),
+ F('sav2','sav','Everyday Backpack',4500,'Room for your laptop, lunch and the rest of the day.','15h ago',['photo-1553062407-98eeb64c6a62'],['Olive']),
+ F('peak2','peak','Yoga Mat Pro',2600,'Non-slip grip and extra cushioning for every flow.','16h ago',['photo-1601925260368-ae2f83cf8b7f'],['Purple']),
+ F('apex3','apex','Pulse Wireless Earbuds',7900,'Pocket-sized sound with noise cancelling.','17h ago',['photo-1590658268037-6bf12165a8df','photo-1572569511254-d8f925fe2cbb'],['White','Black']),
+ F('luxe3','luxe','Everyday Denim',5200,'Straight-fit denim in washes that last.','18h ago',['photo-1542272604-787c3835535d','photo-1541099649105-f69ad21f3246'],['Mid wash','Dark wash'])
+];
 const FILT=['none','hue-rotate(50deg) saturate(1.1)','hue-rotate(190deg)'];
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
@@ -426,27 +498,37 @@ function Product({store,i,onBuy}){
  </div>;
 }
 
+function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[['🚚','Fast Delivery'],['🛡️','Secure Payments'],['↩️','Easy Returns']];
-function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
+function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
+ const cols=s.cols||COL[s.id].map(c=>c[0]),[menu,setMenu]=useState(false);
  const last=useRef(0),[burst,setBurst]=useState(false),psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(!!f||!!s.custom),[spark,setSpark]=useState(false);
  const tap=()=>{const t=Date.now();if(t-last.current<300){if(!liked)onLike();setBurst(true);setTimeout(()=>setBurst(false),800)}last.current=t};
  const doFollow=()=>{if(f)return;onFollow();setSpark(true);setTimeout(()=>setGone(true),1700)};
+ useEffect(()=>{if(s.custom)return;if(!f){setGone(false);return}if(!spark){const t=setTimeout(()=>setGone(true),300);return()=>clearTimeout(t)}},[f]);
+ const share=async()=>{try{if(navigator.share)await navigator.share({title:s.prods[0][0],text:s.prods[0][0]+' on TeQx'});else note&&note('Sharing is not supported on this device')}catch(e){}};
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onStory}><i>{s.avatar?<img src={s.avatar} alt="" style={{width:"100%",height:"100%",borderRadius:"50%",objectFit:"cover"}}/>:s.icon}</i></button>
-   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{s.custom?'Just now':si+2+'h ago'} · {s.tag}</div></div>
-   {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}</div>
-  <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
+   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{s.custom?'Just now':(s.ago||si+2+'h ago')} · {s.tag}</div></div>
+   {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}{gone&&<div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
+    {menu&&<><div className="kback" onClick={()=>setMenu(false)}/><div className="kmenu">
+     <button onClick={()=>{onSave();setMenu(false)}}><Ic.Mark on={saved}/>{saved?'Remove from saved':'Save post'}</button>
+     <button onClick={()=>{share();setMenu(false)}}><Ic.Share/>Share post</button>
+     {!s.custom&&<button onClick={()=>{onFollow();setGone(false);setMenu(false)}}><Ic.UserMinus s={18}/>Unfollow {s.name}</button>}
+     {s.custom?<button className="dg" onClick={()=>{onDelete&&onDelete();setMenu(false)}}><Ic.Trash s={18}/>Delete post</button>:<button className="dg" onClick={()=>{note&&note('Thanks, we will review this post');setMenu(false)}}><Ic.Flag s={18}/>Report post</button>}
+    </div></>}</div>}</div>
+  <div className="pcap"><b>New arrivals!</b> ✨ {s.cap||CAP[s.id]}</div>
   <div className="pm" onClick={tap}>{burst&&<div className="burst">❤️</div>}
    <div className="pmi">
     <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
-     {COL[s.id].map((c,i)=>{const src=(s.imgs&&s.imgs[i])||s.img;return <div key={i} className="sl"><i className="bg" style={{backgroundImage:`url("${src}")`}}/><img src={src} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:s.custom?'none':FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>})}
+     {cols.map((c,i)=><Slide key={i} src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c} icon={s.icon}/>)}
     </div>
-    <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{COL[s.id].map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
+    <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{cols.map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    </div>
    <div className="pfoot" onClick={e=>e.stopPropagation()}>
     <div className="ptop"><div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pmeta"><span className="pp">{ksh(s.prods[0][1])}</span><span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
      <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div></div>
-    <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
+    <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]}`)}><Ic.Msg/>Chat with Shop</button></div>
    </div>
   </div>
   <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
@@ -455,10 +537,10 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
 }
 
 const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
-const Ava=({src,emoji,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:emoji}</i><span className="plus">+</span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
+const Ava=({src,icon,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:icon}</i><span className="plus"><Ic.Camera s={12}/></span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
 const Toggle=({label,sub,on,onClick})=><button className="row" style={{padding:'11px 0'}} onClick={onClick}><div className="grow"><div className="nm">{label}</div>{sub&&<div className="pv">{sub}</div>}</div><span className={'sw'+(on?' on':'')}/></button>;
 function Fields({rows,val,set,edit}){return <div className="frm">{rows.map(([k,l,ph,t])=><div key={k} className="fr"><label>{l}</label>{edit?(t==='area'?<textarea className="fi" rows={3} placeholder={ph} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>:<input className="fi" placeholder={ph} inputMode={t==='tel'?'tel':undefined} type={t==='email'?'email':'text'} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>):<div className={'fv'+(val[k]?'':' em')}>{val[k]||'Not added yet'}</div>}</div>)}</div>}
-function Acc({title,badge,action,open:o=false,children}){const [v,setV]=useState(o);return <div className={'card acc'+(v?' open':'')}><div className="acch" role="button" tabIndex={0} aria-expanded={v} onClick={()=>setV(!v)} onKeyDown={e=>(e.key==='Enter'||e.key===' ')&&setV(!v)}><div className="nm grow">{title}</div>{badge}{v&&action&&<span onClick={e=>e.stopPropagation()}>{action}</span>}<svg className="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>{v&&<div className="accb">{children}</div>}</div>}
+function Acc({title,icon,badge,action,children}){const [v,setV]=useState(false);return <div className={'card acc'+(v?' open':'')}><div className="acch" role="button" tabIndex={0} aria-expanded={v} onClick={()=>setV(!v)} onKeyDown={e=>(e.key==='Enter'||e.key===' ')&&setV(!v)}><div className="nm grow">{icon&&<span className="acci">{icon}</span>}<span>{title}</span></div>{badge}{v&&action&&<span onClick={e=>e.stopPropagation()}>{action}</span>}<svg className="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>{v&&<div className="accb">{children}</div>}</div>}
 const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:440,borderRadius:28}}/></div>;
 const SEED=[['amina_k','Love this! 😍'],['brian.o','Do you deliver to Kisumu?'],['wanjiru','Those colours are 🔥']];
 
@@ -566,7 +648,7 @@ function App(){
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
-    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}}/>})}{STORES.map((s,si)=><Post key={s.id} cc={56+si*9+(cmts[s.id]||[]).length} onComment={()=>setCm(s.id)} onStory={()=>openStory(si)} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}</>}
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
    {tab==='orders'&&<div className="page">
@@ -582,10 +664,10 @@ function App(){
     <div className="pstick">
      <div className="seg2"><button className={mode==='client'?'on':''} onClick={()=>setMode('client')}>Client</button><button className={mode==='shop'?'on':''} onClick={()=>setMode('shop')}>Shop</button></div>
      {mode==='shop'?<>
-      <div className="prow"><Ava src={shop.avatar} emoji={shop.icon} label="Change shop photo" onPick={pickAva(setShop)}/><div className="stats"><div><b>{myPosts.length}</b><span>Posts</span></div><div><b>0</b><span>Followers</span></div><div><b>{photos.length}</b><span>Photos</span></div></div></div>
-      <div className="pname2"><div className="pnl"><h1>{shop.name||'My Shop'}</h1><span className={'opill'+(shop.open?'':' off')}>{shop.open?'● Open':'● Closed'}</span></div><p className="sub">{[shop.cat,shop.loc].filter(Boolean).join(' · ')||'Add your category and location in Details'}</p></div>
+      <div className="prow"><Ava src={shop.avatar} icon={<Ic.Store s={34}/>} label="Change shop photo" onPick={pickAva(setShop)}/><div className="stats"><div><b>{myPosts.length}</b><span>Posts</span></div><div><b>0</b><span>Followers</span></div><div><b>{photos.length}</b><span>Photos</span></div></div></div>
+      <div className="pname2"><div className="pnl"><h1>{shop.name||'My Shop'}</h1><span className={'opill'+(shop.open?'':' off')}>{shop.open?'Open':'Closed'}</span></div><p className="sub">{[shop.cat,shop.loc].filter(Boolean).join(' · ')||'Add your category and location in Details'}</p></div>
      </>:<>
-      <div className="prow"><Ava src={me.avatar} emoji="🙂" label="Change profile photo" onPick={pickAva(setMe)}/><div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div></div>
+      <div className="prow"><Ava src={me.avatar} icon={<Ic.Person s={34}/>} label="Change profile photo" onPick={pickAva(setMe)}/><div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div></div>
       <div className="pname2"><div className="pnl"><h1>{me.name||'Your Profile'}</h1></div><p className="sub">@{me.user||'you'}{me.loc?' · '+me.loc:''}</p></div>
      </>}
     </div>
@@ -593,31 +675,31 @@ function App(){
     {mode==='shop'&&<>
      <div className="ptabs">{[['dash','Dashboard'],['store','Products'],['info','Details']].map(([k,l])=><button key={k} className={ptab===k?'on':''} onClick={()=>setPtab(k)}>{l}</button>)}</div>
      {ptab==='dash'&&<>
-      <Acc open title="Store setup" badge={<span className="pc">{pct}%</span>}><div className="prog"><i style={{width:pct+'%'}}/></div>
-       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>{setPtab(c[2]);if(c[2]==='info')setEdShop(true)}}>{c[0]}</button>)}</div></>:<p className="bd" style={{margin:'10px 0 0'}}>Your store profile is complete ✓</p>}</Acc>
-      <Acc open title="Overview"><div className="kpis" style={{marginBottom:0}}>{[['💰','Revenue',ksh(0)],['📦','Orders','0'],['📝','Posts',myPosts.length],['❤️','Likes',dash.likes.toLocaleString()],['💬','Comments',dash.cm],['🏷️','Catalog value',ksh(dash.val)]].map(([e,l,v])=><div key={l} className="kpi"><span className="ke">{e}</span><b>{v}</b><span>{l}</span></div>)}</div></Acc>
-      <div className="qa"><button onClick={()=>setPtab('store')}><span>📸</span>Add photos</button><button onClick={()=>setPtab('store')}><span>✍️</span>New post</button><button onClick={()=>setTab('discover')}><span>👀</span>View feed</button><button onClick={shareShop}><span>🔗</span>Share shop</button></div>
-      <Acc title="Recent posts" badge={<span className="pc">{myPosts.length}</span>}>
-       {myPosts.length?myPosts.slice(0,5).map(p=><div key={p.id} className="row" style={{padding:'9px 0'}}><img className="av" style={{objectFit:'cover',width:46,height:46}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">❤ {(842+(liked[p.id]?1:0)).toLocaleString()} · 💬 {12+(cmts[p.id]||[]).length} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><div className="nm" style={{fontSize:13}}>{ksh(p.price)}</div></div>):<p className="bd" style={{margin:0}}>No posts yet. Publish your first product from the Products tab.</p>}</Acc>
+      <Acc open icon={<Ic.Store s={18}/>} title="Store setup" badge={<span className="pc">{pct}%</span>}><div className="prog"><i style={{width:pct+'%'}}/></div>
+       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>{setPtab(c[2]);if(c[2]==='info')setEdShop(true)}}>{c[0]}</button>)}</div></>:<p className="bd okc" style={{margin:'10px 0 0'}}><Ic.Check s={16}/>Your store profile is complete</p>}</Acc>
+      <Acc open icon={<Ic.Chart s={18}/>} title="Overview"><div className="kpis" style={{marginBottom:0}}>{[[<Ic.Wallet s={20}/>,'Revenue',ksh(0)],[<Ic.Pkg s={20}/>,'Orders','0'],[<Ic.Pen s={20}/>,'Posts',myPosts.length],[<Ic.HeartS s={20}/>,'Likes',dash.likes.toLocaleString()],[<Ic.MsgS s={20}/>,'Comments',dash.cm],[<Ic.Tag s={20}/>,'Catalog value',ksh(dash.val)]].map(([e,l,v])=><div key={l} className="kpi"><span className="ke">{e}</span><b>{v}</b><span>{l}</span></div>)}</div></Acc>
+      <div className="qa"><button onClick={()=>setPtab('store')}><span><Ic.Camera s={20}/></span>Add photos</button><button onClick={()=>setPtab('store')}><span><Ic.Pen s={20}/></span>New post</button><button onClick={()=>setTab('discover')}><span><Ic.Eye s={20}/></span>View feed</button><button onClick={shareShop}><span><Ic.Link s={20}/></span>Share shop</button></div>
+      <Acc icon={<Ic.Pen s={18}/>} title="Recent posts" badge={<span className="pc">{myPosts.length}</span>}>
+       {myPosts.length?myPosts.slice(0,5).map(p=><div key={p.id} className="row" style={{padding:'9px 0'}}><img className="av" style={{objectFit:'cover',width:46,height:46}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv"><span className="mi"><Ic.HeartS s={13}/>{(842+(liked[p.id]?1:0)).toLocaleString()}</span><span className="mi"><Ic.MsgS s={13}/>{12+(cmts[p.id]||[]).length}</span><span className="mi"><Ic.Camera s={13}/>{p.imgs.length}</span></div></div><div className="nm" style={{fontSize:13}}>{ksh(p.price)}</div></div>):<p className="bd" style={{margin:0}}>No posts yet. Publish your first product from the Products tab.</p>}</Acc>
      </>}
      {ptab==='store'&&<>
-     <Acc open title="Digital store photos" badge={<span className="pc">{photos.length}</span>}>
+     <Acc open icon={<Ic.Camera s={18}/>} title="Digital store photos" badge={<span className="pc">{photos.length}</span>}>
       <div className="pg"><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPhotos}/></label>
        {photos.map(p=><div key={p.id} className="pt3"><img src={p.src} alt=""/><button className="x" aria-label="Delete photo" onClick={()=>delPhoto(p.id)}>×</button></div>)}</div>
       {!photos.length&&<p className="bd" style={{marginTop:12}}>Upload product photos to build your store.</p>}</Acc>
-     <Acc open title="Create a post"><p className="bd" style={{margin:'0 0 12px'}}>Tap photos to include them, in the order people will swipe.</p>
+     <Acc open icon={<Ic.Pen s={18}/>} title="Create a post"><p className="bd" style={{margin:'0 0 12px'}}>Tap photos to include them, in the order people will swipe.</p>
       {photos.length?<div className="hs" style={{gap:10}}>{photos.map(p=>{const k=sel.indexOf(p.id);return <button key={p.id} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setSel(v=>k>-1?v.filter(x=>x!==p.id):[...v,p.id])}><img src={p.src} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>:<p className="bd">Add photos to your store first.</p>}
       <input className="fi" placeholder="Product name" value={pf.name} onChange={e=>setPf(v=>({...v,name:e.target.value}))}/>
       <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={pf.price} onChange={e=>setPf(v=>({...v,price:e.target.value}))}/>
       <input className="fi" placeholder="Caption" value={pf.cap} onChange={e=>setPf(v=>({...v,cap:e.target.value}))}/>
       <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.6}} onClick={publish}>Publish post{sel.length?` (${sel.length} photo${sel.length>1?'s':''})`:''}</button></Acc>
-     {myPosts.length>0&&<Acc title="Your posts" badge={<span className="pc">{myPosts.length}</span>}>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</Acc>}
+     {myPosts.length>0&&<Acc icon={<Ic.Tag s={18}/>} title="Your posts" badge={<span className="pc">{myPosts.length}</span>}>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</Acc>}
      </>}
      {ptab==='info'&&<>
-      <Acc open title="Shop information" action={<button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button>}>
+      <Acc open icon={<Ic.Store s={18}/>} title="Shop information" action={<button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button>}>
        <Fields rows={SHOPROWS} val={shop} edit={edShop} set={(k,v)=>setShop(x=>({...x,[k]:v}))}/>
        {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}</Acc>
-      <Acc title="Store settings">
+      <Acc icon={<Ic.Gear s={18}/>} title="Store settings">
        <Toggle label="Open for orders" sub={shop.open?'Customers can chat and order now':'Shown as closed on your profile'} on={shop.open} onClick={()=>setShop(x=>({...x,open:!x.open}))}/>
        <Toggle label="Order notifications" sub="Get alerted when customers message you" on={shop.notif} onClick={()=>setShop(x=>({...x,notif:!x.notif}))}/>
        <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/></Acc>
@@ -625,18 +707,18 @@ function App(){
      </>}
     </>}
     {mode==='client'&&<>
-     <Acc open title="Personal details" action={<button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button>}>
+     <Acc open icon={<Ic.Person s={18}/>} title="Personal details" action={<button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button>}>
       <Fields rows={MEROWS} val={me} edit={edMe} set={(k,v)=>setMe(x=>({...x,[k]:v}))}/>
       {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}</Acc>
-     <Acc title="Recent orders" badge={<span className="pc">{orders.length}</span>} action={orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}>
-      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{o.store.icon}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</Acc>
-     <Acc title="Following" badge={<span className="pc">{Object.values(fol).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</Acc>
-     <Acc title="Saved" badge={<span className="pc">{Object.values(saved).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</Acc>
-     <Acc title="Payment"><p className="bd" style={{margin:0}}>M-Pesa · Cash on delivery</p></Acc>
-     <Acc title="Preferences">
+     <Acc icon={<Ic.Pkg s={18}/>} title="Recent orders" badge={<span className="pc">{orders.length}</span>} action={orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}>
+      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{<Ic.Store s={20}/>}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</Acc>
+     <Acc icon={<Ic.Users s={18}/>} title="Following" badge={<span className="pc">{Object.values(fol).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}><Ic.Store s={18}/></div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</Acc>
+     <Acc icon={<Ic.Mark s={18}/>} title="Saved" badge={<span className="pc">{Object.values(saved).filter(Boolean).length}</span>}>{(()=>{const L=FEED.filter(p=>saved[p.pid]);return L.length?L.map(p=>{const x=STORES.find(z=>z.id===p.sid);return <button key={p.pid} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}><Ic.Store s={18}/></div><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{x.name} · {ksh(p.price)}</div></div></button>}):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</Acc>
+     <Acc icon={<Ic.Wallet s={18}/>} title="Payment"><p className="bd" style={{margin:0}}>M-Pesa · Cash on delivery</p></Acc>
+     <Acc icon={<Ic.Gear s={18}/>} title="Preferences">
       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/>
       <Toggle label="Notifications" sub="Order updates and new arrivals from shops you follow" on={me.notif} onClick={()=>setMe(x=>({...x,notif:!x.notif}))}/></Acc>
-     <Acc title="Help &amp; support"><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Help centre coming soon')}><div className="grow nm">Help centre</div><span className="mu">›</span></button><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Privacy settings coming soon')}><div className="grow nm">Privacy &amp; security</div><span className="mu">›</span></button></Acc>
+     <Acc icon={<Ic.Help s={18}/>} title="Help &amp; support"><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Help centre coming soon')}><div className="grow nm">Help centre</div><span className="mu"><Ic.Chev s={16}/></span></button><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Privacy settings coming soon')}><div className="grow nm">Privacy &amp; security</div><span className="mu"><Ic.Chev s={16}/></span></button></Acc>
     </>}
     <p className="bd" style={{textAlign:'center',margin:'4px 0 0',color:'var(--mut)'}}>TeQx · Chat, Discover, Shop</p>
     </div>
