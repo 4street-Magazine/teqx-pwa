@@ -237,6 +237,10 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 h1{font-size:24px;margin-bottom:6px}
 .sub{font-size:13px}
 .stats{margin:24px 0}
+.sws{display:flex;align-items:center;gap:9px;margin-top:14px}
+.sw2{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.4);padding:0;transition:transform .2s}
+.sw2.on{border-color:#fff;box-shadow:0 0 0 2.5px var(--accent);transform:scale(1.08)}
+.cn{font-size:12px;font-weight:600;color:rgba(255,255,255,.88);margin-left:4px}
 </style>
 </head>
 <body>
@@ -276,6 +280,8 @@ const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','
 const TAG={profile:'Your account & settings',inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow'};
 const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
 const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.'};
+const COL={apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']]};
+const FILT=['none','hue-rotate(50deg) saturate(1.1)','hue-rotate(190deg)'];
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -285,13 +291,13 @@ function Product({store,i,onBuy}){
  const [p,price]=store.prods[i],[bad,setBad]=useState(false);
  return <div className="prod">
   <div className="pimg">{bad?store.icon:<img src={store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}}/>}<span className="tag">In stock</span></div>
-  <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div><button className="btn" onClick={()=>onBuy(store,p,price)}>Buy now</button></div>
+  <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div><button className="btn" onClick={()=>onBuy(store,p,price)}>Order now</button></div>
  </div>;
 }
 
 const PERKS=[['🚚','Fast Delivery'],['🛡️','Secure Payments'],['↩️','Easy Returns']];
 function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
- const [n,setN]=useState(0),[gone,setGone]=useState(false),[spark,setSpark]=useState(false);
+ const psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(false),[spark,setSpark]=useState(false);
  const doFollow=()=>{if(f)return;onFollow();setSpark(true);setTimeout(()=>setGone(true),1700)};
  return <article className="post">
   <div className="ph"><div className="pav"><i>{s.icon}</i></div>
@@ -299,15 +305,15 @@ function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}</div>
   <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
   <div className="pm">
-   <div className="ps" onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
-    {s.prods.map((pr,i)=><div key={i} className="sl"><img src={s.img} alt={pr[0]} loading="lazy" style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}} onError={e=>{e.target.style.display='none'}}/></div>)}
+   <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
+    {COL[s.id].map((c,i)=><div key={i} className="sl"><img src={s.img} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>)}
    </div>
-   <span className="badge">{n===0?'NEW ARRIVAL':'TRENDING'}</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
-   <div className="pinfo"><h3 className="pt">{s.prods[n][0]}</h3><div className="pp">{ksh(s.prods[n][1])}</div><div className="rt"><b>★</b>  {(4.5+((si+n)%5)/10).toFixed(1)} ({128+si*37+n*11})</div></div>
+   <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
+   <div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pp">{ksh(s.prods[0][1])}</div><div className="rt"><b>★</b>  {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</div><div className="sws">{COL[s.id].map((c,i)=><button key={i} aria-label={c[0]} className={'sw2'+(i===n?' on':'')} style={{background:c[1]}} onClick={()=>psr.current&&psr.current.scrollTo({left:i*psr.current.clientWidth,behavior:'smooth'})}/>)}<span className="cn">{COL[s.id][n][0]}</span></div></div>
    <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
-   <div className="cta"><button className="o" onClick={onChat}><Ic.Msg/>Chat with Shop</button></div>
+   <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
   </div>
-  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onChat}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
+  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={()=>onChat()}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
   <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
  </article>;
 }
@@ -335,12 +341,13 @@ function App(){
  const push=(id,m)=>setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),...m}]}));
  const say=async(id,msgs)=>{setTyping(true);for(const m of msgs){await wait(800);push(id,m);}setTyping(false)};
 
- const open=s=>{setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
-  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the shop's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
+ const open=(s,m)=>{setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
+  if(chats[s.id]&&m){push(s.id,{from:'me',text:m});say(s.id,[{from:'bot',text:"Great choice! 🙌 It's available. Here's our catalog so you can order:"},{from:'bot',catalog:true}])}
+  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));if(m)push(s.id,{from:'me',text:m});say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the shop's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
 
  const reply=(s,t)=>{const q=t.toLowerCase();
   if(/catalog|show|price|cost|item|product/.test(q))return[{from:'bot',text:'Here are our top picks right now:'},{from:'bot',catalog:true}];
-  if(/track|status|where/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return[{from:'bot',text:o?`Your order ${o.id} (${o.item}) is currently: ${o.status}.`:'You have no orders with us yet. Tap "Buy now" on any item to place one.'}]}
+  if(/track|status|where/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return[{from:'bot',text:o?`Your order ${o.id} (${o.item}) is currently: ${o.status}.`:'You have no orders with us yet. Tap "Order now" on any item to place one.'}]}
   if(/deliver|ship/.test(q))return[{from:'bot',text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.'}];
   if(/pay|mpesa|m-pesa|card/.test(q))return[{from:'bot',text:'We accept M-Pesa, bank cards and cash on delivery.'}];
   if(/person|human|agent|help/.test(q))return[{from:'bot',text:'Connecting you to a team member. They usually reply within 10 minutes.'}];
@@ -396,7 +403,7 @@ function App(){
      <button className="story"><div className="ring"><i>🙂</i><span className="plus">+</span></div><span>Your story</span></button>
      {STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}
     </div>
-    {STORES.map((s,si)=><Post key={s.id} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={()=>open(s)} onBuy={(i,p)=>quick(s,i,p)}/>)}
+    {STORES.map((s,si)=><Post key={s.id} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}
    </div>}
 
    {tab==='orders'&&<div className="page">
