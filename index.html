@@ -174,7 +174,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .fol.on{background:var(--grad);border-color:transparent;color:#fff}
 .pcap{padding:0 6px 14px;color:var(--mut);font-size:13.5px;line-height:1.55}.pcap b{color:var(--text)}
 .pm{margin:0;border-radius:34px;box-shadow:0 24px 50px -12px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.07)}
-.sl{height:390px}
+.sl{height:370px}
 .sl:before{background:linear-gradient(180deg,rgba(0,0,0,.5) 0,transparent 22%,transparent 40%,rgba(8,6,4,.55) 66%,rgba(8,6,4,.95) 100%)}
 .badge{top:18px;left:18px;font-size:10px;letter-spacing:.18em;font-weight:700;padding:7px 13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(16px)}
 .shopchip{position:absolute;z-index:3;top:18px;right:18px;font-size:11px;font-weight:600;color:#fff;padding:7px 13px;border-radius:99px;background:rgba(0,0,0,.35);backdrop-filter:blur(16px);display:none}
@@ -203,7 +203,14 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .sw{width:46px;height:28px;border-radius:99px;background:var(--surf2);position:relative;transition:background .25s;flex-shrink:0}
 .sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 .sw.on{background:var(--grad)}.sw.on:after{transform:translateX(18px)}
-.stk{position:sticky;top:0;z-index:8;margin:0 -16px 8px!important;padding:8px 20px 14px!important;background:var(--bg)}
+.stk{position:sticky;top:0;z-index:8;margin:0 -16px 8px!important;padding:10px 20px 14px!important;background:var(--bg);top:-1px}
+.tagl{display:flex;align-items:center;gap:7px;margin-top:-2px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--mut)}
+.tagl i{width:7px;height:7px;border-radius:50%;background:#22e07a;box-shadow:0 0 0 0 rgba(34,224,122,.6);animation:pls 1.8s infinite}
+@keyframes pls{70%{box-shadow:0 0 0 7px rgba(34,224,122,0)}100%{box-shadow:0 0 0 0 rgba(34,224,122,0)}}
+.tagl i{position:relative;background:#22e07a;box-shadow:0 0 8px rgba(34,224,122,.8);animation:none}
+.tagl i:after{content:"";position:absolute;inset:0;border-radius:50%;background:#22e07a;animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite;pointer-events:none}
+.dot{background:#22e07a}
+@keyframes ping{0%{transform:scale(1);opacity:.75}100%{transform:scale(2.8);opacity:0}}
 </style>
 </head>
 <body>
@@ -333,7 +340,7 @@ function App(){
  const nav=[['discover','Discover',Ic.Discover],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  return <div className="app">
-  {!(tab==='inbox'&&chat)&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search"><Ic.Search/></button>}</div></div>{!d&&<p className="sub">{TAG[tab]}</p>}</header>}
+  {!(tab==='inbox'&&chat)&&<header className="hdr"><div className="hrow"><div>{brand}{d&&<div className="tagl">Active Shops</div>}</div><div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search"><Ic.Search/></button>}</div></div>{!d&&<p className="sub">{TAG[tab]}</p>}</header>}
   <main>
    {tab==='inbox'&&<>
     <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
@@ -358,10 +365,10 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<div className="page" style={{padding:'6px 16px 24px'}}>
+   {d&&<div className="page" style={{padding:'0 16px 24px'}}>
     <div className="hs stories stk">
      <button className="story"><div className="ring"><i>🙂</i><span className="plus">+</span></div><span>Your story</span></button>
-     {STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i></div><span>{s.name}</span></button>)}
+     {STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}
     </div>
     {STORES.map((s,si)=><Post key={s.id} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={()=>open(s)} onBuy={(i,p)=>quick(s,i,p)}/>)}
    </div>}
