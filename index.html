@@ -366,7 +366,7 @@ function App(){
  const nav=[['discover','Discover',Ic.Discover],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  return <div className="app">
-  {!(tab==='inbox'&&chat)&&<header className="hdr"><div className="hrow"><div>{brand}{d&&<div className="tagl">Discover Shops</div>}</div><div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search"><Ic.Search/></button>}</div></div>{!d&&<p className="sub">{TAG[tab]}</p>}</header>}
+  {!(tab==='inbox'&&chat)&&tab!=='profile'&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search"><Ic.Search/></button>}</div></div>{d?<div className="tagl">Discover Shops</div>:<p className="sub">{TAG[tab]}</p>}</header>}
   <main>
    {tab==='inbox'&&<>
     <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
