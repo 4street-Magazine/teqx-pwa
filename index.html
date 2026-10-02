@@ -1,1193 +1,258 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TeQx PWA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            width: 100vw;
-            height: 100vh;
-            background-color: #0b0b0f;
-            color: #ffffff;
-            overflow: hidden;
-            position: fixed;
-            inset: 0;
-        }
-
-        #app {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background-color: #0b0b0f;
-        }
-
-        /* Top Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px 12px 20px;
-            background: #0b0b0f;
-            z-index: 10;
-            flex-shrink: 0;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .logo span {
-            color: #ff4500;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .header-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 18px;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Main Content Viewport */
-        .content-view {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 0 20px 90px 20px;
-            display: none;
-            scroll-behavior: smooth;
-        }
-
-        .content-view.active {
-            display: block;
-        }
-
-        /* --- TAB 1: INBOX --- */
-        .active-stores-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #a0a0ab;
-            margin-bottom: 12px;
-            margin-top: 4px;
-        }
-
-        .stores-scroll {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 16px;
-            scrollbar-width: none;
-        }
-
-        .stores-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .store-avatar-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .store-avatar-ring {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(135deg, #0088ff, #ffaa00, #ff0055);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .store-avatar-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #1a1a24;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .store-dot {
-            width: 12px;
-            height: 12px;
-            background: #00e676;
-            border: 2px solid #0b0b0f;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-        }
-
-        .store-avatar-name {
-            font-size: 12px;
-            font-weight: 500;
-            color: #d0d0dc;
-        }
-
-        .message-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .message-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            cursor: pointer;
-        }
-
-        .msg-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        .msg-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .msg-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-
-        .msg-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .msg-title i {
-            color: #0088ff;
-            font-size: 13px;
-        }
-
-        .msg-time {
-            font-size: 12px;
-            color: #888894;
-        }
-
-        .msg-preview {
-            font-size: 13px;
-            color: #9999a6;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .msg-badge {
-            background: #ff4500;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 700;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 6px;
-        }
-
-        /* --- TAB 2: DISCOVER / LIVE STREAM --- */
-        .discover-container {
-            position: relative;
-            width: 100%;
-            height: calc(100vh - 140px);
-            background: radial-gradient(circle at 50% 30%, #2e1135 0%, #0b0b0f 70%);
-            border-radius: 24px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px;
-        }
-
-        .discover-top-tags {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .live-tag {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .live-tag span {
-            width: 8px;
-            height: 8px;
-            background: #ff3b30;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ff3b30;
-        }
-
-        .stream-native-tag {
-            font-size: 12px;
-            color: #aaa;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stream-native-tag span {
-            color: #ff9500;
-        }
-
-        .discover-right-actions {
-            position: absolute;
-            right: 16px;
-            bottom: 140px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .action-icon-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(26, 26, 36, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .action-icon-btn span {
-            font-size: 10px;
-            margin-top: 2px;
-            font-weight: 600;
-        }
-
-        .discover-product-card {
-            background: rgba(18, 18, 26, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-        }
-
-        .dp-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .dp-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #ff4500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .dp-title {
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .dp-title i {
-            color: #0088ff;
-            font-size: 12px;
-        }
-
-        .dp-desc {
-            font-size: 13px;
-            color: #b0b0bc;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .dp-tags {
-            font-size: 12px;
-            color: #ff9500;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .shop-now-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(90deg, #ff6a00, #ee0979);
-            border: none;
-            border-radius: 14px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(238, 9, 121, 0.4);
-        }
-
-        /* --- TAB 3: ORDERS --- */
-        .orders-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .orders-placed-label {
-            color: #ff6a00;
-            font-weight: 800;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-        }
-
-        .orders-showing-label {
-            color: #ff8c00;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .order-card {
-            background: #14141d;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .order-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .order-store-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .order-store-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #fff;
-        }
-
-        .order-store-name {
-            font-weight: 700;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .order-store-name i {
-            color: #0088ff;
-            font-size: 12px;
-        }
-
-        .order-status-badge {
-            font-weight: 800;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-        }
-
-        .order-item-body {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 12px;
-            border-radius: 14px;
-        }
-
-        .order-item-img {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #fff2e6, #ffe6cc);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #ff6a00;
-            flex-shrink: 0;
-        }
-
-        .order-item-details {
-            flex: 1;
-        }
-
-        .order-item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .order-item-qty {
-            color: #888894;
-            font-size: 12px;
-        }
-
-        .order-item-time {
-            font-size: 12px;
-            color: #888894;
-        }
-
-        .order-item-price {
-            font-weight: 700;
-            color: #ff6a00;
-            font-size: 14px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        /* --- TAB 4: ALERTS --- */
-        .alerts-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .alerts-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .alerts-action-icon {
-            color: #00e676;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .alert-card {
-            background: #14141d;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-        }
-
-        .alert-icon-box {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 106, 0, 0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff6a00;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .alert-body {
-            flex: 1;
-        }
-
-        .alert-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e2e2ec;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        .alert-time {
-            font-size: 12px;
-            color: #888894;
-        }
-
-        .alert-dot-indicator {
-            width: 8px;
-            height: 8px;
-            background: #ff6a00;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 6px;
-        }
-
-        /* Bottom Navigation Bar */
-        .nav-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: #0b0b0f;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            background: none;
-            border: none;
-            color: #888894;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 25%;
-            transition: color 0.2s;
-        }
-
-        .nav-item i {
-            font-size: 20px;
-        }
-
-        .nav-item.active {
-            color: #ff4500;
-        }
-
-        /* Modal Overlay for Store Chat Simulation */
-        .chat-modal {
-            position: fixed;
-            inset: 0;
-            background: #0b0b0f;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            animation: slideUp 0.3s ease forwards;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .chat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            background: #14141d;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .chat-store-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-back-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #0088ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 18px;
-        }
-
-        .chat-title-group h3 {
-            font-size: 15px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .chat-title-group h3 i {
-            color: #0088ff;
-            font-size: 12px;
-        }
-
-        .chat-title-group p {
-            font-size: 12px;
-            color: #00e676;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .chat-bubble {
-            background: #14141d;
-            padding: 14px 16px;
-            border-radius: 16px;
-            max-width: 85%;
-            font-size: 14px;
-            line-height: 1.4;
-            color: #e2e2ec;
-        }
-
-        .chat-time-tag {
-            font-size: 11px;
-            color: #888894;
-            margin-top: 6px;
-        }
-
-        .chat-product-preview {
-            background: #1a1a24;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            max-width: 85%;
-        }
-
-        .cpp-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .cpp-badge {
-            background: #ff6a00;
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 8px;
-            text-transform: uppercase;
-        }
-
-        .cpp-img-box {
-            width: 100%;
-            height: 120px;
-            background: #0b0b0f;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #ff6a00;
-            margin-bottom: 12px;
-        }
-
-        .cpp-title {
-            font-weight: 700;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .cpp-desc {
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 12px;
-        }
-
-        .cpp-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cpp-price {
-            font-weight: 800;
-            font-size: 16px;
-            color: #fff;
-        }
-
-        .cpp-buy-btn {
-            background: linear-gradient(90deg, #ff6a00, #ee0979);
-            border: none;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .chat-input-area {
-            padding: 16px 20px;
-            background: #14141d;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            background: #0b0b0f;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 16px;
-            border-radius: 24px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .chat-send-btn {
-            width: 42px;
-            height: 42px;
-            background: #ff6a00;
-            border: none;
-            border-radius: 50%;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TeQx – Chat, Discover, Shop</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root{--grad:linear-gradient(135deg,#ffa31a 0%,#ff6a00 55%,#f04e00 100%);--accent:#ff6a00;--glow:0 6px 18px rgba(255,106,0,.35)}
+[data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.08);--nav:#18181d;--shadow:0 -6px 30px rgba(0,0,0,.6),0 8px 24px rgba(0,0,0,.5)}
+[data-theme=light]{--bg:#faf7f4;--surf:#fff;--surf2:#f3eee9;--text:#17120e;--mut:#6f655c;--line:rgba(30,20,10,.09);--nav:#fff;--shadow:0 -4px 24px rgba(40,25,10,.08),0 8px 24px rgba(40,25,10,.14)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg)}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit}
+.scroll{overflow-y:auto;scrollbar-width:none}.scroll::-webkit-scrollbar,.hs::-webkit-scrollbar{display:none}
+.hs{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none}
+.app{max-width:448px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg);transition:background .3s}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px}
+.brand{font-size:26px;font-weight:800;letter-spacing:-.03em}
+.brand b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ico{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--surf);border:1px solid var(--line);color:var(--accent);transition:transform .15s}
+.ico:active{transform:scale(.92)}
+main{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.page{flex:1;overflow-y:auto;scrollbar-width:none;padding:4px 20px 24px}
+h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 20px}
+.stories{padding:6px 20px 18px}
+.story{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;width:68px}
+.ring{width:64px;height:64px;border-radius:50%;background:var(--grad);padding:2.5px;position:relative}
+.ring i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surf);font-size:26px;font-style:normal;border:2px solid var(--bg)}
+.dot{position:absolute;right:1px;bottom:1px;width:15px;height:15px;border-radius:50%;background:#22c55e;border:3px solid var(--bg)}
+.story span{font-size:12px;font-weight:600;max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sect{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:0 20px 8px}
+.row{display:flex;align-items:center;gap:14px;padding:14px 20px;width:100%;text-align:left;transition:background .15s}
+.row:active{background:var(--surf)}
+.av{width:52px;height:52px;border-radius:50%;background:var(--surf2);display:grid;place-items:center;font-size:24px;flex-shrink:0;border:1px solid var(--line)}
+.grow{flex:1;min-width:0}
+.nm{display:flex;align-items:center;gap:5px;font-size:15.5px;font-weight:700}
+.nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv{font-size:13px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.tm{font-size:11.5px;color:var(--mut)}
+.pill{font-size:11.5px;font-weight:700;color:#fff;background:var(--grad);border-radius:99px;min-width:21px;padding:2px 7px;text-align:center}
+.chat{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);z-index:20}
+.chdr{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;border-bottom:1px solid var(--line);background:var(--surf)}
+.back{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf2)}
+.chdr .av{width:42px;height:42px;font-size:20px}
+.on{font-size:12px;font-weight:600;color:#22c55e;margin-top:1px}
+.msgs{flex:1;overflow-y:auto;scrollbar-width:none;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
+.b{max-width:82%;padding:11px 15px;border-radius:20px;font-size:14px;line-height:1.55;animation:pop .25s ease}
+.b.bot{background:var(--surf2);border-bottom-left-radius:6px;align-self:flex-start}
+.b.me{background:var(--grad);color:#fff;border-bottom-right-radius:6px;align-self:flex-end;font-weight:500}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.typing{display:flex;gap:5px;padding:14px 16px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:bl 1.1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
+.cat{padding:2px 2px 8px;animation:pop .3s ease}
+.prod{width:208px;flex-shrink:0;background:var(--surf);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.pimg{height:138px;position:relative;overflow:hidden;background:var(--surf2);display:grid;place-items:center;font-size:40px}
+.pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(8px)}
+.pbody{padding:14px}
+.pn{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr{font-size:17px;font-weight:800;margin:3px 0 12px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{width:100%;padding:11px;border-radius:14px;background:var(--grad);color:#fff;font-weight:700;font-size:13.5px;box-shadow:var(--glow);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 16px 0}
+.chip{flex-shrink:0;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);background:transparent}
+.chip:active{background:var(--accent);color:#fff}
+.bar{display:flex;gap:10px;align-items:center;padding:12px 16px 14px;background:var(--bg)}
+.bar input{flex:1;padding:13px 18px;border-radius:99px;border:1px solid var(--line);background:var(--surf);color:var(--text);font-size:14px;outline:0}
+.bar input:focus{border-color:var(--accent)}
+.send{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;box-shadow:var(--glow);flex-shrink:0}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.ch{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:12px;border-bottom:1px dashed var(--line)}
+.st{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:99px;background:rgba(255,106,0,.14);color:var(--accent)}
+.st.ok{background:rgba(34,197,94,.14);color:#22c55e}
+.al{display:flex;gap:14px;align-items:flex-start}
+.ai{width:40px;height:40px;border-radius:14px;background:rgba(255,106,0,.13);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
+.disc{position:absolute;inset:0;background:#000}
+.disc>img{width:100%;height:100%;object-fit:cover}
+.disc:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 25%,transparent 45%,rgba(0,0,0,.75) 100%)}
+.dtop{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 16px);left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.dtop .ico{background:rgba(0,0,0,.4);border-color:rgba(255,255,255,.15);color:#fff;backdrop-filter:blur(14px)}
+.side{position:absolute;z-index:5;right:16px;bottom:210px;display:flex;flex-direction:column;gap:18px;align-items:center;color:#fff}
+.side button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.side span.c{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(14px)}
+.glass{position:absolute;z-index:5;left:20px;right:20px;bottom:110px;padding:18px;border-radius:24px;background:rgba(15,15,18,.45);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.18);color:#fff}
+.glass .btn{margin-top:14px}
+.navw{padding:6px 14px calc(env(safe-area-inset-bottom,0px) + 14px);z-index:30;background:transparent}
+.nav{display:flex;padding:8px;border-radius:26px;background:var(--nav);border:1px solid var(--line);box-shadow:var(--shadow)}
+.navw.d{position:absolute;left:0;right:0;bottom:0}
+.navw.d .nav{background:rgba(20,20,24,.55);backdrop-filter:blur(22px);border-color:rgba(255,255,255,.18)}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0;border-radius:18px;color:var(--mut);font-size:11.5px;font-weight:600;transition:all .2s}
+.navw.d .nav button{color:rgba(255,255,255,.65)}
+.nav button.act{color:#fff;background:var(--grad);box-shadow:var(--glow)}
+.nav button:active{transform:scale(.94)}
+</style>
 </head>
 <body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+const I=({s=20,f='none',children})=><svg width={s} height={s} viewBox="0 0 24 24" fill={f} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{children}</svg>;
+const Ic={
+ Sun:()=><I s={19}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></I>,
+ Moon:()=><I s={19}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></I>,
+ Inbox:()=><I s={22}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>,
+ Discover:()=><I s={22}><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9"/></I>,
+ Bag:()=><I s={22}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></I>,
+ Bell:()=><I s={22}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a2 2 0 0 0 3.4 0"/></I>,
+ Heart:({on})=><I s={22} f={on?'#ff4d2e':'none'}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
+ Msg:()=><I s={22}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>,
+ Mark:({on})=><I s={22} f={on?'currentColor':'none'}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></I>,
+ Share:()=><I s={22}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></I>,
+ Send:()=><I s={18}><path d="m22 2-11 11M22 2l-7 20-4-9-9-4z"/></I>,
+ Back:()=><I s={18}><path d="m15 18-6-6 6-6"/></I>
+};
+const Verified=({s=16})=><svg width={s} height={s} viewBox="0 0 20 20" fill="#38bdf8" style={{flexShrink:0}}><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.700-9.300a1 1 0 00-1.400-1.400L9 10.600 7.700 9.300a1 1 0 00-1.400 1.400l2 2a1 1 0 001.400 0l4-4z" clipRule="evenodd"/></svg>;
+const ksh=n=>'KSh '+n.toLocaleString('en-KE');
+const U=(id)=>`https://images.unsplash.com/${id}?w=600&q=80`;
+const STORES=[
+ {id:'apex',name:'Apex Tech',tag:'#TechGear',icon:'⚡',msg:'Your order has been confirmed.',time:'19:54',unread:2,img:U('photo-1505740420928-5e560c06d30e'),prods:[['AcousticMax Headphones',18500],['Pulse Wireless Earbuds',7900],['Volt 20K Power Bank',3200]]},
+ {id:'luxe',name:'Luxe Attire',tag:'#Streetwear',icon:'👕',msg:'New styles drop tonight!',time:'18:30',unread:0,img:U('photo-1515886657613-9f3515b0c78f'),prods:[['Premium Cotton Hoodie',6200],['Essential Oversized Tee',2400],['Street Cargo Joggers',4800]]},
+ {id:'nova',name:'Nova Beauty',tag:'#Skincare',icon:'💄',msg:'Your beauty picks are ready to view.',time:'16:12',unread:1,img:U('photo-1608248597481-496100c80836'),prods:[['Hydrating Glow Serum',4800],['Vitamin C Brightening Cream',3900],['Daily Mineral Sunscreen',2700]]},
+ {id:'fresh',name:'Fresh Drops',tag:'#Essentials',icon:'🍏',msg:'Your organic produce crate is ready.',time:'Yesterday',unread:0,img:U('photo-1610832958506-aa56368176cf'),prods:[['Fresh Fruit Basket',3500],['Organic Veggie Crate',2800],['Cold-Pressed Juice Pack',1900]]},
+ {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]}
+];
+const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
-<div id="app">
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">Te<span>Q</span>x</div>
-        <div class="header-actions">
-            <button class="header-btn" onclick="triggerAction('Search')"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button class="header-btn" onclick="triggerAction('Menu')"><i class="fa-solid fa-bars"></i></button>
-        </div>
+function Product({store,i,onBuy}){
+ const [p,price]=store.prods[i],[bad,setBad]=useState(false);
+ return <div className="prod">
+  <div className="pimg">{bad?store.icon:<img src={store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}}/>}<span className="tag">In stock</span></div>
+  <div className="pbody"><div className="pn">{p}</div><div className="pr">{ksh(price)}</div><button className="btn" onClick={()=>onBuy(store,p,price)}>Buy now</button></div>
+ </div>;
+}
+
+function App(){
+ const [dark,setDark]=useState(()=>{try{return localStorage.getItem('teqx-theme')!=='light'}catch(e){return true}});
+ const [tab,setTab]=useState('inbox');
+ const [chat,setChat]=useState(null);
+ const [text,setText]=useState('');
+ const [chats,setChats]=useState({});
+ const [typing,setTyping]=useState(false);
+ const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,s.unread])));
+ const [orders,setOrders]=useState([
+  {id:'TQ-4821',store:STORES[0],item:STORES[0].prods[0][0],price:18500,status:'Out for delivery'},
+  {id:'TQ-4790',store:STORES[1],item:STORES[1].prods[0][0],price:6200,status:'Delivered'},
+  {id:'TQ-4755',store:STORES[2],item:STORES[2].prods[0][0],price:4800,status:'Delivered'}]);
+ const [liked,setLiked]=useState(false),[saved,setSaved]=useState(false);
+ const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
+
+ useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
+ useEffect(()=>{end.current&&end.current.scrollIntoView({behavior:'smooth',block:'end'})},[chats,typing,chat]);
+
+ const push=(id,m)=>setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),...m}]}));
+ const say=async(id,msgs)=>{setTyping(true);for(const m of msgs){await wait(800);push(id,m);}setTyping(false)};
+
+ const open=s=>{setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
+  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the store's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
+
+ const reply=(s,t)=>{const q=t.toLowerCase();
+  if(/catalog|show|price|cost|item|product/.test(q))return[{from:'bot',text:'Here are our top picks right now:'},{from:'bot',catalog:true}];
+  if(/track|status|where/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return[{from:'bot',text:o?`Your order ${o.id} (${o.item}) is currently: ${o.status}.`:'You have no orders with us yet. Tap "Buy now" on any item to place one.'}]}
+  if(/deliver|ship/.test(q))return[{from:'bot',text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.'}];
+  if(/pay|mpesa|m-pesa|card/.test(q))return[{from:'bot',text:'We accept M-Pesa, bank cards and cash on delivery.'}];
+  if(/person|human|agent|help/.test(q))return[{from:'bot',text:'Connecting you to a team member. They usually reply within 10 minutes.'}];
+  if(/hi|hello|hey|sasa|mambo/.test(q))return[{from:'bot',text:`Hello! 😊 How can I help you today at ${s.name}?`}];
+  return[{from:'bot',text:'Thanks for your message! I can help with the catalog, order tracking, delivery and payments.'}]};
+
+ const send=t=>{t=(t||'').trim();if(!t||typing)return;push(chat.id,{from:'me',text:t});setText('');say(chat.id,reply(chat,t))};
+
+ const buy=async(s,item,price)=>{if(typing)return;
+  const id='TQ-'+Math.floor(1000+Math.random()*9000);
+  push(s.id,{from:'me',text:`I'd like to order: ${item}`});
+  setOrders(o=>[{id,store:s,item,price,status:'Processing'},...o]);
+  await say(s.id,[{from:'bot',text:`Order ${id} received ✅ — ${item} for ${ksh(price)}. We'll confirm shortly.`}]);
+  await wait(5000);
+  setOrders(o=>o.map(x=>x.id===id?{...x,status:'Confirmed'}:x));
+  push(s.id,{from:'bot',text:`Good news! Order ${id} is confirmed and being packed. 📦`})};
+
+ const lastBot=chat&&(chats[chat.id]||[]).length>0;
+ const d=tab==='discover';
+ const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
+ const brand=<div className="brand">Te<b>Q</b>x</div>;
+ const nav=[['inbox','Inbox',Ic.Inbox],['discover','Discover',Ic.Discover],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell]];
+
+ return <div className="app">
+  {!d&&!chat&&<header className="hdr">{brand}{toggle}</header>}
+  <main>
+   {tab==='inbox'&&<div className="page" style={{padding:0}}>
+    <div style={{padding:'0 20px'}}><h1>Messages</h1><p className="sub">Chat with your favourite stores</p></div>
+    <div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
+    <div className="sect">Conversations</div>
+    {STORES.map(s=>{const m=chats[s.id]&&[...chats[s.id]].reverse().find(x=>x.text);return <button key={s.id} className="row" onClick={()=>open(s)}>
+     <div className="av">{s.icon}</div>
+     <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{m?m.text:s.msg}</div></div>
+     <div className="meta"><span className="tm">{s.time}</span>{unread[s.id]>0&&<span className="pill">{unread[s.id]}</span>}</div>
+    </button>})}
+   </div>}
+
+   {tab==='inbox'&&chat&&<div className="chat">
+    <div className="chdr"><button className="back" aria-label="Back" onClick={()=>setChat(null)}><Ic.Back/></button><div className="av">{chat.icon}</div>
+     <div className="grow"><div className="nm"><span>{chat.name}</span><Verified s={15}/></div><div className="on">● Auto-replies on</div></div></div>
+    <div className="msgs">
+     {(chats[chat.id]||[]).map(m=>m.catalog?<div key={m.k} className="hs cat">{[0,1,2].map(i=><Product key={i} store={chat} i={i} onBuy={buy}/>)}</div>:<div key={m.k} className={'b '+m.from}>{m.text}</div>)}
+     {typing&&<div className="b bot typing"><i/><i/><i/></div>}
+     <div ref={end}/>
     </div>
+    {lastBot&&<div className="chips">{CHIPS.map(c=><button key={c} className="chip" onClick={()=>send(c)}>{c}</button>)}</div>}
+    <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
+   </div>}
 
-    <!-- TAB 1: INBOX -->
-    <div id="tab-inbox" class="content-view active">
-        <div class="active-stores-title">Active Stores</div>
-        <div class="stores-scroll">
-            <div class="store-avatar-item" onclick="openChat('Apex Tech', '#0088ff', 'fa-bolt')">
-                <div class="store-avatar-ring"><div class="store-avatar-inner" style="color: #0088ff;"><i class="fa-solid fa-bolt"></i></div><div class="store-dot"></div></div>
-                <div class="store-avatar-name">Apex</div>
-            </div>
-            <div class="store-avatar-item" onclick="openChat('Luxe Attire', '#ffaa00', 'fa-layer-group')">
-                <div class="store-avatar-ring"><div class="store-avatar-inner" style="color: #ffaa00;"><i class="fa-solid fa-layer-group"></i></div><div class="store-dot"></div></div>
-                <div class="store-avatar-name">Luxe</div>
-            </div>
-            <div class="store-avatar-item" onclick="openChat('Nova Beauty', '#a855f7', 'fa-star')">
-                <div class="store-avatar-ring"><div class="store-avatar-inner" style="color: #a855f7;"><i class="fa-solid fa-star"></i></div><div class="store-dot"></div></div>
-                <div class="store-avatar-name">Nova</div>
-            </div>
-            <div class="store-avatar-item" onclick="openChat('Fresh Drops', '#00e676', 'fa-droplet')">
-                <div class="store-avatar-ring"><div class="store-avatar-inner" style="color: #00e676;"><i class="fa-solid fa-droplet"></i></div><div class="store-dot"></div></div>
-                <div class="store-avatar-name">Fresh</div>
-            </div>
-            <div class="store-avatar-item" onclick="openChat('Sole Search', '#ff3b30', 'fa-circle-stop')">
-                <div class="store-avatar-ring"><div class="store-avatar-inner" style="color: #ff3b30;"><i class="fa-solid fa-circle-stop"></i></div><div class="store-dot"></div></div>
-                <div class="store-avatar-name">Sole</div>
-            </div>
-        </div>
-
-        <div class="message-list">
-            <div class="message-item" onclick="openChat('Apex Tech', '#0088ff', 'fa-bolt')">
-                <div class="msg-icon-box" style="background: #0088ff;"><i class="fa-solid fa-bolt"></i></div>
-                <div class="msg-content">
-                    <div class="msg-header-row">
-                        <div class="msg-title">Apex Tech <i class="fa-solid fa-circle-check"></i></div>
-                        <div class="msg-time">10:42 AM</div>
-                    </div>
-                    <div class="msg-preview">Your order #APX-8821 has been shipped...</div>
-                </div>
-                <div class="msg-badge">1</div>
-            </div>
-
-            <div class="message-item" onclick="openChat('Luxe Attire', '#ffaa00', 'fa-layer-group')">
-                <div class="msg-icon-box" style="background: #ffaa00;"><i class="fa-solid fa-layer-group"></i></div>
-                <div class="msg-content">
-                    <div class="msg-header-row">
-                        <div class="msg-title">Luxe Attire <i class="fa-solid fa-circle-check"></i></div>
-                        <div class="msg-time">9:15 AM</div>
-                    </div>
-                    <div class="msg-preview">Check out our new premium autumn collection lookbook.</div>
-                </div>
-                <div class="msg-badge">3</div>
-            </div>
-
-            <div class="message-item" onclick="openChat('Nova Beauty', '#a855f7', 'fa-star')">
-                <div class="msg-icon-box" style="background: #a855f7;"><i class="fa-solid fa-star"></i></div>
-                <div class="msg-content">
-                    <div class="msg-header-row">
-                        <div class="msg-title">Nova Beauty <i class="fa-solid fa-circle-check"></i></div>
-                        <div class="msg-time">Yesterday</div>
-                    </div>
-                    <div class="msg-preview">Get 20% off on your next glow kit refill.</div>
-                </div>
-            </div>
-
-            <div class="message-item" onclick="openChat('Fresh Drops', '#00e676', 'fa-droplet')">
-                <div class="msg-icon-box" style="background: #00e676;"><i class="fa-solid fa-droplet"></i></div>
-                <div class="msg-content">
-                    <div class="msg-header-row">
-                        <div class="msg-title">Fresh Drops <i class="fa-solid fa-circle-check"></i></div>
-                        <div class="msg-time">2 days ago</div>
-                    </div>
-                    <div class="msg-preview">Organic natural refreshers are back in stock!</div>
-                </div>
-            </div>
-
-            <div class="message-item" onclick="openChat('Sole Search', '#ff3b30', 'fa-circle-stop')">
-                <div class="msg-icon-box" style="background: #ff3b30;"><i class="fa-solid fa-circle-stop"></i></div>
-                <div class="msg-content">
-                    <div class="msg-header-row">
-                        <div class="msg-title">Sole Search <i class="fa-solid fa-circle-check"></i></div>
-                        <div class="msg-time">3 days ago</div>
-                    </div>
-                    <div class="msg-preview">Your premium raffle entry is now active.</div>
-                </div>
-            </div>
-        </div>
+   {d&&<div className="disc">
+    <img src={STORES[1].img} alt="Streetwear lookbook"/>
+    <div className="dtop">{brand}{toggle}</div>
+    <div className="side">
+     <button onClick={()=>setLiked(!liked)}><span className="c"><Ic.Heart on={liked}/></span>{(4812+(liked?1:0)).toLocaleString()}</button>
+     <button><span className="c"><Ic.Msg/></span>293</button>
+     <button onClick={()=>setSaved(!saved)} style={saved?{color:'#ffa31a'}:null}><span className="c"><Ic.Mark on={saved}/></span>{saved?'Saved':'Save'}</button>
+     <button><span className="c"><Ic.Share/></span>94</button>
     </div>
-
-    <!-- TAB 2: DISCOVER -->
-    <div id="tab-discover" class="content-view">
-        <div class="discover-container">
-            <div class="discover-top-tags">
-                <div class="live-tag"><span></span> LIVE VIDEO FEED</div>
-                <div class="stream-native-tag"><i class="fa-solid fa-circle" style="font-size:6px; color:#ff9500;"></i> <span>Stream native</span></div>
-            </div>
-
-            <div class="discover-right-actions">
-                <div class="action-icon-btn" onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i><span>1.4K</span></div>
-                <div class="action-icon-btn" onclick="triggerAction('Discuss')"><i class="fa-regular fa-comment-dots"></i><span>Discuss</span></div>
-                <div class="action-icon-btn" onclick="triggerAction('Save')"><i class="fa-regular fa-bookmark"></i><span>Save</span></div>
-            </div>
-
-            <div class="discover-product-card">
-                <div class="dp-header">
-                    <div class="dp-avatar" style="background:#a855f7;"><i class="fa-solid fa-star"></i></div>
-                    <div>
-                        <div class="dp-title">Nova Beauty <i class="fa-solid fa-circle-check"></i></div>
-                    </div>
-                </div>
-                <div class="dp-desc">HydraGlow Vitamin Serum & deep antioxidant repair cream.</div>
-                <div class="dp-tags">#NovaBeauty #GlowKit</div>
-                <button class="shop-now-btn" onclick="triggerAction('Shop Now')"><i class="fa-solid fa-bag-shopping"></i> SHOP NOW</button>
-            </div>
-        </div>
+    <div className="glass">
+     <div style={{display:'flex',gap:12,alignItems:'center'}}><div className="av" style={{width:46,height:46,fontSize:22,background:'rgba(0,0,0,.4)'}}>👕</div>
+      <div className="grow"><div className="nm" style={{fontSize:16}}><span>Luxe Attire</span><Verified/></div><div className="pv" style={{color:'rgba(255,255,255,.8)'}}>#Streetwear #PremiumDrops #NairobiFashion</div></div></div>
+     <button className="btn" onClick={()=>open(STORES[1])}>Shop now</button>
     </div>
+   </div>}
 
-    <!-- TAB 3: ORDERS -->
-    <div id="tab-orders" class="content-view">
-        <div class="orders-top-bar">
-            <div class="orders-placed-label">PLACED</div>
-            <div class="orders-showing-label">SHOWING ALL ORDERS</div>
-        </div>
+   {tab==='orders'&&<div className="page"><h1>Your orders</h1><p className="sub">Track everything you've bought</p>
+    {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
+     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1</div></div><div style={{fontWeight:800,fontSize:15}}>{ksh(o.price)}</div></div></div>)}
+   </div>}
 
-        <div class="order-card">
-            <div class="order-card-header">
-                <div class="order-store-info">
-                    <div class="order-store-icon" style="background: #0088ff;"><i class="fa-solid fa-bolt"></i></div>
-                    <div class="order-store-name">Apex Tech <i class="fa-solid fa-circle-check"></i></div>
-                </div>
-                <div class="order-status-badge">PLACED</div>
-            </div>
-            <div class="order-item-body">
-                <div class="order-item-img"><i class="fa-solid fa-headphones"></i></div>
-                <div class="order-item-details">
-                    <div class="order-item-name">Wireless Noise-Canc... <span class="order-item-qty">x1</span></div>
-                    <div class="order-item-time">Ordered: Today, 10:42 AM</div>
-                </div>
-                <div class="order-item-price">KSH 15,000</div>
-            </div>
-        </div>
+   {tab==='alerts'&&<div className="page"><h1>Alerts</h1><p className="sub">Updates from the stores you follow</p>
+    {STORES.map((s,i)=><div key={s.id} className="card al"><div className="ai"><Ic.Bell/></div><div className="grow"><div style={{display:'flex',justifyContent:'space-between'}}><b style={{fontSize:14.5}}>{s.name}</b><span className="tm">{i+2}h ago</span></div>
+     <p style={{margin:'5px 0 0',fontSize:13.5,color:'var(--mut)'}}>{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div></div>)}
+   </div>}
+  </main>
 
-        <div class="order-card">
-            <div class="order-card-header">
-                <div class="order-store-info">
-                    <div class="order-store-icon" style="background: #ffaa00;"><i class="fa-solid fa-layer-group"></i></div>
-                    <div class="order-store-name">Luxe Attire <i class="fa-solid fa-circle-check"></i></div>
-                </div>
-                <div class="order-status-badge">PLACED</div>
-            </div>
-            <div class="order-item-body">
-                <div class="order-item-img"><i class="fa-solid fa-shirt"></i></div>
-                <div class="order-item-details">
-                    <div class="order-item-name">Premium Cotton Hoo... <span class="order-item-qty">x1</span></div>
-                    <div class="order-item-time">Ordered: Yesterday</div>
-                </div>
-                <div class="order-item-price">KSH 12,500</div>
-            </div>
-        </div>
-
-        <div class="order-card">
-            <div class="order-card-header">
-                <div class="order-store-info">
-                    <div class="order-store-icon" style="background: #a855f7;"><i class="fa-solid fa-star"></i></div>
-                    <div class="order-store-name">Nova Beauty <i class="fa-solid fa-circle-check"></i></div>
-                </div>
-                <div class="order-status-badge">PLACED</div>
-            </div>
-            <div class="order-item-body">
-                <div class="order-item-img"><i class="fa-solid fa-pump-soap"></i></div>
-                <div class="order-item-details">
-                    <div class="order-item-name">HydraGlow Vitamin S... <span class="order-item-qty">x2</span></div>
-                    <div class="order-item-time">Ordered: 2 days ago</div>
-                </div>
-                <div class="order-item-price">KSH 6,800</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 4: ALERTS -->
-    <div id="tab-alerts" class="content-view">
-        <div class="alerts-header-row">
-            <div class="alerts-title">Recent Alerts</div>
-            <div class="alerts-action-icon" onclick="triggerAction('All marked read')"><i class="fa-solid fa-check-double"></i></div>
-        </div>
-
-        <div class="alert-card">
-            <div class="alert-icon-box"><i class="fa-solid fa-headphones"></i></div>
-            <div class="alert-body">
-                <div class="alert-text">CRITICAL: Apex Tech uploaded 3 high-demand items to live catalog</div>
-                <div class="alert-time">10 min ago</div>
-            </div>
-            <div class="alert-dot-indicator"></div>
-        </div>
-
-        <div class="alert-card">
-            <div class="alert-icon-box"><i class="fa-solid fa-shirt"></i></div>
-            <div class="alert-body">
-                <div class="alert-text">FLASH DROPS: Luxe Attire released an exclusive autumn stream lookbook</div>
-                <div class="alert-time">1 hour ago</div>
-            </div>
-            <div class="alert-dot-indicator"></div>
-        </div>
-
-        <div class="alert-card">
-            <div class="alert-icon-box"><i class="fa-solid fa-pump-soap"></i></div>
-            <div class="alert-body">
-                <div class="alert-text">PRICE DROP: Nova Beauty unlocked 20% off flash event on glow kits</div>
-                <div class="alert-time">5 hours ago</div>
-            </div>
-        </div>
-
-        <div class="alert-card">
-            <div class="alert-icon-box"><i class="fa-solid fa-droplet"></i></div>
-            <div class="alert-body">
-                <div class="alert-text">STOCK ALERT: Fresh Organic Vitality Pack successfully restocked</div>
-                <div class="alert-time">Yesterday</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation Bar -->
-    <div class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('inbox', this)">
-            <i class="fa-solid fa-comments"></i>
-            <span>Inbox</span>
-        </button>
-        <button class="nav-item" onclick="switchTab('discover', this)">
-            <i class="fa-solid fa-compass"></i>
-            <span>Discover</span>
-        </button>
-        <button class="nav-item" onclick="switchTab('orders', this)">
-            <i class="fa-solid fa-bag-shopping"></i>
-            <span>Orders</span>
-        </button>
-        <button class="nav-item" onclick="switchTab('alerts', this)">
-            <i class="fa-solid fa-bell"></i>
-            <span>Alerts</span>
-        </button>
-    </div>
-</div>
-
-<!-- Interactive Chat Modal Simulation -->
-<div id="chatModal" class="chat-modal">
-    <div class="chat-header">
-        <div class="chat-store-info">
-            <button class="chat-back-btn" onclick="closeChat()"><i class="fa-solid fa-arrow-left"></i></button>
-            <div class="chat-avatar" id="modalChatAvatar"><i class="fa-solid fa-bolt"></i></div>
-            <div class="chat-title-group">
-                <h3 id="modalChatTitle">Apex Tech <i class="fa-solid fa-circle-check"></i></h3>
-                <p>● Automated Store</p>
-            </div>
-        </div>
-        <button class="header-btn" onclick="triggerAction('More options')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-    </div>
-    <div class="chat-messages" id="chatMessagesContainer">
-        <div>
-            <div class="chat-bubble">Welcome to automated assistant! Browse our featured products below.</div>
-            <div class="chat-time-tag">Just now</div>
-        </div>
-        <div class="chat-product-preview">
-            <div class="cpp-top">
-                <span class="cpp-badge">Catalog</span>
-            </div>
-            <div class="cpp-img-box"><i class="fa-solid fa-headphones"></i></div>
-            <div class="cpp-title" id="chatProductName">Wireless Noise-Cancelling...</div>
-            <div class="cpp-desc">Hybrid ANC with 40h battery life.</div>
-            <div class="cpp-footer">
-                <div class="cpp-price" id="chatProductPrice">$149.99</div>
-                <button class="cpp-buy-btn" onclick="triggerAction('Buy Now')">Buy Now</button>
-            </div>
-        </div>
-    </div>
-    <div class="chat-input-area">
-        <button class="header-btn" style="background:none;"><i class="fa-solid fa-plus"></i></button>
-        <input type="text" id="chatInputText" placeholder="Type a message..." onkeypress="handleChatPress(event)">
-        <button class="chat-send-btn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<script>
-    function switchTab(tabName, btnElement) {
-        document.querySelectorAll('.content-view').forEach(view => {
-            view.classList.remove('active');
-        });
-        document.getElementById('tab-' + tabName).classList.add('active');
-
-        document.querySelectorAll('.nav-item').forEach(nav => {
-            nav.classList.remove('active');
-        });
-        btnElement.classList.add('active');
-    }
-
-    function openChat(storeName, color, iconClass) {
-        document.getElementById('modalChatTitle').innerHTML = storeName + ' <i class="fa-solid fa-circle-check"></i>';
-        const avatarBox = document.getElementById('modalChatAvatar');
-        avatarBox.style.background = color;
-        avatarBox.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
-        
-        document.getElementById('chatModal').style.display = 'flex';
-    }
-
-    function closeChat() {
-        document.getElementById('chatModal').style.display = 'none';
-    }
-
-    function toggleLike(btn) {
-        const icon = btn.querySelector('i');
-        if(icon.classList.contains('fa-regular')) {
-            icon.classList.remove('fa-regular');
-            icon.classList.add('fa-solid');
-            icon.style.color = '#ff3b30';
-        } else {
-            icon.classList.remove('fa-solid');
-            icon.classList.add('fa-regular');
-            icon.style.color = '#fff';
-        }
-    }
-
-    function triggerAction(actionName) {
-        alert(actionName + ' action triggered successfully!');
-    }
-
-    function sendChatMessage() {
-        const input = document.getElementById('chatInputText');
-        if(!input.value.trim()) return;
-        
-        const container = document.getElementById('chatMessagesContainer');
-        const userMsg = document.createElement('div');
-        userMsg.style.alignSelf = 'flex-end';
-        userMsg.innerHTML = `<div class="chat-bubble" style="background:#ff6a00; color:#fff;">${input.value}</div><div class="chat-time-tag" style="text-align:right;">Just now</div>`;
-        container.appendChild(userMsg);
-        
-        input.value = '';
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function handleChatPress(e) {
-        if(e.key === 'Enter') {
-            sendChatMessage();
-        }
-    }
+  <div className={'navw'+(d?' d':'')}><nav className="nav">
+   {nav.map(([k,l,Icon])=><button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><Icon/><span>{l}</span></button>)}
+  </nav></div>
+ </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
-
 </body>
 </html>
