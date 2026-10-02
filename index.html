@@ -296,6 +296,55 @@ h1{font-size:24px;margin-bottom:6px}
 .addp span{font-size:30px;font-weight:300;line-height:1}.addp small{font-size:11px;font-weight:700}
 .pk.on{box-shadow:0 0 0 3px var(--accent)}
 .pk .ck{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+
+/* ===== v2 tweaks ===== */
+.hdr{flex-shrink:0;position:relative;z-index:10}
+.pfwrap{flex:1;display:flex;flex-direction:column;min-height:0}
+.pstick{flex-shrink:0;padding:calc(env(safe-area-inset-top,0px) + 14px) 20px 10px;background:var(--bg);z-index:10;border-bottom:1px solid var(--line)}
+.pstick .seg2{margin:0 0 14px}
+.prow{display:flex;align-items:center;gap:18px}
+.pstick .pbig{width:76px;height:76px;margin:0;flex-shrink:0}
+.pstick .pbig i{font-size:32px}
+.pstick .stats{flex:1;margin:0}
+.pstick .stats b{font-size:18px}
+.pname{margin-top:12px!important;padding:10px 14px;text-align:left;font-weight:800;font-size:17px}
+.pname2{margin-top:10px}.pname2 h1{font-size:20px;margin:0}.pname2 .sub{margin:2px 0 0}
+.pscroll{padding-top:16px}
+/* full product image, clear of the Chat with Shop bar */
+.sl{height:540px;background:#0b0907}
+.sl img{inset:0 0 200px 0;height:calc(100% - 200px);object-fit:contain}
+.sl:before{background:linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 16%,transparent 100%)}
+.pinfo{left:20px;right:150px;bottom:90px}
+.pt{font-size:28px;line-height:1;margin:0 0 8px}
+.pp{font-size:20px}
+.rt{margin-top:4px}
+.perks{flex-direction:row;right:12px;bottom:92px;gap:0;padding:4px}
+.perk i{width:34px;height:34px;font-size:15px}
+/* ===== v3 profile upgrade ===== */
+.ava{position:relative;display:block;cursor:pointer}
+.ava i img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.pnl{display:flex;align-items:center;gap:10px;min-width:0}.pnl h1{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.opill{flex-shrink:0;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(34,224,122,.15);color:#16a34a}
+.opill.off{background:var(--surf2);color:var(--mut)}
+.ptabs{position:sticky;top:-16px;z-index:6;display:flex;gap:6px;margin:-16px -20px 16px;padding:12px 20px 10px;background:var(--bg)}
+.ptabs button{flex:1;padding:9px 6px;border-radius:99px;font-weight:700;font-size:13px;color:var(--mut);background:var(--surf);border:1px solid var(--line);transition:all .2s}
+.ptabs button.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--glow)}
+.chd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.lnk{color:var(--accent);font-weight:700;font-size:13px}
+.pc{font-size:13px;font-weight:800;color:var(--accent)}
+.prog{height:8px;border-radius:99px;background:var(--surf2);overflow:hidden}.prog i{display:block;height:100%;border-radius:99px;background:var(--grad);transition:width .4s}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--surf);border:1px solid var(--cardline);border-radius:18px;padding:14px;box-shadow:var(--card);display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .ke{font-size:18px}.kpi b{font-size:19px;font-weight:800;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.kpi span:last-child{font-size:12px;color:var(--mut)}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.qa button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;background:var(--surf);border:1px solid var(--line);font-size:11.5px;font-weight:700}
+.qa button span{font-size:20px}
+.frm .fr{padding:10px 0;border-bottom:1px solid var(--line)}.frm .fr:last-child{border-bottom:0}
+.fr label{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.fr .fi{margin-top:6px;resize:none}
+.fv{font-size:14.5px;font-weight:600;margin-top:3px;word-break:break-word}.fv.em{color:var(--mut);font-weight:500}
+.stc{flex-shrink:0;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--surf2);color:var(--accent)}
+.mu{color:var(--mut)}
 </style>
 </head>
 <body>
@@ -356,7 +405,7 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  const tap=()=>{const t=Date.now();if(t-last.current<300){if(!liked)onLike();setBurst(true);setTimeout(()=>setBurst(false),800)}last.current=t};
  const doFollow=()=>{if(f)return;onFollow();setSpark(true);setTimeout(()=>setGone(true),1700)};
  return <article className="post">
-  <div className="ph"><button className="pav" onClick={onStory}><i>{s.icon}</i></button>
+  <div className="ph"><button className="pav" onClick={onStory}><i>{s.avatar?<img src={s.avatar} alt="" style={{width:"100%",height:"100%",borderRadius:"50%",objectFit:"cover"}}/>:s.icon}</i></button>
    <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{s.custom?'Just now':si+2+'h ago'} · {s.tag}</div></div>
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}</div>
   <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
@@ -374,8 +423,11 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  </article>;
 }
 
-const readImg=f=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
-const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:370,borderRadius:34}}/></div>;
+const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
+const Ava=({src,emoji,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:emoji}</i><span className="plus">+</span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
+const Toggle=({label,sub,on,onClick})=><button className="row" style={{padding:'11px 0'}} onClick={onClick}><div className="grow"><div className="nm">{label}</div>{sub&&<div className="pv">{sub}</div>}</div><span className={'sw'+(on?' on':'')}/></button>;
+function Fields({rows,val,set,edit}){return <div className="frm">{rows.map(([k,l,ph,t])=><div key={k} className="fr"><label>{l}</label>{edit?(t==='area'?<textarea className="fi" rows={3} placeholder={ph} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>:<input className="fi" placeholder={ph} inputMode={t==='tel'?'tel':undefined} type={t==='email'?'email':'text'} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>):<div className={'fv'+(val[k]?'':' em')}>{val[k]||'Not added yet'}</div>}</div>)}</div>}
+const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:540,borderRadius:34}}/></div>;
 const SEED=[['amina_k','Love this! 😍'],['brian.o','Do you deliver to Kisumu?'],['wanjiru','Those colours are 🔥']];
 
 function App(){
@@ -393,8 +445,13 @@ function App(){
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
  const [fol,setFol]=useState({}),[toast,setToast]=useState('');
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
- const [mode,setMode]=useState('client'),[shop,setShop]=useState(init.shop||{name:'My Shop',icon:'🏪'}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
+ const [mode,setMode]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts}))}catch(e){}},[shop,photos,myPosts]);
+ const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
+ useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
+ const [ptab,setPtab]=useState('dash'),[edShop,setEdShop]=useState(false),[edMe,setEdMe]=useState(false);
+ const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
+ const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
  const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
@@ -445,8 +502,13 @@ function App(){
  const brand=<div className="brand">Te<b>Q</b>x</div>;
  const nav=[['discover','Discover',Ic.Discover],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
+ const dash={likes:myPosts.reduce((a,p)=>a+842+(liked[p.id]?1:0),0),cm:myPosts.reduce((a,p)=>a+12+(cmts[p.id]||[]).length,0),val:myPosts.reduce((a,p)=>a+p.price,0)};
+ const checks=[['Add a shop photo',!!shop.avatar,'info'],['Write a short bio',!!shop.bio,'info'],['Choose a category',!!shop.cat,'info'],['Add a contact number',!!shop.phone,'info'],['Add your location',!!shop.loc,'info'],['Set opening hours',!!shop.hours,'info'],['Upload product photos',photos.length>0,'store'],['Publish your first post',myPosts.length>0,'store']];
+ const pct=Math.round(checks.filter(c=>c[1]).length/checks.length*100);
+ const SHOPROWS=[['name','Shop name','e.g. Zuri Fashions'],['cat','Category','e.g. Fashion & accessories'],['bio','About the shop','Tell customers what you sell','area'],['phone','Phone / WhatsApp','+254 7XX XXX XXX','tel'],['loc','Location','e.g. Westlands, Nairobi'],['hours','Opening hours','e.g. Mon–Sat, 8am–7pm'],['deliv','Delivery info','e.g. Nairobi same-day, countrywide in 2 days'],['till','M-Pesa till / paybill','e.g. Till 123456']];
+ const MEROWS=[['name','Full name','Your name'],['user','Username','username'],['phone','Phone number','+254 7XX XXX XXX','tel'],['email','Email','you@example.com','email'],['loc','Delivery address','e.g. Kilimani, Nairobi'],['mpesa','M-Pesa number','+254 7XX XXX XXX','tel'],['bio','Bio','A line about you','area']];
  return <div className="app">
-  {!(tab==='inbox'&&chat)&&tab!=='profile'&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search" onClick={()=>setSearch(true)}><Ic.Search/></button>}</div></div>{d?<div className="tagl">Discover Shops</div>:<p className="sub">{TAG[tab]}</p>}</header>}
+  {!(tab==='inbox'&&chat)&&tab!=='profile'&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search" onClick={()=>setSearch(true)}><Ic.Search/></button>}</div></div>{d?<div className="tagl">Explore shopping</div>:<p className="sub">{TAG[tab]}</p>}</header>}
   <main>
    {tab==='inbox'&&<>
     <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
@@ -471,12 +533,8 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<div className="page" style={{padding:'0 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
-    <div className="hs stories stk">
-     <button className="story"><div className="ring"><i>🙂</i><span className="plus">+</span></div><span>Your story</span></button>
-     {STORES.map((s,i)=><button key={s.id} className="story" onClick={()=>openStory(i)}><div className={'ring'+(seen[s.id]?' seen':'')}><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}
-    </div>
-    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}}/>})}{STORES.map((s,si)=><Post key={s.id} cc={56+si*9+(cmts[s.id]||[]).length} onComment={()=>setCm(s.id)} onStory={()=>openStory(si)} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}</>}
+   {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}}/>})}{STORES.map((s,si)=><Post key={s.id} cc={56+si*9+(cmts[s.id]||[]).length} onComment={()=>setCm(s.id)} onStory={()=>openStory(si)} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}</>}
    </div>}
 
    {tab==='orders'&&<div className="page">
@@ -488,11 +546,30 @@ function App(){
     {STORES.map((s,i)=><div key={s.id} className="card tapc" onClick={()=>{setReadA(r=>({...r,[s.id]:true}));i%2===0?open(s):setTab('discover')}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{s.icon}</span><span>{s.name}</span><Verified s={15}/></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!readA[s.id]&&<span className="udot"/>}<span className="st mu">{i+2}h ago</span></span></div>
      <p className="bd">{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div>)}
    </div>}
-   {tab==='profile'&&<div className="page">
-    <div className="seg2"><button className={mode==='client'?'on':''} onClick={()=>setMode('client')}>Client</button><button className={mode==='shop'?'on':''} onClick={()=>setMode('shop')}>Shop</button></div>
+   {tab==='profile'&&<div className="pfwrap">
+    <div className="pstick">
+     <div className="seg2"><button className={mode==='client'?'on':''} onClick={()=>setMode('client')}>Client</button><button className={mode==='shop'?'on':''} onClick={()=>setMode('shop')}>Shop</button></div>
+     {mode==='shop'?<>
+      <div className="prow"><Ava src={shop.avatar} emoji={shop.icon} label="Change shop photo" onPick={pickAva(setShop)}/><div className="stats"><div><b>{myPosts.length}</b><span>Posts</span></div><div><b>0</b><span>Followers</span></div><div><b>{photos.length}</b><span>Photos</span></div></div></div>
+      <div className="pname2"><div className="pnl"><h1>{shop.name||'My Shop'}</h1><span className={'opill'+(shop.open?'':' off')}>{shop.open?'● Open':'● Closed'}</span></div><p className="sub">{[shop.cat,shop.loc].filter(Boolean).join(' · ')||'Add your category and location in Details'}</p></div>
+     </>:<>
+      <div className="prow"><Ava src={me.avatar} emoji="🙂" label="Change profile photo" onPick={pickAva(setMe)}/><div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div></div>
+      <div className="pname2"><div className="pnl"><h1>{me.name||'Your Profile'}</h1></div><p className="sub">@{me.user||'you'}{me.loc?' · '+me.loc:''}</p></div>
+     </>}
+    </div>
+    <div className="page pscroll">
     {mode==='shop'&&<>
-     <div style={{textAlign:'center'}}><div className="pbig"><i>{shop.icon}</i></div><input className="fi" style={{textAlign:'center',fontWeight:800,fontSize:20,marginTop:0}} value={shop.name} onChange={e=>setShop(v=>({...v,name:e.target.value}))} aria-label="Shop name"/><p className="sub" style={{margin:'8px 0 0'}}>Shop mode · your digital store</p></div>
-     <div className="stats"><div><b>{photos.length}</b><span>Photos</span></div><div><b>{myPosts.length}</b><span>Posts</span></div></div>
+     <div className="ptabs">{[['dash','Dashboard'],['store','Products'],['info','Details']].map(([k,l])=><button key={k} className={ptab===k?'on':''} onClick={()=>setPtab(k)}>{l}</button>)}</div>
+     {ptab==='dash'&&<>
+      <div className="card"><div className="chd"><div className="nm">Store setup</div><span className="pc">{pct}%</span></div><div className="prog"><i style={{width:pct+'%'}}/></div>
+       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>{setPtab(c[2]);if(c[2]==='info')setEdShop(true)}}>{c[0]}</button>)}</div></>:<p className="bd" style={{margin:'10px 0 0'}}>Your store profile is complete ✓</p>}</div>
+      <div className="sect" style={{padding:'4px 2px 8px'}}>Overview</div>
+      <div className="kpis">{[['💰','Revenue',ksh(0)],['📦','Orders','0'],['📝','Posts',myPosts.length],['❤️','Likes',dash.likes.toLocaleString()],['💬','Comments',dash.cm],['🏷️','Catalog value',ksh(dash.val)]].map(([e,l,v])=><div key={l} className="kpi"><span className="ke">{e}</span><b>{v}</b><span>{l}</span></div>)}</div>
+      <div className="qa"><button onClick={()=>setPtab('store')}><span>📸</span>Add photos</button><button onClick={()=>setPtab('store')}><span>✍️</span>New post</button><button onClick={()=>setTab('discover')}><span>👀</span>View feed</button><button onClick={shareShop}><span>🔗</span>Share shop</button></div>
+      <div className="card"><div className="nm" style={{marginBottom:6}}>Recent posts</div>
+       {myPosts.length?myPosts.slice(0,5).map(p=><div key={p.id} className="row" style={{padding:'9px 0'}}><img className="av" style={{objectFit:'cover',width:46,height:46}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">❤ {(842+(liked[p.id]?1:0)).toLocaleString()} · 💬 {12+(cmts[p.id]||[]).length} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><div className="nm" style={{fontSize:13}}>{ksh(p.price)}</div></div>):<p className="bd" style={{margin:0}}>No posts yet. Publish your first product from the Products tab.</p>}</div>
+     </>}
+     {ptab==='store'&&<>
      <div className="card"><div className="nm" style={{marginBottom:12}}>Digital store photos</div>
       <div className="pg"><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPhotos}/></label>
        {photos.map(p=><div key={p.id} className="pt3"><img src={p.src} alt=""/><button className="x" aria-label="Delete photo" onClick={()=>delPhoto(p.id)}>×</button></div>)}</div>
@@ -504,14 +581,34 @@ function App(){
       <input className="fi" placeholder="Caption" value={pf.cap} onChange={e=>setPf(v=>({...v,cap:e.target.value}))}/>
       <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.6}} onClick={publish}>Publish post{sel.length?` (${sel.length} photo${sel.length>1?'s':''})`:''}</button></div>
      {myPosts.length>0&&<div className="card"><div className="nm" style={{marginBottom:8}}>Your posts</div>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</div>}
+     </>}
+     {ptab==='info'&&<>
+      <div className="card"><div className="chd"><div className="nm">Shop information</div><button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button></div>
+       <Fields rows={SHOPROWS} val={shop} edit={edShop} set={(k,v)=>setShop(x=>({...x,[k]:v}))}/>
+       {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}</div>
+      <div className="card"><div className="nm" style={{marginBottom:2}}>Store settings</div>
+       <Toggle label="Open for orders" sub={shop.open?'Customers can chat and order now':'Shown as closed on your profile'} on={shop.open} onClick={()=>setShop(x=>({...x,open:!x.open}))}/>
+       <Toggle label="Order notifications" sub="Get alerted when customers message you" on={shop.notif} onClick={()=>setShop(x=>({...x,notif:!x.notif}))}/>
+       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/></div>
+      <button className="btn" style={{marginBottom:18}} onClick={shareShop}>Share your shop</button>
+     </>}
     </>}
     {mode==='client'&&<>
-    <div style={{textAlign:'center'}}><div className="pbig"><i>🙂</i></div><h1 style={{marginBottom:2}}>Your Profile</h1><p className="sub" style={{margin:0}}>@you · Nairobi, Kenya</p></div>
-    <div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div>
-    <div className="card"><button className="row" style={{padding:0}} onClick={()=>setDark(!dark)}><div className="grow nm">Dark mode</div><span style={{display:'flex',alignItems:'center',gap:8,color:'var(--mut)',fontSize:13}}>{dark?<Ic.Moon/>:<Ic.Sun/>}{dark?'Dark':'Light'}</span><span className={'sw'+(dark?' on':'')}/></button></div>
-    <div className="card"><div className="nm" style={{marginBottom:8}}>Following</div>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</div><div className="card"><div className="nm" style={{marginBottom:8}}>Saved</div>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</div><div className="card"><div className="nm">Payment methods</div><p className="bd" style={{marginTop:4}}>M-Pesa · Cash on delivery</p></div>
-    <div className="card"><div className="nm">Delivery address</div><p className="bd" style={{marginTop:4}}>Nairobi, Kenya</p></div>
+     <div className="card"><div className="chd"><div className="nm">Personal details</div><button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button></div>
+      <Fields rows={MEROWS} val={me} edit={edMe} set={(k,v)=>setMe(x=>({...x,[k]:v}))}/>
+      {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}</div>
+     <div className="card"><div className="chd"><div className="nm">Recent orders</div>{orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}</div>
+      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{o.store.icon}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</div>
+     <div className="card"><div className="nm" style={{marginBottom:8}}>Following</div>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</div>
+     <div className="card"><div className="nm" style={{marginBottom:8}}>Saved</div>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</div>
+     <div className="card"><div className="nm" style={{marginBottom:2}}>Payment</div><p className="bd" style={{margin:'0 0 4px'}}>M-Pesa · Cash on delivery</p></div>
+     <div className="card"><div className="nm" style={{marginBottom:2}}>Preferences</div>
+      <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/>
+      <Toggle label="Notifications" sub="Order updates and new arrivals from shops you follow" on={me.notif} onClick={()=>setMe(x=>({...x,notif:!x.notif}))}/></div>
+     <div className="card"><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Help centre coming soon')}><div className="grow nm">Help centre</div><span className="mu">›</span></button><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Privacy settings coming soon')}><div className="grow nm">Privacy &amp; security</div><span className="mu">›</span></button></div>
     </>}
+    <p className="bd" style={{textAlign:'center',margin:'4px 0 0',color:'var(--mut)'}}>TeQx · Chat, Discover, Shop</p>
+    </div>
    </div>}
   </main>
   {search&&<div className="ov"><div className="sbar"><Ic.Search/><input autoFocus placeholder="Search shops & products" value={q} onChange={e=>setQ(e.target.value)}/><button onClick={()=>{setSearch(false);setQ('')}}>Cancel</button></div>
