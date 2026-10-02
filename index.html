@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap');
-:root{--green:linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%);--gglow:0 6px 16px rgba(18,192,98,.4);--grad:linear-gradient(135deg,#ff5a1f 0%,#f03a12 50%,#c8200c 100%);--accent:#f03a12;--glow:0 6px 18px rgba(240,58,18,.42)}
+:root{--green:linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%);--gglow:0 6px 16px rgba(18,192,98,.4);--grad:linear-gradient(135deg,#ff8c1a 0%,#ff6a00 50%,#e04a00 100%);--accent:#ff6a00;--glow:0 6px 18px rgba(255,106,0,.42)}
 [data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.1);--nav:#1a1a20;--shadow:0 10px 34px rgba(0,0,0,.7),0 2px 8px rgba(0,0,0,.5);--card:0 6px 20px rgba(0,0,0,.35);--cardline:rgba(255,255,255,.1)}
 [data-theme=light]{--bg:#faf7f4;--surf:#fff;--surf2:#f3eee9;--text:#17120e;--mut:#6f655c;--line:rgba(30,20,10,.09);--nav:#fff;--shadow:0 -4px 24px rgba(40,25,10,.08),0 8px 24px rgba(40,25,10,.14);--card:0 6px 20px rgba(40,25,10,.1);--cardline:rgba(30,20,10,.12)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -83,7 +83,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .send{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;box-shadow:var(--glow);flex-shrink:0}
 .card{background:var(--surf);border:1px solid var(--cardline);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--card)}
 .ch{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:4px}
-.st{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:99px;background:rgba(240,58,18,.14);color:var(--accent)}
+.st{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:99px;background:rgba(255,106,0,.14);color:var(--accent)}
 .st.ok{background:rgba(18,192,98,.15);color:#0fb85b}
 .st.mu{background:var(--surf2);color:var(--mut)}
 .bd{font-size:13.5px;color:var(--mut);margin:0;line-height:1.55}
@@ -98,7 +98,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .dtop>*{pointer-events:auto}
 .dtop .ico{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(14px)}
 .live{position:absolute;z-index:6;top:calc(env(safe-area-inset-top,0px) + 26px);left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#fff;display:flex;gap:6px;align-items:center;pointer-events:none;opacity:.9}
-.live:before{content:"";width:6px;height:6px;border-radius:50%;background:#f03a12;box-shadow:0 0 10px #f03a12}
+.live:before{content:"";width:6px;height:6px;border-radius:50%;background:#ff6a00;box-shadow:0 0 10px #ff6a00}
 .dots{position:absolute;z-index:6;left:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px}
 .dots i{width:4px;height:4px;border-radius:99px;background:rgba(255,255,255,.4);transition:all .25s}
 .dots i.on{height:20px;background:var(--grad)}
@@ -121,7 +121,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .navw.d{position:absolute;left:0;right:0;bottom:0}
 .navw.d .nav{background:rgba(20,20,24,.55);backdrop-filter:blur(22px);border-color:rgba(255,255,255,.18)}
 .nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;color:#98a2b8;font-size:11.5px;font-weight:600;transition:color .2s,transform .15s}
-.nav button.act{color:#ff4a1a}
+.nav button.act{color:#ff6a00}
 .nav button:active{transform:scale(.94)}
 
 .post{margin:0 0 22px;border-radius:28px;background:var(--surf);box-shadow:var(--card);overflow:hidden}
@@ -159,22 +159,22 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .plus{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:800;border:2.5px solid var(--bg);font-size:14px;line-height:1}
 
 /* ===== HIGH-END DISCOVER ===== */
-[data-theme=dark]{--gold:#ff6a3d}[data-theme=light]{--gold:#d8300c}
+[data-theme=dark]{--gold:#ff8a2b}[data-theme=light]{--gold:#e05a00}
 .hdr{padding-bottom:6px}
 .brand{font-size:28px;letter-spacing:-.04em}
 .stories{padding:6px 20px 18px}
-.ring{width:66px;height:66px;padding:2px;background:conic-gradient(from 210deg,#ff7a3d,#e8310f,#b81d0a,#ff5a1f,#ff7a3d);box-shadow:0 6px 18px rgba(240,58,18,.32)}
+.ring{width:66px;height:66px;padding:2px;background:conic-gradient(from 210deg,#ffa133,#ff6a00,#e04a00,#ff8c1a,#ffa133);box-shadow:0 6px 18px rgba(255,106,0,.32)}
 .ring i{border:3px solid var(--bg)}
 .story span{font-size:11.5px;font-weight:600;color:var(--mut);letter-spacing:.01em}
 .post{margin:0 0 30px;background:transparent;box-shadow:none;border-radius:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 .ph{padding:0 6px 12px}
-.pav{width:44px;height:44px;padding:1.5px;background:conic-gradient(from 210deg,#ff7a3d,#d8300c,#ff7a3d)}
+.pav{width:44px;height:44px;padding:1.5px;background:conic-gradient(from 210deg,#ffa133,#e05a00,#ffa133)}
 .fol{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px}
 .fol.on{background:var(--grad);border-color:transparent;color:#fff}
 .pcap{padding:0 6px 14px;color:var(--mut);font-size:13.5px;line-height:1.55}.pcap b{color:var(--text)}
 .pm{margin:0;border-radius:34px;box-shadow:0 24px 50px -12px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.07)}
-.sl{height:470px}
+.sl{height:420px}
 .sl:before{background:linear-gradient(180deg,rgba(0,0,0,.5) 0,transparent 22%,transparent 40%,rgba(8,6,4,.55) 66%,rgba(8,6,4,.95) 100%)}
 .badge{top:18px;left:18px;font-size:10px;letter-spacing:.18em;font-weight:700;padding:7px 13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(16px)}
 .shopchip{position:absolute;z-index:3;top:18px;right:18px;font-size:11px;font-weight:600;color:#fff;padding:7px 13px;border-radius:99px;background:rgba(0,0,0,.35);backdrop-filter:blur(16px);display:none}
@@ -184,21 +184,21 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .pinfo{left:22px;bottom:96px;right:84px}
 .pt{font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;line-height:.98;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
 .pp{font-size:22px;font-weight:700;letter-spacing:.01em;background:linear-gradient(135deg,#8dffbd 0%,#2be67f 45%,#0fbf5f 100%);filter:drop-shadow(0 2px 10px rgba(30,230,120,.35));-webkit-background-clip:text;background-clip:text;color:transparent}
-.rt{font-size:12px;letter-spacing:.04em;margin-top:6px;color:rgba(255,255,255,.75)}.rt b{color:#ff7a45;letter-spacing:0}
+.rt{font-size:12px;letter-spacing:.04em;margin-top:6px;color:rgba(255,255,255,.75)}.rt b{color:#ff9a3d;letter-spacing:0}
 .perks{right:14px;bottom:100px;flex-direction:column;gap:2px;padding:6px;border-radius:99px;background:rgba(255,255,255,.1);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.2)}
 .perk{width:auto}.perk i{background:transparent;border:0;width:38px;height:38px;font-size:16px}
 .cta{left:14px;right:14px;bottom:14px;padding:6px;border-radius:99px;background:rgba(14,12,10,.5);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.16);gap:6px}
 .cta button{padding:15px 8px;font-size:15px;letter-spacing:.02em}
 .cta .g{background:transparent;border:0}
-.cta .o{box-shadow:0 8px 24px rgba(240,58,18,.5)}
+.cta .o{box-shadow:0 8px 24px rgba(255,106,0,.5)}
 .acts{padding:16px 6px 4px;gap:22px;color:var(--text)}
 .hashes{padding:6px 6px 0;line-height:1.7}.hashes b{font-weight:700}.hashes u{color:var(--gold)}
 
 .folw{position:relative}
 .folw.out{animation:fadeout .5s ease 1.2s forwards}
 @keyframes fadeout{to{opacity:0;transform:scale(.85)}}
-.sp{position:absolute;left:50%;top:50%;font-size:11px;color:#ff7a3d;pointer-events:none;opacity:0;animation:spk .9s ease-out forwards;text-shadow:0 0 8px rgba(255,90,31,.9)}
-.sp:nth-child(odd){color:#ffb08a}
+.sp{position:absolute;left:50%;top:50%;font-size:11px;color:#ff9a3d;pointer-events:none;opacity:0;animation:spk .9s ease-out forwards;text-shadow:0 0 8px rgba(255,120,20,.9)}
+.sp:nth-child(odd){color:#ffc98a}
 @keyframes spk{0%{opacity:1;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) scale(.4)}60%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(-1*var(--d))) scale(1.2)}}
 .sw{width:46px;height:28px;border-radius:99px;background:var(--surf2);position:relative;transition:background .25s;flex-shrink:0}
 .sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
@@ -273,7 +273,7 @@ function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
    <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
    <div className="cta"><button className="o" onClick={onChat}><Ic.Cart/>Shop Now</button></div>
   </div>
-  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onChat}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff5a1f'}:null}><Ic.Mark on={saved}/></button></div>
+  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onChat}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
   <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
  </article>;
 }
