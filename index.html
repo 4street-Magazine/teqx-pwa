@@ -345,6 +345,33 @@ h1{font-size:24px;margin-bottom:6px}
 .fv{font-size:14.5px;font-weight:600;margin-top:3px;word-break:break-word}.fv.em{color:var(--mut);font-weight:500}
 .stc{flex-shrink:0;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--surf2);color:var(--accent)}
 .mu{color:var(--mut)}
+/* ===== v4: compact post media + light mode + accordions ===== */
+.pm{background:var(--surf);border:1px solid var(--cardline);border-radius:28px;box-shadow:var(--card)}
+[data-theme=dark] .pm{box-shadow:0 18px 40px -16px rgba(0,0,0,.6)}
+.pmi{position:relative;background:var(--surf2)}
+.sl{height:auto;min-height:220px;display:flex;align-items:center;justify-content:center;background:var(--surf2)}
+.sl .bg{position:absolute;inset:-24px;background-size:cover;background-position:center;filter:blur(24px) saturate(1.15);transform:scale(1.1);opacity:.9}
+.sl:before{height:80px;bottom:auto;background:linear-gradient(180deg,rgba(0,0,0,.4),transparent)}
+.sl img{position:relative;inset:auto;z-index:1;display:block;width:100%;height:auto;max-height:320px;object-fit:contain}
+.pfoot{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;background:var(--surf)}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pinfo{position:static;flex:1;min-width:0}
+.pt{color:var(--text);text-shadow:none;font-size:24px;line-height:1.05;margin:0 0 6px}
+.pmeta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pp{font-size:19px}
+.rt{margin:0;color:var(--mut);font-size:12.5px}.rt b{color:#f59e0b}
+[data-theme=light] .pp{background:linear-gradient(135deg,#12b562,#07803d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:none}
+.pfoot .perks{position:static;flex-direction:row;gap:2px;padding:0;background:none;border:0;backdrop-filter:none}
+.pfoot .perk i{width:32px;height:32px;font-size:16px;background:var(--surf2);border-radius:50%}
+.pfoot .cta{position:static;padding:0;background:none;border:0;backdrop-filter:none;border-radius:0}
+.pfoot .cta button{padding:13px 8px;font-size:14.5px}
+/* accordion */
+.acc{padding:0;overflow:hidden}
+.acch{display:flex;align-items:center;gap:10px;padding:16px 18px;cursor:pointer;user-select:none}
+.acch .chev{flex-shrink:0;color:var(--mut);transition:transform .25s}
+.acc.open .acch .chev{transform:rotate(180deg)}
+.accb{padding:0 18px 16px;animation:pop .22s ease}
+.acc.open .acch{padding-bottom:10px}
 </style>
 </head>
 <body>
@@ -410,13 +437,17 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}</div>
   <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
   <div className="pm" onClick={tap}>{burst&&<div className="burst">❤️</div>}
-   <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
-    {COL[s.id].map((c,i)=><div key={i} className="sl"><img src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:s.custom?'none':FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>)}
+   <div className="pmi">
+    <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
+     {COL[s.id].map((c,i)=>{const src=(s.imgs&&s.imgs[i])||s.img;return <div key={i} className="sl"><i className="bg" style={{backgroundImage:`url("${src}")`}}/><img src={src} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:s.custom?'none':FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>})}
+    </div>
+    <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{COL[s.id].map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    </div>
-   <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{COL[s.id].map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
-   <div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pp">{ksh(s.prods[0][1])}</div><div className="rt"><b>★</b>  {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</div></div>
-   <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
-   <div className="cta" onClick={e=>e.stopPropagation()}><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
+   <div className="pfoot" onClick={e=>e.stopPropagation()}>
+    <div className="ptop"><div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pmeta"><span className="pp">{ksh(s.prods[0][1])}</span><span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
+     <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div></div>
+    <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
+   </div>
   </div>
   <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
   <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
@@ -427,7 +458,8 @@ const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()
 const Ava=({src,emoji,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:emoji}</i><span className="plus">+</span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
 const Toggle=({label,sub,on,onClick})=><button className="row" style={{padding:'11px 0'}} onClick={onClick}><div className="grow"><div className="nm">{label}</div>{sub&&<div className="pv">{sub}</div>}</div><span className={'sw'+(on?' on':'')}/></button>;
 function Fields({rows,val,set,edit}){return <div className="frm">{rows.map(([k,l,ph,t])=><div key={k} className="fr"><label>{l}</label>{edit?(t==='area'?<textarea className="fi" rows={3} placeholder={ph} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>:<input className="fi" placeholder={ph} inputMode={t==='tel'?'tel':undefined} type={t==='email'?'email':'text'} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>):<div className={'fv'+(val[k]?'':' em')}>{val[k]||'Not added yet'}</div>}</div>)}</div>}
-const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:540,borderRadius:34}}/></div>;
+function Acc({title,badge,action,open:o=false,children}){const [v,setV]=useState(o);return <div className={'card acc'+(v?' open':'')}><div className="acch" role="button" tabIndex={0} aria-expanded={v} onClick={()=>setV(!v)} onKeyDown={e=>(e.key==='Enter'||e.key===' ')&&setV(!v)}><div className="nm grow">{title}</div>{badge}{v&&action&&<span onClick={e=>e.stopPropagation()}>{action}</span>}<svg className="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>{v&&<div className="accb">{children}</div>}</div>}
+const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:440,borderRadius:28}}/></div>;
 const SEED=[['amina_k','Love this! 😍'],['brian.o','Do you deliver to Kisumu?'],['wanjiru','Those colours are 🔥']];
 
 function App(){
@@ -561,51 +593,50 @@ function App(){
     {mode==='shop'&&<>
      <div className="ptabs">{[['dash','Dashboard'],['store','Products'],['info','Details']].map(([k,l])=><button key={k} className={ptab===k?'on':''} onClick={()=>setPtab(k)}>{l}</button>)}</div>
      {ptab==='dash'&&<>
-      <div className="card"><div className="chd"><div className="nm">Store setup</div><span className="pc">{pct}%</span></div><div className="prog"><i style={{width:pct+'%'}}/></div>
-       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>{setPtab(c[2]);if(c[2]==='info')setEdShop(true)}}>{c[0]}</button>)}</div></>:<p className="bd" style={{margin:'10px 0 0'}}>Your store profile is complete ✓</p>}</div>
-      <div className="sect" style={{padding:'4px 2px 8px'}}>Overview</div>
-      <div className="kpis">{[['💰','Revenue',ksh(0)],['📦','Orders','0'],['📝','Posts',myPosts.length],['❤️','Likes',dash.likes.toLocaleString()],['💬','Comments',dash.cm],['🏷️','Catalog value',ksh(dash.val)]].map(([e,l,v])=><div key={l} className="kpi"><span className="ke">{e}</span><b>{v}</b><span>{l}</span></div>)}</div>
+      <Acc open title="Store setup" badge={<span className="pc">{pct}%</span>}><div className="prog"><i style={{width:pct+'%'}}/></div>
+       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>{setPtab(c[2]);if(c[2]==='info')setEdShop(true)}}>{c[0]}</button>)}</div></>:<p className="bd" style={{margin:'10px 0 0'}}>Your store profile is complete ✓</p>}</Acc>
+      <Acc open title="Overview"><div className="kpis" style={{marginBottom:0}}>{[['💰','Revenue',ksh(0)],['📦','Orders','0'],['📝','Posts',myPosts.length],['❤️','Likes',dash.likes.toLocaleString()],['💬','Comments',dash.cm],['🏷️','Catalog value',ksh(dash.val)]].map(([e,l,v])=><div key={l} className="kpi"><span className="ke">{e}</span><b>{v}</b><span>{l}</span></div>)}</div></Acc>
       <div className="qa"><button onClick={()=>setPtab('store')}><span>📸</span>Add photos</button><button onClick={()=>setPtab('store')}><span>✍️</span>New post</button><button onClick={()=>setTab('discover')}><span>👀</span>View feed</button><button onClick={shareShop}><span>🔗</span>Share shop</button></div>
-      <div className="card"><div className="nm" style={{marginBottom:6}}>Recent posts</div>
-       {myPosts.length?myPosts.slice(0,5).map(p=><div key={p.id} className="row" style={{padding:'9px 0'}}><img className="av" style={{objectFit:'cover',width:46,height:46}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">❤ {(842+(liked[p.id]?1:0)).toLocaleString()} · 💬 {12+(cmts[p.id]||[]).length} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><div className="nm" style={{fontSize:13}}>{ksh(p.price)}</div></div>):<p className="bd" style={{margin:0}}>No posts yet. Publish your first product from the Products tab.</p>}</div>
+      <Acc title="Recent posts" badge={<span className="pc">{myPosts.length}</span>}>
+       {myPosts.length?myPosts.slice(0,5).map(p=><div key={p.id} className="row" style={{padding:'9px 0'}}><img className="av" style={{objectFit:'cover',width:46,height:46}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">❤ {(842+(liked[p.id]?1:0)).toLocaleString()} · 💬 {12+(cmts[p.id]||[]).length} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><div className="nm" style={{fontSize:13}}>{ksh(p.price)}</div></div>):<p className="bd" style={{margin:0}}>No posts yet. Publish your first product from the Products tab.</p>}</Acc>
      </>}
      {ptab==='store'&&<>
-     <div className="card"><div className="nm" style={{marginBottom:12}}>Digital store photos</div>
+     <Acc open title="Digital store photos" badge={<span className="pc">{photos.length}</span>}>
       <div className="pg"><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPhotos}/></label>
        {photos.map(p=><div key={p.id} className="pt3"><img src={p.src} alt=""/><button className="x" aria-label="Delete photo" onClick={()=>delPhoto(p.id)}>×</button></div>)}</div>
-      {!photos.length&&<p className="bd" style={{marginTop:12}}>Upload product photos to build your store.</p>}</div>
-     <div className="card"><div className="nm">Create a post</div><p className="bd" style={{margin:'4px 0 12px'}}>Tap photos to include them, in the order people will swipe.</p>
+      {!photos.length&&<p className="bd" style={{marginTop:12}}>Upload product photos to build your store.</p>}</Acc>
+     <Acc open title="Create a post"><p className="bd" style={{margin:'0 0 12px'}}>Tap photos to include them, in the order people will swipe.</p>
       {photos.length?<div className="hs" style={{gap:10}}>{photos.map(p=>{const k=sel.indexOf(p.id);return <button key={p.id} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setSel(v=>k>-1?v.filter(x=>x!==p.id):[...v,p.id])}><img src={p.src} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>:<p className="bd">Add photos to your store first.</p>}
       <input className="fi" placeholder="Product name" value={pf.name} onChange={e=>setPf(v=>({...v,name:e.target.value}))}/>
       <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={pf.price} onChange={e=>setPf(v=>({...v,price:e.target.value}))}/>
       <input className="fi" placeholder="Caption" value={pf.cap} onChange={e=>setPf(v=>({...v,cap:e.target.value}))}/>
-      <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.6}} onClick={publish}>Publish post{sel.length?` (${sel.length} photo${sel.length>1?'s':''})`:''}</button></div>
-     {myPosts.length>0&&<div className="card"><div className="nm" style={{marginBottom:8}}>Your posts</div>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</div>}
+      <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.6}} onClick={publish}>Publish post{sel.length?` (${sel.length} photo${sel.length>1?'s':''})`:''}</button></Acc>
+     {myPosts.length>0&&<Acc title="Your posts" badge={<span className="pc">{myPosts.length}</span>}>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</Acc>}
      </>}
      {ptab==='info'&&<>
-      <div className="card"><div className="chd"><div className="nm">Shop information</div><button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button></div>
+      <Acc open title="Shop information" action={<button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button>}>
        <Fields rows={SHOPROWS} val={shop} edit={edShop} set={(k,v)=>setShop(x=>({...x,[k]:v}))}/>
-       {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}</div>
-      <div className="card"><div className="nm" style={{marginBottom:2}}>Store settings</div>
+       {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}</Acc>
+      <Acc title="Store settings">
        <Toggle label="Open for orders" sub={shop.open?'Customers can chat and order now':'Shown as closed on your profile'} on={shop.open} onClick={()=>setShop(x=>({...x,open:!x.open}))}/>
        <Toggle label="Order notifications" sub="Get alerted when customers message you" on={shop.notif} onClick={()=>setShop(x=>({...x,notif:!x.notif}))}/>
-       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/></div>
+       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/></Acc>
       <button className="btn" style={{marginBottom:18}} onClick={shareShop}>Share your shop</button>
      </>}
     </>}
     {mode==='client'&&<>
-     <div className="card"><div className="chd"><div className="nm">Personal details</div><button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button></div>
+     <Acc open title="Personal details" action={<button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button>}>
       <Fields rows={MEROWS} val={me} edit={edMe} set={(k,v)=>setMe(x=>({...x,[k]:v}))}/>
-      {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}</div>
-     <div className="card"><div className="chd"><div className="nm">Recent orders</div>{orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}</div>
-      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{o.store.icon}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</div>
-     <div className="card"><div className="nm" style={{marginBottom:8}}>Following</div>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</div>
-     <div className="card"><div className="nm" style={{marginBottom:8}}>Saved</div>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</div>
-     <div className="card"><div className="nm" style={{marginBottom:2}}>Payment</div><p className="bd" style={{margin:'0 0 4px'}}>M-Pesa · Cash on delivery</p></div>
-     <div className="card"><div className="nm" style={{marginBottom:2}}>Preferences</div>
+      {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}</Acc>
+     <Acc title="Recent orders" badge={<span className="pc">{orders.length}</span>} action={orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}>
+      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{o.store.icon}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</Acc>
+     <Acc title="Following" badge={<span className="pc">{Object.values(fol).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</Acc>
+     <Acc title="Saved" badge={<span className="pc">{Object.values(saved).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</Acc>
+     <Acc title="Payment"><p className="bd" style={{margin:0}}>M-Pesa · Cash on delivery</p></Acc>
+     <Acc title="Preferences">
       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/>
-      <Toggle label="Notifications" sub="Order updates and new arrivals from shops you follow" on={me.notif} onClick={()=>setMe(x=>({...x,notif:!x.notif}))}/></div>
-     <div className="card"><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Help centre coming soon')}><div className="grow nm">Help centre</div><span className="mu">›</span></button><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Privacy settings coming soon')}><div className="grow nm">Privacy &amp; security</div><span className="mu">›</span></button></div>
+      <Toggle label="Notifications" sub="Order updates and new arrivals from shops you follow" on={me.notif} onClick={()=>setMe(x=>({...x,notif:!x.notif}))}/></Acc>
+     <Acc title="Help &amp; support"><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Help centre coming soon')}><div className="grow nm">Help centre</div><span className="mu">›</span></button><button className="row" style={{padding:'10px 0'}} onClick={()=>note('Privacy settings coming soon')}><div className="grow nm">Privacy &amp; security</div><span className="mu">›</span></button></Acc>
     </>}
     <p className="bd" style={{textAlign:'center',margin:'4px 0 0',color:'var(--mut)'}}>TeQx · Chat, Discover, Shop</p>
     </div>
