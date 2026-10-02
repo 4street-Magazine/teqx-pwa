@@ -396,9 +396,9 @@ function App(){
  const [mode,setMode]=useState('client'),[shop,setShop]=useState(init.shop||{name:'My Shop',icon:'🏪'}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts}))}catch(e){}},[shop,photos,myPosts]);
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
- const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p])};
+ const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
- const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!pf.name.trim()||!price||!imgs.length)return;setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
+ const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
  useEffect(()=>{const t=setTimeout(()=>setLoading(false),900);return()=>clearTimeout(t)},[]);
  const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),900)};
@@ -502,7 +502,7 @@ function App(){
       <input className="fi" placeholder="Product name" value={pf.name} onChange={e=>setPf(v=>({...v,name:e.target.value}))}/>
       <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={pf.price} onChange={e=>setPf(v=>({...v,price:e.target.value}))}/>
       <input className="fi" placeholder="Caption" value={pf.cap} onChange={e=>setPf(v=>({...v,cap:e.target.value}))}/>
-      <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.45}} onClick={publish}>Publish post</button></div>
+      <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.6}} onClick={publish}>Publish post{sel.length?` (${sel.length} photo${sel.length>1?'s':''})`:''}</button></div>
      {myPosts.length>0&&<div className="card"><div className="nm" style={{marginBottom:8}}>Your posts</div>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</div>}
     </>}
     {mode==='client'&&<>
