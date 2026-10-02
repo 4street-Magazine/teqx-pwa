@@ -8,7 +8,7 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap');
 :root{--green:linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%);--gglow:0 6px 16px rgba(18,192,98,.4);--grad:linear-gradient(135deg,#ffa31a 0%,#ff6a00 55%,#f04e00 100%);--accent:#ff6a00;--glow:0 6px 18px rgba(255,106,0,.35)}
 [data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.1);--nav:#1a1a20;--shadow:0 10px 34px rgba(0,0,0,.7),0 2px 8px rgba(0,0,0,.5);--card:0 6px 20px rgba(0,0,0,.35);--cardline:rgba(255,255,255,.1)}
 [data-theme=light]{--bg:#faf7f4;--surf:#fff;--surf2:#f3eee9;--text:#17120e;--mut:#6f655c;--line:rgba(30,20,10,.09);--nav:#fff;--shadow:0 -4px 24px rgba(40,25,10,.08),0 8px 24px rgba(40,25,10,.14);--card:0 6px 20px rgba(40,25,10,.1);--cardline:rgba(30,20,10,.12)}
@@ -20,7 +20,7 @@ input{font:inherit}
 .scroll{overflow-y:auto;scrollbar-width:none}.scroll::-webkit-scrollbar,.hs::-webkit-scrollbar{display:none}
 .hs{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none}
 .app{max-width:448px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg);transition:background .3s}
-.hdr{padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px;border-bottom:1px solid var(--line);background:var(--bg);z-index:10}
+.hdr{padding:calc(env(safe-area-inset-top,0px) + 16px) 20px 14px;background:var(--bg);z-index:10}
 .hrow{display:flex;align-items:center;justify-content:space-between}
 .hdr .sub{margin:8px 0 0}
 .brand{font-size:26px;font-weight:800;letter-spacing:-.03em}
@@ -32,7 +32,7 @@ main{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column
 h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .sub{color:var(--mut);font-size:13px;margin:0 0 20px}
 .stories{padding:4px 20px 16px}
-.tray{flex-shrink:0;padding-top:16px;padding-bottom:10px;background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+.tray{flex-shrink:0;padding-top:16px;padding-bottom:10px;background:var(--bg);z-index:5}
 .story{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;width:68px}
 .ring{width:64px;height:64px;border-radius:50%;background:var(--grad);padding:2.5px;position:relative}
 .ring i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surf);font-size:26px;font-style:normal;border:2px solid var(--bg)}
@@ -50,7 +50,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .tm{font-size:11.5px;color:var(--mut)}
 .pill{font-size:11.5px;font-weight:700;color:#fff;background:var(--grad);border-radius:99px;min-width:21px;padding:2px 7px;text-align:center}
 .chat{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);z-index:20}
-.chdr{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;border-bottom:1px solid var(--line);background:var(--surf)}
+.chdr{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;background:var(--surf)}
 .back{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf2)}
 .chdr .av{width:42px;height:42px;font-size:20px}
 .on{font-size:12px;font-weight:600;color:#22c55e;margin-top:1px}
@@ -63,8 +63,8 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:bl 1.1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
-.cat{padding:2px 2px 8px;animation:pop .3s ease}
-.prod{width:208px;flex-shrink:0;background:var(--surf);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.cat{padding:14px 30px 46px;margin:-14px -30px -40px;animation:pop .3s ease;background:transparent}
+.prod{width:208px;flex-shrink:0;background:var(--surf);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.14)}
 .pimg{height:138px;position:relative;overflow:hidden;background:var(--surf2);display:grid;place-items:center;font-size:40px}
 .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(8px)}
@@ -82,7 +82,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .bar input:focus{border-color:var(--accent)}
 .send{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;box-shadow:var(--glow);flex-shrink:0}
 .card{background:var(--surf);border:1px solid var(--cardline);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--card)}
-.ch{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:12px;border-bottom:1px dashed var(--line)}
+.ch{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:4px}
 .st{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:99px;background:rgba(255,106,0,.14);color:var(--accent)}
 .st.ok{background:rgba(18,192,98,.15);color:#0fb85b}
 .st.mu{background:var(--surf2);color:var(--mut)}
@@ -120,9 +120,79 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .nav{display:flex;padding:8px;border-radius:26px;background:var(--nav);border:1px solid var(--cardline);box-shadow:var(--shadow)}
 .navw.d{position:absolute;left:0;right:0;bottom:0}
 .navw.d .nav{background:rgba(20,20,24,.55);backdrop-filter:blur(22px);border-color:rgba(255,255,255,.18)}
-.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;color:#98a2b8;font-size:13px;font-weight:600;transition:color .2s,transform .15s}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0;color:#98a2b8;font-size:11.5px;font-weight:600;transition:color .2s,transform .15s}
 .nav button.act{color:#ff5a14}
 .nav button:active{transform:scale(.94)}
+
+.post{margin:0 0 22px;border-radius:28px;background:var(--surf);box-shadow:var(--card);overflow:hidden}
+.ph{display:flex;align-items:center;gap:12px;padding:14px 14px 8px}
+.pav{width:46px;height:46px;border-radius:50%;padding:2px;background:var(--grad);flex-shrink:0}
+.pav i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surf2);border:2px solid var(--surf);font-style:normal;font-size:20px}
+.fol{font-size:13px;font-weight:700;padding:7px 18px;border-radius:99px;background:var(--surf2);transition:all .2s}
+.fol.on{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+.pcap{padding:2px 16px 12px;font-size:13.5px;color:var(--text)}
+.pm{position:relative;margin:0 8px;border-radius:22px;overflow:hidden}
+.ps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.ps::-webkit-scrollbar{display:none}
+.sl{flex:0 0 100%;height:430px;position:relative;scroll-snap-align:start;overflow:hidden;background:var(--surf2)}
+.sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sl:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45) 0,transparent 25%,transparent 42%,rgba(0,0,0,.9) 100%)}
+.badge{position:absolute;z-index:3;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:.08em;padding:6px 12px;border-radius:99px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff}
+.cnt{position:absolute;z-index:3;top:14px;right:14px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff}
+.pinfo{position:absolute;z-index:3;left:16px;bottom:78px;color:#fff;right:90px}
+.pt{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:30px;line-height:1.05;margin:0 0 8px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.pp{font-size:23px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rt{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:2px}.rt b{color:#ffb21a;letter-spacing:1px}
+.perks{position:absolute;z-index:3;right:12px;bottom:84px;display:flex;flex-direction:column;gap:10px}
+.perk{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:#fff;line-height:1.15;width:76px}
+.perk i{width:36px;height:36px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:15px;background:rgba(20,20,24,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.18)}
+.cta{position:absolute;z-index:3;left:12px;right:12px;bottom:12px;display:flex;gap:10px}
+.cta button{flex:1;padding:13px 8px;border-radius:99px;font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .15s}
+.cta button:active{transform:scale(.96)}
+.cta .g{background:rgba(20,20,24,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.25);color:#fff}
+.cta .o{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+.acts{display:flex;align-items:center;gap:20px;padding:14px 18px 4px;font-size:14px;font-weight:600}
+.acts button{display:flex;align-items:center;gap:7px}
+.hashes{padding:6px 18px 18px;font-size:13px;color:var(--mut)}.hashes b{color:var(--text)}.hashes u{text-decoration:none;color:#3b9cff}
+.toast{position:absolute;z-index:50;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);background:var(--grad);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:99px;box-shadow:var(--glow);animation:pop .25s ease;white-space:nowrap}
+.pbig{width:92px;height:92px;border-radius:50%;background:var(--grad);padding:3px;margin:8px auto 12px}.pbig i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surf2);font-style:normal;font-size:40px;border:3px solid var(--bg)}
+.stats{display:flex;justify-content:space-around;text-align:center;margin:18px 0}.stats b{display:block;font-size:20px;font-weight:800}.stats span{font-size:12px;color:var(--mut)}
+.plus{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:800;border:2.5px solid var(--bg);font-size:14px;line-height:1}
+
+/* ===== HIGH-END DISCOVER ===== */
+[data-theme=dark]{--gold:#f4c27a}[data-theme=light]{--gold:#b9772a}
+.hdr{padding-bottom:6px}
+.brand{font-size:28px;letter-spacing:-.04em}
+.stories{padding:6px 20px 18px}
+.ring{width:66px;height:66px;padding:2px;background:conic-gradient(from 210deg,#ffd27a,#ff6a00,#f04e00,#ffb347,#ffd27a);box-shadow:0 6px 18px rgba(255,106,0,.28)}
+.ring i{border:3px solid var(--bg)}
+.story span{font-size:11.5px;font-weight:600;color:var(--mut);letter-spacing:.01em}
+.post{margin:0 0 30px;background:transparent;box-shadow:none;border-radius:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.ph{padding:0 6px 12px}
+.pav{width:44px;height:44px;padding:1.5px;background:conic-gradient(from 210deg,#ffd27a,#ff6a00,#ffd27a)}
+.fol{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px}
+.fol.on{background:var(--grad);border-color:transparent;color:#fff}
+.pcap{padding:0 6px 14px;color:var(--mut);font-size:13.5px;line-height:1.55}.pcap b{color:var(--text)}
+.pm{margin:0;border-radius:34px;box-shadow:0 24px 50px -12px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.07)}
+.sl{height:540px}
+.sl:before{background:linear-gradient(180deg,rgba(0,0,0,.5) 0,transparent 22%,transparent 40%,rgba(8,6,4,.55) 66%,rgba(8,6,4,.95) 100%)}
+.badge{top:18px;left:18px;font-size:10px;letter-spacing:.18em;font-weight:700;padding:7px 13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(16px)}
+.shopchip{position:absolute;z-index:3;top:18px;right:18px;font-size:11px;font-weight:600;color:#fff;padding:7px 13px;border-radius:99px;background:rgba(0,0,0,.35);backdrop-filter:blur(16px);display:none}
+.seg{position:absolute;z-index:3;top:18px;right:18px;display:flex;gap:5px}
+.seg i{width:22px;height:3px;border-radius:9px;background:rgba(255,255,255,.35);transition:background .3s}
+.seg i.on{background:#fff}
+.pinfo{left:22px;bottom:96px;right:84px}
+.pt{font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;line-height:.98;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.pp{font-size:22px;font-weight:700;letter-spacing:.01em;background:linear-gradient(135deg,#8dffbd 0%,#2be67f 45%,#0fbf5f 100%);filter:drop-shadow(0 2px 10px rgba(30,230,120,.35));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rt{font-size:12px;letter-spacing:.04em;margin-top:6px;color:rgba(255,255,255,.75)}.rt b{color:#ffc36b;letter-spacing:0}
+.perks{right:14px;bottom:100px;flex-direction:column;gap:2px;padding:6px;border-radius:99px;background:rgba(255,255,255,.1);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.2)}
+.perk{width:auto}.perk i{background:transparent;border:0;width:38px;height:38px;font-size:16px}
+.cta{left:14px;right:14px;bottom:14px;padding:6px;border-radius:99px;background:rgba(14,12,10,.5);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.16);gap:6px}
+.cta button{padding:15px 8px;font-size:15px;letter-spacing:.02em}
+.cta .g{background:transparent;border:0}
+.cta .o{box-shadow:0 8px 24px rgba(255,106,0,.45)}
+.acts{padding:16px 6px 4px;gap:22px;color:var(--text)}
+.hashes{padding:6px 6px 0;line-height:1.7}.hashes b{font-weight:700}.hashes u{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -138,6 +208,9 @@ const Ic={
  Discover:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fillRule="evenodd" d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM16.500 7.500l-2.200 6.800l-6.800 2.200l2.200-6.800z"/></svg>,
  Bag:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><path d="M6 7h12l1.200 13a1 1 0 0 1-1 1.100H5.800a1 1 0 0 1-1-1.100z"/><path d="M9 9V6.500a3 3 0 0 1 6 0V9" fill="none"/></svg>,
  Bell:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.500 7.500 2.500 7.500h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0" fill="none"/></svg>,
+ User:()=><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="8" r="4.200"/><path d="M4 21c0-4.200 3.500-7 8-7s8 2.800 8 7z"/></svg>,
+ Search:()=><I s={19}><circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/></I>,
+ Cart:()=><I s={18}><path d="M6 7h12l1.200 13H4.800zM9 7a3 3 0 0 1 6 0"/></I>,
  Heart:({on})=><I s={22} f={on?'#ff4d2e':'none'}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
  Msg:()=><I s={22}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>,
  Mark:({on})=><I s={22} f={on?'currentColor':'none'}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></I>,
@@ -156,7 +229,7 @@ const STORES=[
  {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]}
 ];
 const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
-const TAG={inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow'};
+const TAG={profile:'Your account & settings',inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow'};
 const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
 const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.'};
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
@@ -172,9 +245,31 @@ function Product({store,i,onBuy}){
  </div>;
 }
 
+const PERKS=[['🚚','Fast Delivery'],['🛡️','Secure Payments'],['↩️','Easy Returns']];
+function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
+ const [n,setN]=useState(0);
+ return <article className="post">
+  <div className="ph"><div className="pav"><i>{s.icon}</i></div>
+   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{si+2}h ago · {s.tag}</div></div>
+   <button className={'fol'+(f?' on':'')} onClick={onFollow}>{f?'Following':'Follow'}</button></div>
+  <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
+  <div className="pm">
+   <div className="ps" onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
+    {s.prods.map((pr,i)=><div key={i} className="sl"><img src={s.img} alt={pr[0]} loading="lazy" style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}} onError={e=>{e.target.style.display='none'}}/></div>)}
+   </div>
+   <span className="badge">{n===0?'NEW ARRIVAL':'TRENDING'}</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
+   <div className="pinfo"><h3 className="pt">{s.prods[n][0]}</h3><div className="pp">{ksh(s.prods[n][1])}</div><div className="rt"><b>★</b>  {(4.5+((si+n)%5)/10).toFixed(1)} ({128+si*37+n*11})</div></div>
+   <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
+   <div className="cta"><button className="o" onClick={onChat}><Ic.Cart/>Shop Now</button></div>
+  </div>
+  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onChat}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ffa31a'}:null}><Ic.Mark on={saved}/></button></div>
+  <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
+ </article>;
+}
+
 function App(){
  const [dark,setDark]=useState(()=>{try{return localStorage.getItem('teqx-theme')!=='light'}catch(e){return true}});
- const [tab,setTab]=useState('inbox');
+ const [tab,setTab]=useState('discover');
  const [chat,setChat]=useState(null);
  const [text,setText]=useState('');
  const [chats,setChats]=useState({});
@@ -185,8 +280,8 @@ function App(){
   {id:'TQ-4790',store:STORES[1],item:STORES[1].prods[0][0],price:6200,status:'Placed'},
   {id:'TQ-4755',store:STORES[2],item:STORES[2].prods[0][0],price:4800,status:'Placed'}]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
- const [cardOpen,setCardOpen]=useState(true),[dx,setDx]=useState(0),x0=useRef(null);
- const drag={onPointerDown:e=>{x0.current=e.clientX;e.currentTarget.setPointerCapture(e.pointerId)},onPointerMove:e=>{if(x0.current!==null){const v=e.clientX-x0.current;setDx(Math.min(0,v))}},onPointerUp:()=>{if(dx<-70)setCardOpen(false);x0.current=null;setDx(0)},onPointerCancel:()=>{x0.current=null;setDx(0)}};
+ const [fol,setFol]=useState({}),[toast,setToast]=useState('');
+ const flip=(set,id)=>set(m=>({...m,[id]:!m[id]}));
  const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
 
  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
@@ -218,17 +313,18 @@ function App(){
   setOrders(o=>o.map(x=>x.id===id?{...x,status:'Confirmed'}:x));
   push(s.id,{from:'bot',text:`Good news! Order ${id} is confirmed and being packed. 📦`})};
 
+ const quick=async(s,item,price)=>{const id='TQ-'+Math.floor(1000+Math.random()*9000);setOrders(o=>[{id,store:s,item,price,status:'Processing'},...o]);setToast(`Order ${id} placed ✅`);setTimeout(()=>setToast(''),2200);await wait(5000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Confirmed'}:x))};
  const lastBot=chat&&(chats[chat.id]||[]).length>0;
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
  const brand=<div className="brand">Te<b>Q</b>x</div>;
- const nav=[['inbox','Inbox',Ic.Inbox],['discover','Discover',Ic.Discover],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell]];
+ const nav=[['discover','Discover',Ic.Discover],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  return <div className="app">
-  {!d&&!chat&&<header className="hdr"><div className="hrow">{brand}{toggle}</div><p className="sub">{TAG[tab]}</p></header>}
+  {!(tab==='inbox'&&chat)&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search"><Ic.Search/></button>}{toggle}</div></div>{!d&&<p className="sub">{TAG[tab]}</p>}</header>}
   <main>
    {tab==='inbox'&&<>
-    <div className="tray"><div className="sect">Active shops</div><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
+    <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
      <div className="sect" style={{paddingTop:14}}>Conversations</div></div>
     <div className="page" style={{padding:'4px 0 24px'}}>
     {STORES.map(s=>{const m=chats[s.id]&&[...chats[s.id]].reverse().find(x=>x.text);return <button key={s.id} className="row" onClick={()=>open(s)}>
@@ -250,33 +346,13 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<><div className="feed" onScroll={e=>setIdx(Math.round(e.target.scrollTop/e.target.clientHeight))}>
-    {STORES.map(s=>{const[p,price]=s.prods[0],L=liked[s.id],V=saved[s.id];return <section key={s.id} className="slide">
-     <div className="fb">{s.icon}</div><img src={s.img} alt={p} onError={e=>{e.target.style.display='none'}}/>
-     <div className="side">
-      <button onClick={()=>flip(setLiked,s.id)}><span className="c"><Ic.Heart on={L}/></span>{(4800+STORES.indexOf(s)*730+(L?1:0)).toLocaleString()}</button>
-      <button onClick={()=>open(s)}><span className="c"><Ic.Msg/></span>Chat</button>
-      <button onClick={()=>flip(setSaved,s.id)} style={V?{color:'#ffa31a'}:null}><span className="c"><Ic.Mark on={V}/></span>{V?'Saved':'Save'}</button>
-      <button><span className="c"><Ic.Share/></span>Share</button>
-     </div>
-     <div className={'pwrap'+(out&&idx===STORES.indexOf(s)?' out':'')} onTouchStart={e=>{tx.current=e.touches[0].clientX}} onTouchEnd={e=>{if(e.changedTouches[0].clientX-tx.current<-50)setOut(true)}}>
-      <span className="price">{ksh(price)}</span>
-      <h2 className="hl">{p}</h2>
-      <p className="cap">{s.tag} · Fresh drop from {s.name}</p>
-      <div className="glass">
-       <div className="grip"><i/></div>
-       <div style={{display:'flex',gap:12,alignItems:'center'}}><div className="av" style={{width:46,height:46,fontSize:22,background:'rgba(0,0,0,.4)'}}>{s.icon}</div>
-        <div className="grow"><div className="nm" style={{fontSize:16}}><span>{s.name}</span><Verified/></div><div className="pv" style={{color:'rgba(255,255,255,.75)'}}>{s.tag} #NairobiMade</div></div>
-        <button aria-label="Hide shop card" onClick={()=>setOut(true)} style={{color:'rgba(255,255,255,.7)',fontSize:22,padding:'0 4px'}}>‹</button></div>
-       <button className="btn" onClick={()=>{setOut(false);open(s)}}>Shop now</button>
-      </div>
-     </div>
-     <button className={'pull'+(out&&idx===STORES.indexOf(s)?'':' hide')} aria-label="Show shop card" onClick={()=>setOut(false)}>{s.icon}<span style={{fontSize:18,fontWeight:700}}>›</span></button>
-    </section>})}
-   </div>
-   <div className="dtop">{brand}{toggle}</div>
-   <div className="live">For you</div>
-   <div className="dots">{STORES.map((x,i)=><i key={x.id} className={i===idx?'on':''}/>)}</div></>}
+   {d&&<div className="page" style={{padding:'6px 16px 24px'}}>
+    <div className="hs stories" style={{padding:'4px 4px 16px',margin:'0 -4px'}}>
+     <button className="story"><div className="ring"><i>🙂</i><span className="plus">+</span></div><span>Your story</span></button>
+     {STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i></div><span>{s.name}</span></button>)}
+    </div>
+    {STORES.map((s,si)=><Post key={s.id} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={()=>open(s)} onBuy={(i,p)=>quick(s,i,p)}/>)}
+   </div>}
 
    {tab==='orders'&&<div className="page">
     {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Placed'?' ok':'')}>{o.status}</span></div>
@@ -287,9 +363,17 @@ function App(){
     {STORES.map((s,i)=><div key={s.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{s.icon}</span><span>{s.name}</span><Verified s={15}/></div><span className="st mu">{i+2}h ago</span></div>
      <p className="bd">{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div>)}
    </div>}
+   {tab==='profile'&&<div className="page">
+    <div style={{textAlign:'center'}}><div className="pbig"><i>🙂</i></div><h1 style={{marginBottom:2}}>Your Profile</h1><p className="sub" style={{margin:0}}>@you · Nairobi, Kenya</p></div>
+    <div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div>
+    <div className="card"><button className="row" style={{padding:0}} onClick={()=>setDark(!dark)}><div className="grow nm">Appearance</div><span className="st mu">{dark?'Dark':'Light'}</span></button></div>
+    <div className="card"><div className="nm">Payment methods</div><p className="bd" style={{marginTop:4}}>M-Pesa · Cash on delivery</p></div>
+    <div className="card"><div className="nm">Delivery address</div><p className="bd" style={{marginTop:4}}>Nairobi, Kenya</p></div>
+   </div>}
   </main>
+  {toast&&<div className="toast">{toast}</div>}
 
-  {!chat&&<div className={'navw'+(d?' d':'')}><nav className="nav">
+  {!chat&&<div className="navw"><nav className="nav">
    {nav.map(([k,l,Icon])=><button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><Icon/><span>{l}</span></button>)}
   </nav></div>}
  </div>;
