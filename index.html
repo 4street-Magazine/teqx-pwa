@@ -282,6 +282,20 @@ h1{font-size:24px;margin-bottom:6px}
 .svr input{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3);backdrop-filter:blur(14px)}.svr input::placeholder{color:rgba(255,255,255,.7)}
 [data-theme=light] .pm{box-shadow:0 18px 40px -14px rgba(70,35,10,.35),0 0 0 1px rgba(30,20,10,.06)}
 [data-theme=light] .cta{background:rgba(14,12,10,.55)}
+
+.seg2{display:flex;padding:4px;border-radius:99px;background:var(--surf);margin:0 0 20px}
+.seg2 button{flex:1;padding:11px;border-radius:99px;font-weight:700;font-size:14px;color:var(--mut);transition:all .2s}
+.seg2 button.on{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+.fi{display:block;width:100%;padding:14px 16px;border-radius:16px;border:0;background:var(--surf2);color:var(--text);outline:0;font-size:14px;margin-top:10px}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pt3{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;background:var(--surf2);flex-shrink:0;display:block;padding:0}
+.hs .pt3{width:84px}
+.pt3 img{width:100%;height:100%;object-fit:cover;display:block}
+.pt3 .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:16px;line-height:1;display:grid;place-items:center}
+.addp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--accent);cursor:pointer}
+.addp span{font-size:30px;font-weight:300;line-height:1}.addp small{font-size:11px;font-weight:700}
+.pk.on{box-shadow:0 0 0 3px var(--accent)}
+.pk .ck{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
 </style>
 </head>
 <body>
@@ -338,19 +352,19 @@ function Product({store,i,onBuy}){
 
 const PERKS=[['🚚','Fast Delivery'],['🛡️','Secure Payments'],['↩️','Easy Returns']];
 function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
- const last=useRef(0),[burst,setBurst]=useState(false),psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(!!f),[spark,setSpark]=useState(false);
+ const last=useRef(0),[burst,setBurst]=useState(false),psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(!!f||!!s.custom),[spark,setSpark]=useState(false);
  const tap=()=>{const t=Date.now();if(t-last.current<300){if(!liked)onLike();setBurst(true);setTimeout(()=>setBurst(false),800)}last.current=t};
  const doFollow=()=>{if(f)return;onFollow();setSpark(true);setTimeout(()=>setGone(true),1700)};
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onStory}><i>{s.icon}</i></button>
-   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{si+2}h ago · {s.tag}</div></div>
+   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{s.custom?'Just now':si+2+'h ago'} · {s.tag}</div></div>
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}</div>
   <div className="pcap"><b>New arrivals!</b> ✨ {CAP[s.id]}</div>
   <div className="pm" onClick={tap}>{burst&&<div className="burst">❤️</div>}
    <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
-    {COL[s.id].map((c,i)=><div key={i} className="sl"><img src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>)}
+    {COL[s.id].map((c,i)=><div key={i} className="sl"><img src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:s.custom?'none':FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>)}
    </div>
-   <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
+   <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{COL[s.id].map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    <div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pp">{ksh(s.prods[0][1])}</div><div className="rt"><b>★</b>  {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</div></div>
    <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
    <div className="cta" onClick={e=>e.stopPropagation()}><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
@@ -360,6 +374,7 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  </article>;
 }
 
+const readImg=f=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
 const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:370,borderRadius:34}}/></div>;
 const SEED=[['amina_k','Love this! 😍'],['brian.o','Do you deliver to Kisumu?'],['wanjiru','Those colours are 🔥']];
 
@@ -377,6 +392,13 @@ function App(){
   {id:'TQ-4755',store:STORES[2],item:STORES[2].prods[0][0],price:4800,status:'Placed'}]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
  const [fol,setFol]=useState({}),[toast,setToast]=useState('');
+ const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
+ const [mode,setMode]=useState('client'),[shop,setShop]=useState(init.shop||{name:'My Shop',icon:'🏪'}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
+ useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts}))}catch(e){}},[shop,photos,myPosts]);
+ const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
+ const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p])};
+ const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
+ const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!pf.name.trim()||!price||!imgs.length)return;setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
  useEffect(()=>{const t=setTimeout(()=>setLoading(false),900);return()=>clearTimeout(t)},[]);
  const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),900)};
@@ -454,7 +476,7 @@ function App(){
      <button className="story"><div className="ring"><i>🙂</i><span className="plus">+</span></div><span>Your story</span></button>
      {STORES.map((s,i)=><button key={s.id} className="story" onClick={()=>openStory(i)}><div className={'ring'+(seen[s.id]?' seen':'')}><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}
     </div>
-    {loading?<><Skel/><Skel/></>:STORES.map((s,si)=><Post key={s.id} cc={56+si*9+(cmts[s.id]||[]).length} onComment={()=>setCm(s.id)} onStory={()=>openStory(si)} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}}/>})}{STORES.map((s,si)=><Post key={s.id} cc={56+si*9+(cmts[s.id]||[]).length} onComment={()=>setCm(s.id)} onStory={()=>openStory(si)} s={s} si={si} f={fol[s.id]} onFollow={()=>flip(setFol,s.id)} liked={liked[s.id]} onLike={()=>flip(setLiked,s.id)} saved={saved[s.id]} onSave={()=>flip(setSaved,s.id)} onChat={m=>open(s,m)} onBuy={(i,p)=>quick(s,i,p)}/>)}</>}
    </div>}
 
    {tab==='orders'&&<div className="page">
@@ -467,11 +489,29 @@ function App(){
      <p className="bd">{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div>)}
    </div>}
    {tab==='profile'&&<div className="page">
+    <div className="seg2"><button className={mode==='client'?'on':''} onClick={()=>setMode('client')}>Client</button><button className={mode==='shop'?'on':''} onClick={()=>setMode('shop')}>Shop</button></div>
+    {mode==='shop'&&<>
+     <div style={{textAlign:'center'}}><div className="pbig"><i>{shop.icon}</i></div><input className="fi" style={{textAlign:'center',fontWeight:800,fontSize:20,marginTop:0}} value={shop.name} onChange={e=>setShop(v=>({...v,name:e.target.value}))} aria-label="Shop name"/><p className="sub" style={{margin:'8px 0 0'}}>Shop mode · your digital store</p></div>
+     <div className="stats"><div><b>{photos.length}</b><span>Photos</span></div><div><b>{myPosts.length}</b><span>Posts</span></div></div>
+     <div className="card"><div className="nm" style={{marginBottom:12}}>Digital store photos</div>
+      <div className="pg"><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPhotos}/></label>
+       {photos.map(p=><div key={p.id} className="pt3"><img src={p.src} alt=""/><button className="x" aria-label="Delete photo" onClick={()=>delPhoto(p.id)}>×</button></div>)}</div>
+      {!photos.length&&<p className="bd" style={{marginTop:12}}>Upload product photos to build your store.</p>}</div>
+     <div className="card"><div className="nm">Create a post</div><p className="bd" style={{margin:'4px 0 12px'}}>Tap photos to include them, in the order people will swipe.</p>
+      {photos.length?<div className="hs" style={{gap:10}}>{photos.map(p=>{const k=sel.indexOf(p.id);return <button key={p.id} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setSel(v=>k>-1?v.filter(x=>x!==p.id):[...v,p.id])}><img src={p.src} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>:<p className="bd">Add photos to your store first.</p>}
+      <input className="fi" placeholder="Product name" value={pf.name} onChange={e=>setPf(v=>({...v,name:e.target.value}))}/>
+      <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={pf.price} onChange={e=>setPf(v=>({...v,price:e.target.value}))}/>
+      <input className="fi" placeholder="Caption" value={pf.cap} onChange={e=>setPf(v=>({...v,cap:e.target.value}))}/>
+      <button className="btn" style={{marginTop:16,opacity:pf.name.trim()&&parseInt(String(pf.price).replace(/\D/g,''),10)&&sel.length?1:.45}} onClick={publish}>Publish post</button></div>
+     {myPosts.length>0&&<div className="card"><div className="nm" style={{marginBottom:8}}>Your posts</div>{myPosts.map(p=><div key={p.id} className="row" style={{padding:'8px 0'}}><img className="av" style={{objectFit:'cover'}} src={p.imgs[0]} alt=""/><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</div></div><button className="fol" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>)}</div>}
+    </>}
+    {mode==='client'&&<>
     <div style={{textAlign:'center'}}><div className="pbig"><i>🙂</i></div><h1 style={{marginBottom:2}}>Your Profile</h1><p className="sub" style={{margin:0}}>@you · Nairobi, Kenya</p></div>
     <div className="stats"><div><b>{orders.length}</b><span>Orders</span></div><div><b>{Object.values(fol).filter(Boolean).length}</b><span>Following</span></div><div><b>{Object.values(saved).filter(Boolean).length}</b><span>Saved</span></div></div>
     <div className="card"><button className="row" style={{padding:0}} onClick={()=>setDark(!dark)}><div className="grow nm">Dark mode</div><span style={{display:'flex',alignItems:'center',gap:8,color:'var(--mut)',fontSize:13}}>{dark?<Ic.Moon/>:<Ic.Sun/>}{dark?'Dark':'Light'}</span><span className={'sw'+(dark?' on':'')}/></button></div>
     <div className="card"><div className="nm" style={{marginBottom:8}}>Following</div>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</div><div className="card"><div className="nm" style={{marginBottom:8}}>Saved</div>{(()=>{const L=STORES.filter(x=>saved[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}>{x.icon}</div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</div><div className="card"><div className="nm">Payment methods</div><p className="bd" style={{marginTop:4}}>M-Pesa · Cash on delivery</p></div>
     <div className="card"><div className="nm">Delivery address</div><p className="bd" style={{marginTop:4}}>Nairobi, Kenya</p></div>
+    </>}
    </div>}
   </main>
   {search&&<div className="ov"><div className="sbar"><Ic.Search/><input autoFocus placeholder="Search shops & products" value={q} onChange={e=>setQ(e.target.value)}/><button onClick={()=>{setSearch(false);setQ('')}}>Cancel</button></div>
