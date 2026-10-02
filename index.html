@@ -305,7 +305,7 @@ function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
    <span className="badge">{n===0?'NEW ARRIVAL':'TRENDING'}</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
    <div className="pinfo"><h3 className="pt">{s.prods[n][0]}</h3><div className="pp">{ksh(s.prods[n][1])}</div><div className="rt"><b>★</b>  {(4.5+((si+n)%5)/10).toFixed(1)} ({128+si*37+n*11})</div></div>
    <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
-   <div className="cta"><button className="o" onClick={onChat}><Ic.Cart/>Shop Now</button></div>
+   <div className="cta"><button className="o" onClick={onChat}><Ic.Msg/>Chat with Shop</button></div>
   </div>
   <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onChat}><Ic.Msg/>{56+si*9}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
   <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
