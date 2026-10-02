@@ -240,7 +240,7 @@ h1{font-size:24px;margin-bottom:6px}
 .sws{display:flex;align-items:center;gap:9px;margin-top:14px}
 .sw2{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.4);padding:0;transition:transform .2s}
 .sw2.on{border-color:#fff;box-shadow:0 0 0 2.5px var(--accent);transform:scale(1.08)}
-.cn{font-size:12px;font-weight:600;color:rgba(255,255,255,.88);margin-left:4px}
+.cn{font-size:12px;font-weight:600;color:rgba(255,255,255,.88)}
 </style>
 </head>
 <body>
@@ -309,7 +309,7 @@ function Post({s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy}){
     {COL[s.id].map((c,i)=><div key={i} className="sl"><img src={s.img} alt={s.prods[0][0]+' in '+c[0]} loading="lazy" style={{filter:FILT[i]}} onError={e=>{e.target.style.display='none'}}/></div>)}
    </div>
    <span className="badge">NEW ARRIVAL</span><span className="shopchip">{s.icon} {s.name}</span><div className="seg">{[0,1,2].map(i=><i key={i} className={i<=n?'on':''}/>)}</div>
-   <div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pp">{ksh(s.prods[0][1])}</div><div className="rt"><b>★</b>  {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</div><div className="sws">{COL[s.id].map((c,i)=><button key={i} aria-label={c[0]} className={'sw2'+(i===n?' on':'')} style={{background:c[1]}} onClick={()=>psr.current&&psr.current.scrollTo({left:i*psr.current.clientWidth,behavior:'smooth'})}/>)}<span className="cn">{COL[s.id][n][0]}</span></div></div>
+   <div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pp">{ksh(s.prods[0][1])}</div><div className="rt"><b>★</b>  {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</div></div>
    <div className="perks">{PERKS.map(([e,t])=><div key={t} className="perk" title={t}><i>{e}</i></div>)}</div>
    <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${COL[s.id][n][0]}`)}><Ic.Msg/>Chat with Shop</button></div>
   </div>
