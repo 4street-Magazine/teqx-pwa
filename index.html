@@ -402,14 +402,8 @@ h1{font-size:24px;margin-bottom:6px}
 .acci{display:grid;place-items:center;flex-shrink:0;color:var(--accent);margin-right:6px;overflow:visible!important}
 
 /* standard post image container (16:9) */
-.sl{aspect-ratio:auto;height:auto;min-height:0;display:block}
-/* each post fits exactly between the header and the bottom nav; the image takes the leftover height */
-.post{height:calc(100% - 14px);min-height:540px;margin-bottom:14px;display:flex;flex-direction:column;scroll-snap-align:start;scroll-snap-stop:always}
-.post>.ph,.post>.pcap,.post>.acts,.post>.hashes{flex-shrink:0}
-.post>.pm{flex:1;min-height:0;display:flex;flex-direction:column}
-.post>.pm>.pmi{flex:1;min-height:150px;position:relative}
-.post>.pm>.pmi>.ps{position:absolute;inset:0}
-.post>.pm>.pfoot{flex-shrink:0}
+.sl{aspect-ratio:658/600;height:auto;min-height:0;display:block}
+/* standard post image container: 658 x 600 ratio, same on every post */
 .sl img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain;z-index:1}
 .slx{position:absolute;inset:0;display:grid;place-items:center;z-index:1;color:var(--mut)}
 .burst svg{width:96px;height:96px;color:#ff4d2e}
@@ -589,7 +583,7 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
     <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
      {cols.map((c,i)=><Slide key={i} src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c} icon={<Ic.Store s={44}/>}/>)}
     </div>
-    <span className="badge">NEW ARRIVAL</span><span className="shopchip"><Ic.Store s={14}/> {s.name}</span><div className="seg">{cols.map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
+    <span className="shopchip"><Ic.Store s={14}/> {s.name}</span><div className="seg">{cols.map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    </div>
    <div className="pfoot" onClick={e=>e.stopPropagation()}>
     <div className="ptop"><div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pmeta"><span className="pp">{ksh(s.prods[0][1])}</span><span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
@@ -598,7 +592,6 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
    </div>
   </div>
   <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
-  <div className="hashes"><b>{s.name.toLowerCase().replace(' ','_')}</b> Classy. Confident. You. 💛<br/><u>{s.tag}</u> <u>#NewArrivals</u> <u>#NairobiMade</u></div>
  </article>;
 }
 
@@ -631,7 +624,7 @@ function App(){
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
- const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'10',stock:'',pid:null}),[mord,setMord]=useState(DEMO_MORD),[dq,setDq]=useState('All'),[dsort,setDsort]=useState('comm'),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
+ const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',pids:[]}),[mord,setMord]=useState(DEMO_MORD),[dq,setDq]=useState('All'),[dsort,setDsort]=useState('comm'),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts,bal,txs,mprods,earn,earnD}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
@@ -683,7 +676,7 @@ function App(){
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
  const adv=o=>{if(o.status==='Secured'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Shipped'}:x));note('Marked as shipped')}else if(o.status==='Shipped'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Delivered'}:x));setTimeout(()=>{setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Paid out'}:x));setEarn(e=>e+o.amt-o.comm);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+o.id,amt:o.amt-o.comm,r:'merchant'},...x]);note('Payout added to your earnings')},1500)}};
  const mpr=parseInt(String(mp.price).replace(/\D/g,''),10)||0,mpc=Math.min(60,Math.max(0,parseFloat(mp.comm)||0));
- const addProd=()=>{const ph=photos.find(p=>p.id===mp.pid);if(!ph)return note('Pick a product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:[ph.src]},...m]);setMp({name:'',price:'',comm:'10',stock:'',pid:null});note('Product uploaded')};
+ const addProd=()=>{const ph=mp.pids.map(id=>photos.find(p=>p.id===id)).filter(Boolean);if(!ph.length)return note('Pick at least one product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:ph.map(x=>x.src)},...m]);setMp({name:'',price:'',comm:'',stock:'',pids:[]});note('Product uploaded')};
  const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
  const dealList=allDeals.filter(d=>dq==='All'||d.cat===dq).sort((x,y)=>dsort==='comm'?cmm(y)-cmm(x):x.price-y.price);
@@ -733,8 +726,8 @@ function App(){
        <div className="pg"><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPhotos}/></label>
         {photos.map(p=><div key={p.id} className="pt3"><img src={p.src} alt=""/><button className="x" aria-label="Delete photo" onClick={()=>delPhoto(p.id)}>×</button></div>)}</div>
        {!photos.length&&<p className="bd" style={{marginTop:12}}>Upload product photos to build your store.</p>}</Acc>
-      <Acc icon={<Ic.Tag s={18}/>} title="Upload a product"><p className="bd" style={{margin:'0 0 12px'}}>Pick a photo, set your price and the commission dropshippers earn per sale.</p>
-       {photos.length?<div className="hs" style={{gap:10}}>{photos.map(p=><button key={p.id} className={'pt3 pk'+(mp.pid===p.id?' on':'')} onClick={()=>setMp(v=>({...v,pid:p.id}))}><img src={p.src} alt=""/>{mp.pid===p.id&&<span className="ck"><Ic.Check s={14}/></span>}</button>)}</div>:<p className="bd">Add product photos first.</p>}
+      <Acc icon={<Ic.Tag s={18}/>} title="Upload a product"><p className="bd" style={{margin:'0 0 12px'}}>Pick all the photos for this product, set your price and the commission dropshippers earn per sale.</p>
+       {photos.length?<div className="hs" style={{gap:10}}>{photos.map(p=>{const k=mp.pids.indexOf(p.id);return <button key={p.id} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setMp(v=>({...v,pids:k>-1?v.pids.filter(x=>x!==p.id):[...v.pids,p.id]}))}><img src={p.src} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>:<p className="bd">Add product photos first.</p>}
        <input className="fi" placeholder="Product name" value={mp.name} onChange={e=>setMp(v=>({...v,name:e.target.value}))}/>
        <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={mp.price} onChange={e=>setMp(v=>({...v,price:e.target.value}))}/>
        <input className="fi" placeholder="Commission for dropshippers (%)" inputMode="decimal" value={mp.comm} onChange={e=>setMp(v=>({...v,comm:e.target.value}))}/>
@@ -810,12 +803,13 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<div className="page" style={{padding:'6px 16px 0',scrollSnapType:'y mandatory'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
+   {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
     {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
    {tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
     <div className="wh" style={{flexShrink:0}}><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until your orders are delivered</small></div>
+    <div style={{flexShrink:0,fontSize:18,fontWeight:800,letterSpacing:'-.01em',margin:'2px 4px 12px'}}>Your Orders</div>
     <div style={{flex:1,minHeight:0,overflowY:'auto',scrollbarWidth:'none',paddingBottom:24}}>
     {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1 · + {ksh(o.fee||delFee(o.price))} delivery</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
