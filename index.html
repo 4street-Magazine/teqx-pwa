@@ -402,7 +402,14 @@ h1{font-size:24px;margin-bottom:6px}
 .acci{display:grid;place-items:center;flex-shrink:0;color:var(--accent);margin-right:6px;overflow:visible!important}
 
 /* standard post image container (16:9) */
-.sl{aspect-ratio:16/9.6;height:auto;min-height:0;display:block}
+.sl{aspect-ratio:auto;height:auto;min-height:0;display:block}
+/* each post fits exactly between the header and the bottom nav; the image takes the leftover height */
+.post{height:calc(100% - 14px);min-height:540px;margin-bottom:14px;display:flex;flex-direction:column;scroll-snap-align:start;scroll-snap-stop:always}
+.post>.ph,.post>.pcap,.post>.acts,.post>.hashes{flex-shrink:0}
+.post>.pm{flex:1;min-height:0;display:flex;flex-direction:column}
+.post>.pm>.pmi{flex:1;min-height:150px;position:relative}
+.post>.pm>.pmi>.ps{position:absolute;inset:0}
+.post>.pm>.pfoot{flex-shrink:0}
 .sl img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain;z-index:1}
 .slx{position:absolute;inset:0;display:grid;place-items:center;z-index:1;color:var(--mut)}
 .burst svg{width:96px;height:96px;color:#ff4d2e}
@@ -446,24 +453,6 @@ h1{font-size:24px;margin-bottom:6px}
 .bkrow b{font-size:13.5px}
 
 .ptabs{gap:4px}.ptabs button{font-size:12px;padding:9px 2px}
-
-/* ===== v8: theme-aware stage + cutout pop-out (post image container only) ===== */
-[data-theme=dark]{--st1:#30303a;--st2:#141418;--pnl:#26262e;--fl:rgba(0,0,0,.6);--gl:rgba(0,0,0,.42);--gt:#fff;--gd:rgba(255,255,255,.4);--gdo:#fff}
-[data-theme=light]{--st1:#ffffff;--st2:#e9e0d7;--pnl:#ece4db;--fl:rgba(70,40,20,.38);--gl:rgba(255,255,255,.75);--gt:#17120e;--gd:rgba(30,20,10,.22);--gdo:#17120e}
-.pmi{background:radial-gradient(120% 90% at 50% 38%,var(--st1),var(--st2))}
-.sl{aspect-ratio:1/.9;background:transparent}
-.sl .bg{display:none}
-.sl:before{display:none}
-.sl:after{content:"";position:absolute;z-index:0;left:20%;right:20%;bottom:8%;height:6%;border-radius:50%;background:var(--fl);filter:blur(13px)}
-.sl img{inset:8% 9% 15% 9%;width:82%;height:77%;object-fit:contain;filter:drop-shadow(0 22px 18px var(--fl))}
-.badge{background:var(--gl);color:var(--gt);border:1px solid var(--cardline);backdrop-filter:blur(10px)}
-.seg{padding:6px 9px;border-radius:99px;background:var(--gl);border:1px solid var(--cardline);backdrop-filter:blur(10px);top:14px;right:14px}
-.seg i{background:var(--gd)}.seg i.on{background:var(--gdo)}
-/* cutout: product pops out of a panel */
-.sl.cut{background:var(--surf)}
-.sl.cut:before{display:block;content:"";position:absolute;z-index:0;top:36%;left:7%;right:7%;bottom:8%;height:auto;border-radius:28px;background:var(--pnl);border:1px solid var(--cardline);box-shadow:0 26px 40px -18px var(--fl)}
-.sl.cut:after{left:24%;right:24%;bottom:11%}
-.sl.cut img{inset:5% 9% 13% 9%;width:82%;height:82%;object-position:center bottom;filter:drop-shadow(0 20px 16px var(--fl))}
 </style>
 </head>
 <body>
@@ -575,7 +564,7 @@ function Product({store,i,onBuy}){
  </div>;
 }
 
-function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className={'sl'+(typeof src==='string'&&src.startsWith('data:image/png')?' cut':'')}><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
+function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
 function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
  const cols=s.cols||COL[s.id].map(c=>c[0]),[menu,setMenu]=useState(false);
@@ -613,9 +602,6 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  </article>;
 }
 
-const loadMod=u=>new Function('u','return import(u)')(u);
-const cutImg=async(f,note,mx=640)=>{try{note&&note('Removing background…');const m=await loadMod('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');const blob=await m.removeBackground(f,{output:{format:'image/png'}});const url=URL.createObjectURL(blob),im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});const w=im.naturalWidth,h=im.naturalHeight,t=document.createElement('canvas');t.width=w;t.height=h;const tc=t.getContext('2d');tc.drawImage(im,0,0);const d=tc.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=0,y1=0;for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>16){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}if(x1<=x0||y1<=y0)return null;const cw=x1-x0+1,ch=y1-y0+1,k=Math.min(1,mx/Math.max(cw,ch)),c=document.createElement('canvas');c.width=Math.round(cw*k);c.height=Math.round(ch*k);c.getContext('2d').drawImage(t,x0,y0,cw,ch,0,0,c.width,c.height);URL.revokeObjectURL(url);return c.toDataURL('image/png')}catch(e){return null}};
-const prepImg=async(f,note)=>{const c=await cutImg(f,note);if(c)return c;note&&note('Could not remove the background, using the original photo');return readImg(f)};
 const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
 function Spark({d,lab,gid}){const w=300,h=110,p=8,mx=Math.max(...d),x=i=>p+i*(w-2*p)/(d.length-1),y=v=>h-p-(v/(mx||1))*(h-2*p-8),pts=d.map((v,i)=>[x(i),y(v)]),line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(''),area=line+`L${x(d.length-1)} ${h-p}L${x(0)} ${h-p}Z`;return <div className="chart"><svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="Growth chart"><defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff5c0a" stopOpacity=".35"/><stop offset="1" stopColor="#ff5c0a" stopOpacity="0"/></linearGradient></defs><path d={area} fill={`url(#${gid})`}/><path d={line} fill="none" stroke="#ff5c0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill="#ff5c0a"/></svg><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
 function Bars({d,lab}){const mx=Math.max(...d);return <div className="chart"><div className="bars">{d.map((v,i)=><div key={i} className="bc"><i style={{height:(v/mx*100)+'%'}}/></div>)}</div><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
@@ -653,7 +639,7 @@ function App(){
  const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
- const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await prepImg(f,note);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
+ const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
  const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
@@ -701,7 +687,7 @@ function App(){
  const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
  const dealList=allDeals.filter(d=>dq==='All'||d.cat===dq).sort((x,y)=>dsort==='comm'?cmm(y)-cmm(x):x.price-y.price);
- const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await prepImg(f,note);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
+ const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
  const startPromo=d=>{setPromo(d);setPlist(d.imgs);setPsel(d.imgs.map((_,i)=>i));setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
  const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
  const secured=orders.filter(o=>o.status==='Secured'||o.status==='Shipped'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
@@ -824,14 +810,16 @@ function App(){
     <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
-   {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
+   {d&&<div className="page" style={{padding:'6px 16px 0',scrollSnapType:'y mandatory'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
     {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
-   {tab==='orders'&&<div className="page">
-    <div className="wh"><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until your orders are delivered</small></div>
+   {tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
+    <div className="wh" style={{flexShrink:0}}><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until your orders are delivered</small></div>
+    <div style={{flex:1,minHeight:0,overflowY:'auto',scrollbarWidth:'none',paddingBottom:24}}>
     {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1 · + {ksh(o.fee||delFee(o.price))} delivery</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
+    </div>
    </div>}
 
    {tab==='alerts'&&<div className="page">
