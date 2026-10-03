@@ -49,18 +49,22 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
 .tm{font-size:11.5px;color:var(--mut)}
 .pill{font-size:11.5px;font-weight:700;color:#fff;background:var(--grad);border-radius:99px;min-width:21px;padding:2px 7px;text-align:center}
-.chat{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);z-index:20}
-.chdr{display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;background:var(--surf)}
+.chat{position:absolute;inset:0;display:flex;flex-direction:column;background:radial-gradient(110% 50% at 100% 0%,rgba(255,92,10,.08),transparent 60%),radial-gradient(90% 45% at 0% 100%,rgba(18,192,98,.07),transparent 60%),var(--bg);z-index:20}
+.chdr{display:flex;align-items:center;gap:11px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 11px;background:var(--surf);border-bottom:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.08);position:relative;z-index:2}
 .back{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf2)}
-.chdr .av{width:42px;height:42px;font-size:20px}
+.hav{position:relative;padding:2.5px;border-radius:50%;background:var(--grad);flex-shrink:0}
+.hav .av{width:40px;height:40px;font-size:19px;border:2.5px solid var(--surf)}
+.hav i{position:absolute;right:0;bottom:1px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2.5px solid var(--surf);box-sizing:border-box}
+.ccat{font-size:12.5px;font-weight:600;color:var(--mut);margin-top:1px;animation:pop .25s ease}
+.ctyp{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;margin-top:1px;animation:pop .25s ease}
+.gtxt{background:linear-gradient(100deg,#8dffbd 0%,#18e07c 28%,#00b85c 50%,#18e07c 72%,#8dffbd 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gsh 1.5s linear infinite;filter:drop-shadow(0 0 6px rgba(24,224,124,.4))}
+@keyframes gsh{to{background-position:-220% 0}}
+.gd{display:inline-flex;gap:3px;align-items:center}.gd i{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(18,192,98,.65);animation:bl 1.1s infinite}.gd i:nth-child(2){animation-delay:.15s}.gd i:nth-child(3){animation-delay:.3s}
 .on{font-size:12px;font-weight:600;color:#22c55e;margin-top:1px}
-.msgs{flex:1;overflow-y:auto;scrollbar-width:none;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
-.b{max-width:82%;padding:11px 15px;border-radius:20px;font-size:14px;line-height:1.55;animation:pop .25s ease}
-.b.bot{background:var(--surf2);border-bottom-left-radius:6px;align-self:flex-start}
-.b.me{background:var(--grad);color:#fff;border-bottom-right-radius:6px;align-self:flex-end;font-weight:500}
+.msgs{flex:1;overflow-y:auto;scrollbar-width:none;padding:14px 14px 10px;display:flex;flex-direction:column;gap:5px}
 @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .typing{display:flex;gap:5px;padding:14px 16px}
-.typing i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:bl 1.1s infinite}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(18,192,98,.55);animation:bl 1.1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
 .cat{padding:14px 30px 46px;margin:-14px -30px -40px;animation:pop .3s ease;background:transparent}
@@ -77,9 +81,33 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 16px 0}
 .chip{flex-shrink:0;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);background:transparent}
 .chip:active{background:var(--accent);color:#fff}
-.bar{display:flex;gap:10px;align-items:center;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 14px);background:var(--bg)}
-.bar input{flex:1;padding:13px 18px;border-radius:99px;border:1px solid var(--line);background:var(--surf);color:var(--text);font-size:14px;outline:0}
-.bar input:focus{border-color:var(--accent)}
+.bar{display:flex;gap:8px;align-items:center;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.bar input{flex:1;min-width:0;padding:13px 18px;border-radius:99px;border:1.5px solid var(--line);background:var(--surf);color:var(--text);font-size:14.5px;outline:0;transition:border-color .2s,box-shadow .2s}
+.bar input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,92,10,.13)}
+.bagb{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:var(--surf);color:var(--accent);border:1.5px solid var(--line);box-shadow:0 3px 10px rgba(0,0,0,.08);transition:transform .12s}.bagb:active{transform:scale(.92)}
+.send.off{background:var(--surf2);color:var(--mut);box-shadow:none}.send{transition:all .2s}
+.dchip{align-self:center;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);padding:5px 12px;border-radius:99px;background:var(--surf2);margin:2px 0 0}
+.secn{align-self:center;text-align:center;font-size:11.5px;font-weight:600;color:var(--mut);padding:7px 14px;border-radius:14px;background:rgba(18,192,98,.09);border:1px solid rgba(18,192,98,.22);margin:6px 18px 8px}
+.mr{display:flex;align-items:flex-end;gap:8px;animation:pop .28s cubic-bezier(.2,.8,.2,1)}.mr.gs{margin-top:10px}.mr.me{justify-content:flex-end}
+.mav{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:14px;border:1.5px solid transparent;background:linear-gradient(var(--surf),var(--surf)) padding-box,var(--grad) border-box;margin-bottom:1px}.mav.sp{visibility:hidden}
+.mc{display:flex;flex-direction:column;gap:6px;max-width:80%;min-width:0}.mr.me .mc{align-items:flex-end}
+.bb{padding:10px 15px;border-radius:20px;font-size:14.5px;line-height:1.5;word-break:break-word;white-space:pre-line}
+.bb.bot{background:var(--surf);border:1px solid var(--line);border-bottom-left-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,.07);align-self:flex-start}
+.bb.me{background:var(--grad);color:#fff;border-bottom-right-radius:6px;font-weight:500;box-shadow:0 6px 16px rgba(255,92,10,.28)}
+.mt{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mut);font-weight:600;margin:0 4px}
+.tk{overflow:visible;filter:drop-shadow(0 0 3px rgba(18,192,98,.55))}.tk path{stroke-dasharray:1;stroke-dashoffset:1;animation:tkd .3s ease forwards}.tk .t1{animation-delay:.1s}.tk .t2{animation-delay:.65s}
+@keyframes tkd{to{stroke-dashoffset:0}}
+.sysm{align-self:center;font-size:11.5px;font-weight:700;color:var(--mut);padding:6px 13px;border-radius:99px;background:var(--surf2);margin:10px 0 2px;animation:pop .25s ease}
+.qrs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 14px 2px;animation:pop .3s ease}.qrs::-webkit-scrollbar{display:none}
+.qr{flex-shrink:0;font-size:13px;font-weight:700;padding:9px 15px;border-radius:99px;border:1.5px solid transparent;background:linear-gradient(var(--surf),var(--surf)) padding-box,var(--grad) border-box;color:var(--text);box-shadow:0 3px 10px rgba(255,92,10,.14);transition:transform .12s}.qr:active{transform:scale(.94)}
+.qr.pri{background:var(--green);color:#fff;border-color:transparent;box-shadow:var(--gglow)}
+.rcpt{background:var(--surf);border:1px solid var(--line);border-radius:20px;padding:14px 16px;min-width:236px;box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.rcpt h4{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.rr{display:flex;justify-content:space-between;gap:14px;font-size:13px;padding:4px 0}.rr span{color:var(--mut)}.rr b{font-weight:700;text-align:right}
+.rr.tot{border-top:1.5px dashed var(--line);margin-top:6px;padding-top:10px;font-size:15px}
+.okc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1px solid rgba(18,192,98,.38);background:rgba(18,192,98,.09)}
+.okc i{width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800;box-shadow:var(--gglow);flex-shrink:0}
+.okc b{display:block;font-size:14px}.okc small{color:var(--mut);font-size:12px}
 .send{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;box-shadow:var(--glow);flex-shrink:0}
 .card{background:var(--surf);border:1px solid var(--cardline);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--card)}
 .ch{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:4px}
@@ -447,6 +475,59 @@ h1{font-size:24px;margin-bottom:6px}
 .bkrow b{font-size:13.5px}
 
 .ptabs{gap:4px}.ptabs button{font-size:12px;padding:9px 2px}
+.pfoot .perk{color:var(--text)}
+[data-theme=light] .pfoot .perk{color:#111}
+.dsb{display:flex;gap:10px;margin-bottom:12px}
+.dsb .sbx{flex:1;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:99px;background:var(--surf);border:1px solid var(--line);color:var(--mut)}
+.dsb .sbx input{flex:1;min-width:0;padding:12px 0;background:none;border:0;outline:0;color:var(--text);font-size:14px}
+.fbtn{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--surf);border:1px solid var(--line);color:var(--text);flex-shrink:0}
+.fbtn.on{background:var(--grad);color:#fff;border-color:transparent}
+.fbtn em{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--text);color:var(--bg);font-size:10px;font-weight:800;font-style:normal;display:grid;place-items:center}
+.per{display:flex;gap:6px;margin-bottom:10px}
+.per button{flex:1;padding:8px 4px;border-radius:99px;font-weight:700;font-size:12px;color:var(--mut);background:var(--surf);border:1px solid var(--line)}
+.per button.on{background:var(--text);color:var(--bg);border-color:transparent}
+.live{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);margin:0 0 12px}
+.live i{width:8px;height:8px;border-radius:50%;background:#12c062;box-shadow:0 0 0 0 rgba(18,192,98,.6);animation:lv 1.6s infinite}
+@keyframes lv{70%{box-shadow:0 0 0 7px rgba(18,192,98,0)}100%{box-shadow:0 0 0 0 rgba(18,192,98,0)}}
+.fgrp{margin-top:16px}.fgrp .chips2{flex-wrap:wrap;overflow:visible;margin:8px 0 0}
+.sheet.cz{height:86%;max-height:86%;padding-top:10px;background:var(--surf);box-shadow:0 -12px 40px rgba(0,0,0,.35)}
+.czh{display:flex;align-items:center;gap:10px;padding:2px 16px 12px}
+.czt{font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex:1}
+.czn2{font-size:12px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--surf2);color:var(--mut)}
+.czs{display:flex;gap:2px;padding:3px;border-radius:99px;background:var(--surf2)}
+.czs button{padding:6px 13px;border-radius:99px;font-size:12px;font-weight:700;color:var(--mut);transition:all .2s}
+.czs button.on{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+.czx2{width:34px;height:34px;border-radius:50%;background:var(--surf2);color:var(--text);font-size:20px;line-height:1;display:grid;place-items:center}
+.czl{padding:6px 16px 14px;gap:20px;border-top:1px solid var(--line);overflow-y:auto}
+.czc{display:flex;gap:10px;align-items:flex-start;animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+.czav{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;box-shadow:0 0 0 2px var(--surf),0 0 0 3.5px rgba(255,92,10,.55)}
+.czav.sm{width:32px;height:32px;font-size:13px;box-shadow:none}
+.czc.rp .czav{width:30px;height:30px;font-size:12px;box-shadow:0 0 0 2px var(--surf)}
+.czb{flex:1;min-width:0}
+.czbub{display:inline-block;max-width:100%;background:var(--surf2);border-radius:6px 20px 20px 20px;padding:9px 14px 10px;border:1px solid transparent}
+.czbub.own{background:linear-gradient(var(--surf2),var(--surf2)) padding-box,var(--grad) border-box;border:1px solid transparent}
+.czn{display:flex;align-items:center;gap:6px;font-size:13px}.czn b{font-weight:800;letter-spacing:-.01em}
+.czag{color:var(--mut);font-size:12px;font-weight:600}
+.czsh{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:var(--grad);color:#fff}
+.czyou{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--text);color:var(--bg)}
+.czx{font-size:14.5px;line-height:1.42;margin-top:3px;word-break:break-word}
+.czx .mt{color:var(--accent);font-weight:700}
+.czac{display:flex;align-items:center;gap:16px;margin:6px 0 0 6px}.czac button{font-size:12px;font-weight:800;color:var(--mut);transition:color .15s}.czac button:active{color:var(--accent)}
+.czvr{display:flex;align-items:center;gap:8px;margin:10px 0 0 6px;font-size:12px;font-weight:800;color:var(--mut)}.czvr i{width:24px;height:2px;border-radius:2px;background:var(--line);background:var(--mut);opacity:.4}
+.czb>.czc{margin-top:14px;position:relative}
+.czb>.czc:before{content:"";position:absolute;left:-26px;top:-12px;width:18px;height:28px;border-left:2px solid var(--line);border-bottom:2px solid var(--line);border-radius:0 0 0 12px}
+.czlk{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:32px;padding:6px 0;margin-top:2px;border-radius:14px;color:var(--mut);font-size:11px;font-weight:800;transition:background .2s}
+.czlk.on{color:#ff4d2e;background:rgba(255,77,46,.1)}.czlk.on svg{animation:hpop .35s ease}
+@keyframes hpop{40%{transform:scale(1.45)}}
+.czr{display:flex;align-items:center;justify-content:space-between;margin:0 14px;padding:9px 14px;border-radius:14px 14px 0 0;background:var(--surf2);font-size:12.5px;color:var(--mut)}.czr b{color:var(--accent)}.czr button{font-size:18px;color:var(--mut);line-height:1}
+.czem{display:flex;gap:8px;padding:10px 14px 4px;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line)}.czem::-webkit-scrollbar{display:none}
+.czem button{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--surf2);font-size:21px;line-height:1;display:grid;place-items:center;transition:transform .12s}.czem button:active{transform:scale(1.25)}
+.czbar{display:flex;align-items:center;gap:8px;margin:6px 12px calc(env(safe-area-inset-bottom,0px) + 12px);padding:5px 5px 5px 8px;border-radius:99px;border:1.5px solid var(--line);background:var(--surf2);transition:border-color .2s,box-shadow .2s}
+.czbar:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,92,10,.14)}
+.czbar input{flex:1;min-width:0;padding:9px 4px;border:0;background:transparent;color:var(--text);font-size:14.5px;outline:0}
+.czsend{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf);color:var(--mut);flex-shrink:0;transition:all .2s}
+.czsend.on{background:var(--grad);color:#fff;box-shadow:var(--glow);transform:scale(1.05)}
+.czempty{text-align:center;color:var(--mut);padding:30px 0;font-size:14px}
 </style>
 </head>
 <body>
@@ -463,6 +544,7 @@ const Ic={
  Bag:()=><I s={24}><path d="M5.5 8h13l1 12.5h-15z"/><path className="nf" d="M9 8V6.5a3 3 0 0 1 6 0V8"/></I>,
  Bell:()=><I s={24}><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path className="nf" d="M10 20a2 2 0 0 0 4 0"/></I>,
  User:()=><I s={24}><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.8 3.4-6.5 7.5-6.5s7.5 2.7 7.5 6.5"/></I>,
+ Filter:()=><I s={19}><path d="M4 6h16M7 12h10M10 18h4"/></I>,
  Search:()=><I s={19}><circle cx="11" cy="11" r="7"/><path d="m21 21-4.300-4.300"/></I>,
  Cart:()=><I s={18}><path d="M6 7h12l1.200 13H4.800zM9 7a3 3 0 0 1 6 0"/></I>,
  Heart:({on})=><I s={22} f={on?'#ff4d2e':'none'}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
@@ -496,6 +578,7 @@ const Ic={
  Trash:({s=20})=><I s={s}><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></I>,
  UserMinus:({s=20})=><I s={s}><circle cx="9" cy="8" r="4"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6M17 8h5"/></I>,
  Chev:({s=20})=><I s={s}><path d="m9 6 6 6-6 6"/></I>,
+ HeartM:({on,s=15})=><I s={s} f={on?'#ff4d2e':'none'}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
  HeartS:({s=14})=><I s={s}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
  MsgS:({s=14})=><I s={s}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>
 };
@@ -513,6 +596,11 @@ const STORES=[
  {id:'sav',name:'Savanna Bags',tag:'#Accessories',icon:'👜',msg:'Handcrafted leather, made in Nairobi.',time:'Sun',unread:0,img:U('photo-1548036328-c9fa89d128fa'),prods:[['Leather Tote Bag',7800],['Everyday Backpack',4500],['Mini Crossbody',3900]]}
 ];
 const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
+const SCAT={apex:'Tech & Gadgets',luxe:'Fashion & Design',nova:'Beauty & Skincare',fresh:'Groceries & Fresh Food',sole:'Footwear & Sneakers',zuri:'Home & Living',peak:'Fitness & Wellness',sav:'Bags & Accessories'};
+const SOPT={apex:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Black','Silver','Blue']},luxe:{lbl:'Size',q:'Which size should I reserve for you?',o:['S','M','L','XL']},nova:{lbl:'Skin type',q:"What's your skin type? I'll make sure it suits you.",o:['Dry','Oily','Combination','Normal']},fresh:{lbl:'Size',q:'Which size works best — Small (1–2 people) or Family (3–5 people)?',o:['Small','Family']},sole:{lbl:'Size (EU)',q:'What size do you wear? (EU sizing)',o:['40','41','42','43','44','45']},zuri:{lbl:'Colour',c:1,q:'Which colour fits your space?',o:['Sage','Charcoal','Beige']},peak:{lbl:'Level',q:'Which level are you training at?',o:['Beginner','Intermediate','Advanced']},sav:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Tan','Black','Chocolate']}};
+const NBO=/nairobi|cbd|westlands|kilimani|kileleshwa|karen|lavington|lang'?ata|kasarani|roysambu|rongai|ruaka|parklands|eastleigh|south [bc]|embakasi|donholm|buruburu|thika r|ngong|upper hill|runda|muthaiga/i;
+const strip=t=>t.toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
+const findProd=(s,t)=>{const q=strip(t);let b=-1;s.prods.forEach(([n],i)=>{const sn=strip(n),w=sn.split(' ').filter(x=>x.length>=4),h=w.filter(x=>q.includes(x)).length;if(q.includes(sn))b=i;else if(b<0&&h>0&&h>=Math.min(2,w.length))b=i});return b};
 const TAG={profile:'Your account & settings',inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow',wallet:'Funds secured for your orders'};
 const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
 const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.',zuri:'Make every room feel like home.',peak:'Train harder at home with gym-grade gear.',sav:'Handcrafted leather, made to carry your day.'};
@@ -542,11 +630,18 @@ const PCT=[12,15,10,18,12,10,14,16,12,15,10,18,12,10,14,12,15];
 const DEALS=FEED.map((p,i)=>{const s=STORES.find(x=>x.id===p.sid);return {id:p.pid,name:p.name,price:p.price,pct:PCT[i%PCT.length],imgs:p.imgs,stock:12+(i*7)%40,cat:s.tag,by:s.name,cap:p.cap}});
 const cmm=d=>Math.round(d.price*d.pct/100);
 const delFee=p=>p>=15000?400:p>=5000?300:250;
+const seedDs=()=>{const n=Date.now(),H=36e5;return [[2,'Pulse Wireless Earbuds',7900,790,'Secured'],[5,'Premium Cotton Hoodie',6200,620,'Secured'],[9,'Leather Tote Bag',4680,2340,'Shipped'],[20,'Smart Watch Series X',12900,6450,'Shipped'],[30,'Air Max Retro Horizon',11200,5600,'Delivered'],[60,'Premium Cotton Hoodie',6200,620,'Delivered'],[100,'Pulse Wireless Earbuds',15800,1580,'Delivered'],[150,'Leather Tote Bag',4680,2340,'Delivered'],[300,'Smart Watch Series X',12900,6450,'Delivered'],[480,'Air Max Retro Horizon',11200,5600,'Delivered'],[620,'Premium Cotton Hoodie',9300,930,'Delivered'],[1500,'Pulse Wireless Earbuds',7900,790,'Delivered'],[3000,'Smart Watch Series X',25800,12900,'Delivered'],[6000,'Leather Tote Bag',9360,4680,'Delivered']].map(([h,item,amt,comm,status],i)=>({id:'DR-'+(900+i),t:n-h*H,item,amt,comm,status}))};
+const PER={'24h':[864e5,6],'7d':[6048e5,7],'30d':[2592e6,6],'1y':[31536e6,12]},PERL=[['24h','24 hrs'],['7d','7 days'],['30d','30 days'],['1y','1 year']];
+const DSORT={earn:(x,y)=>cmm(y)-cmm(x),comm:(x,y)=>y.pct-x.pct||cmm(y)-cmm(x),low:(x,y)=>x.price-y.price,high:(x,y)=>y.price-x.price};
+const PRR={any:[0,1e9],u2:[0,2000],m:[2000,5000],o5:[5000,1e9]};
 const D7=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DEMO_MORD=[{id:'DS-2041',item:'Pulse Wireless Earbuds',qty:2,amt:15800,comm:1580,drop:'Zuri Promos',status:'Secured'},{id:'DS-2038',item:'Premium Cotton Hoodie',qty:1,amt:6200,comm:620,drop:'Kenya Deals Hub',status:'Secured'},{id:'DS-2035',item:'Hydrating Glow Serum',qty:3,amt:14400,comm:1440,drop:'Glow Girl KE',status:'Shipped'},{id:'DS-2029',item:'Yoga Mat Pro',qty:1,amt:2600,comm:260,drop:'Zuri Promos',status:'Paid out'}];
 const FILT=['none','hue-rotate(50deg) saturate(1.1)','hue-rotate(190deg)'];
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
+const Ticks=()=><svg className="tk" width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="url(#tkg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Delivered"><path className="t1" pathLength="1" d="M1 6.5 4.5 10 11 2.5"/><path className="t2" pathLength="1" d="M6.5 6.5 10 10 16.5 2.5"/></svg>;
+const BagI=()=><I s={21}><path d="M5.5 8h13l1 12.5h-15z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></I>;
+const Rcpt=({r})=><div className="rcpt"><h4>Order summary</h4><div className="rr"><span>Item</span><b>{r.item}</b></div>{r.col&&<div className="rr"><span>Colour</span><b>{r.col}</b></div>}{r.opt&&<div className="rr"><span>{r.lbl}</span><b>{r.opt}</b></div>}<div className="rr"><span>Deliver to</span><b>{r.loc}</b></div><div className="rr"><span>Payment</span><b>{r.pay}</b></div><div className="rr"><span>Price</span><b>{ksh(r.price)}</b></div><div className="rr"><span>Delivery</span><b>{ksh(r.fee)}</b></div><div className="rr tot"><span>Total</span><b className="amt">{ksh(r.total)}</b></div></div>;
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
@@ -597,7 +692,7 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
 
 const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
 function Spark({d,lab,gid}){const w=300,h=110,p=8,mx=Math.max(...d),x=i=>p+i*(w-2*p)/(d.length-1),y=v=>h-p-(v/(mx||1))*(h-2*p-8),pts=d.map((v,i)=>[x(i),y(v)]),line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(''),area=line+`L${x(d.length-1)} ${h-p}L${x(0)} ${h-p}Z`;return <div className="chart"><svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="Growth chart"><defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff5c0a" stopOpacity=".35"/><stop offset="1" stopColor="#ff5c0a" stopOpacity="0"/></linearGradient></defs><path d={area} fill={`url(#${gid})`}/><path d={line} fill="none" stroke="#ff5c0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill="#ff5c0a"/></svg><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
-function Bars({d,lab}){const mx=Math.max(...d);return <div className="chart"><div className="bars">{d.map((v,i)=><div key={i} className="bc"><i style={{height:(v/mx*100)+'%'}}/></div>)}</div><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
+function Bars({d,lab}){const mx=Math.max(...d)||1;return <div className="chart"><div className="bars">{d.map((v,i)=><div key={i} className="bc"><i style={{height:(v/mx*100)+'%'}}/></div>)}</div><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
 function Hbar({rows,f=v=>v}){const mx=Math.max(...rows.map(r=>r[1]));return <div className="hb">{rows.map(([l,v])=><div key={l}><div className="hl"><span>{l}</span><b>{f(v)}</b></div><div className="ht"><i style={{width:(v/mx*100)+'%'}}/></div></div>)}</div>}
 const Kp=({i,l,v,dl})=><div className="kpi"><span className="ke">{i}</span><b>{v}</b><span>{l}{dl&&<em className="dl">{dl}</em>}</span></div>;
 const Ava=({src,icon,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:icon}</i><span className="plus"><Ic.Camera s={12}/></span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
@@ -605,7 +700,13 @@ const Toggle=({label,sub,on,onClick})=><button className="row" style={{padding:'
 function Fields({rows,val,set,edit}){return <div className="frm">{rows.map(([k,l,ph,t])=><div key={k} className="fr"><label>{l}</label>{edit?(t==='area'?<textarea className="fi" rows={3} placeholder={ph} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>:<input className="fi" placeholder={ph} inputMode={t==='tel'?'tel':undefined} type={t==='email'?'email':'text'} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>):<div className={'fv'+(val[k]?'':' em')}>{val[k]||'Not added yet'}</div>}</div>)}</div>}
 function Acc({title,icon,badge,action,children}){const [v,setV]=useState(false);return <div className={'card acc'+(v?' open':'')}><div className="acch" role="button" tabIndex={0} aria-expanded={v} onClick={()=>setV(!v)} onKeyDown={e=>(e.key==='Enter'||e.key===' ')&&setV(!v)}><div className="nm grow">{icon&&<span className="acci">{icon}</span>}<span>{title}</span></div>{badge}{v&&action&&<span onClick={e=>e.stopPropagation()}>{action}</span>}<svg className="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>{v&&<div className="accb">{children}</div>}</div>}
 const Skel=()=><div className="post"><div className="ph"><div className="sk" style={{width:44,height:44,borderRadius:'50%'}}/><div className="grow"><div className="sk" style={{height:14,width:'45%',marginBottom:8}}/><div className="sk" style={{height:10,width:'25%'}}/></div></div><div className="sk" style={{height:440,borderRadius:28}}/></div>;
-const SEED=[['amina_k','Love this! 😍'],['brian.o','Do you deliver to Kisumu?'],['wanjiru','Those colours are 🔥']];
+const SEED=[{id:'s1',u:'amina_k',t:'Love this! 😍',ago:'2h',likes:24,replies:[{id:'s1r',u:'Shop owner',shop:1,t:'Thank you Amina! 💛 Chat with us to order.',ago:'1h',likes:6}]},
+{id:'s2',u:'brian.o',t:'Do you deliver to Kisumu?',ago:'3h',likes:8,replies:[{id:'s2r',u:'Shop owner',shop:1,t:'Yes we do! Countrywide delivery takes 2–3 days.',ago:'3h',likes:11}]},
+{id:'s3',u:'wanjiru',t:'Those colours are 🔥',ago:'5h',likes:41,replies:[]},
+{id:'s4',u:'kevin_m',t:'Fair price, ordering today 🙌',ago:'1d',likes:3,replies:[]}];
+const GRS=['linear-gradient(135deg,#ff8f1c,#f03a0e)','linear-gradient(135deg,#34e68a,#079244)','linear-gradient(135deg,#6a8dff,#7b3fe4)','linear-gradient(135deg,#ff6fa5,#c2185b)','linear-gradient(135deg,#ffd166,#ef8a17)','linear-gradient(135deg,#3ec6e0,#1769aa)'];
+const gr=u=>GRS[[...u].reduce((a,c)=>a+c.charCodeAt(0),0)%GRS.length];
+const tAgo=t=>{const m=Math.floor((Date.now()-t)/6e4);return m<1?'now':m<60?m+'m':Math.floor(m/60)+'h'};
 
 function App(){
  const [dark,setDark]=useState(()=>{try{return localStorage.getItem('teqx-theme')!=='light'}catch(e){return true}});
@@ -613,7 +714,7 @@ function App(){
  const [chat,setChat]=useState(null);
  const [text,setText]=useState('');
  const [chats,setChats]=useState({});
- const [typing,setTyping]=useState(false);
+ const [typing,setTyping]=useState({});
  const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,s.unread])));
  const [orders,setOrders]=useState([
   {id:'TQ-4821',store:STORES[0],item:STORES[0].prods[0][0],price:18500,fee:delFee(18500),status:'Shipped'},
@@ -624,8 +725,8 @@ function App(){
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
- const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',pids:[]}),[mord,setMord]=useState(DEMO_MORD),[dq,setDq]=useState('All'),[dsort,setDsort]=useState('comm'),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
- useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts,bal,txs,mprods,earn,earnD}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD]);
+ const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',pids:[]}),[mord,setMord]=useState(DEMO_MORD),[dper,setDper]=useState('24h'),[dsOrders,setDsOrders]=useState(()=>init.dsOrders||seedDs()),[dsq,setDsq]=useState(''),[dfl,setDfl]=useState({sort:'earn',min:0,price:'any',cat:'All',stock:false}),[fopen,setFopen]=useState(false),[edp,setEdp]=useState(null),[,setTick]=useState(0),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
+ useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
  const [ptab,setPtab]=useState('dash'),[dtab,setDtab]=useState('dash'),[edShop,setEdShop]=useState(false),[edMe,setEdMe]=useState(false);
@@ -640,38 +741,82 @@ function App(){
  const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),900)};
  const openStory=i=>{setSt(i);setSr('');setSeen(m=>({...m,[STORES[i].id]:true}))};
  const goStory=dx=>{const n=st+dx;if(n<0)return;if(n>=STORES.length)setSt(null);else openStory(n)};
- const addCm=()=>{const t=ct.trim();if(!t)return;setCmts(c=>({...c,[cm]:[...(c[cm]||[]),['you',t]]}));setCt('')};
+ const [clk,setClk]=useState({}),[ex,setEx]=useState({}),[rpl,setRpl]=useState(null),[cSort,setCSort]=useState('top'),inRef=useRef(null);
+ const addCm=()=>{const t=ct.trim();if(!t)return;setCmts(c=>({...c,[cm]:[...(c[cm]||[]),{id:'c'+Date.now(),u:'you',t,ts:Date.now(),likes:0,parent:rpl?rpl.id:null}]}));if(rpl)setEx(m=>({...m,[rpl.id]:true}));setCt('');setRpl(null)};
+ const delCm=id=>setCmts(c=>({...c,[cm]:(c[cm]||[]).filter(x=>x.id!==id&&x.parent!==id)}));
+ const closeCm=()=>{setCm(null);setRpl(null)};
+ const mine=cm?(cmts[cm]||[]):[],tops=[...mine.filter(x=>!x.parent).reverse(),...SEED].map((c,i)=>({...c,_i:i})).sort((a,b)=>cSort==='top'?((b.likes||0)+(clk[b.id]?1:0))-((a.likes||0)+(clk[a.id]?1:0)):a._i-b._i);
+ const cmItem=(c,isRep)=>{const kids=[...(c.replies||[]),...mine.filter(x=>x.parent===c.id)];return <div key={c.id} className={'czc'+(isRep?' rp':'')}><div className="czav" style={{background:gr(c.u)}}>{c.u[0].toUpperCase()}</div><div className="czb"><div className={'czbub'+(c.shop?' own':'')}><div className="czn"><b>{c.u}</b>{c.shop&&<span className="czsh">✓ Shop</span>}{c.u==='you'&&<span className="czyou">You</span>}</div><div className="czx">{c.t}</div></div><div className="czac"><span className="czag">{c.ts?tAgo(c.ts):c.ago}</span><button onClick={()=>{setRpl({id:c.parentId||c.id,u:c.u});setTimeout(()=>inRef.current&&inRef.current.focus(),60)}}>Reply</button>{c.u==='you'&&<button onClick={()=>delCm(c.id)}>Delete</button>}</div>{!isRep&&kids.length>0&&<button className="czvr" onClick={()=>setEx(m=>({...m,[c.id]:!m[c.id]}))}><i/>{ex[c.id]?'Hide replies':'View '+kids.length+(kids.length>1?' replies':' reply')}</button>}{!isRep&&ex[c.id]&&kids.map(k=>cmItem({...k,parentId:c.id},true))}</div><button className={'czlk'+(clk[c.id]?' on':'')} aria-label="Like comment" onClick={()=>flip(setClk,c.id)}><Ic.HeartM on={clk[c.id]}/><span>{(c.likes||0)+(clk[c.id]?1:0)||''}</span></button></div>};
  const flip=(set,id)=>set(m=>({...m,[id]:!m[id]}));
  const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
 
  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
  useEffect(()=>{end.current&&end.current.scrollIntoView({behavior:'smooth',block:'end'})},[chats,typing,chat]);
 
- const push=(id,m)=>setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),...m}]}));
- const say=async(id,msgs)=>{setTyping(true);for(const m of msgs){await wait(800);push(id,m);}setTyping(false)};
+ const push=(id,m)=>setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));
+ const qref=useRef({}),pend=useRef({}),flowRef=useRef({});
+ /* every shop reply lands after a 3s typing delay; replies to the same shop are queued in order */
+ const say=(id,msgs)=>{pend.current[id]=(pend.current[id]||0)+1;setTyping(t=>({...t,[id]:true}));
+  const run=async()=>{for(const m of msgs){await wait(3000);push(id,{from:'bot',...m})}pend.current[id]--;if(!pend.current[id])setTyping(t=>({...t,[id]:false}))};
+  qref.current[id]=(qref.current[id]||Promise.resolve()).then(run);return qref.current[id]};
 
  const open=(s,m)=>{setSearch(false);setQ('');setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
-  if(chats[s.id]&&m){push(s.id,{from:'me',text:m});say(s.id,[{from:'bot',text:"Great choice! 🙌 It's available. Here's our catalog so you can order:"},{from:'bot',catalog:true}])}
-  if(!chats[s.id]){setChats(c=>({...c,[s.id]:[]}));if(m)push(s.id,{from:'me',text:m});say(s.id,[{from:'bot',text:`Karibu! 👋 Welcome to ${s.name}. I'm the shop's automated assistant. Browse our latest picks below, or tap a quick option.`},{from:'bot',catalog:true}])}};
+  const had=!!chats[s.id];if(!had)setChats(c=>({...c,[s.id]:[]}));
+  if(m){push(s.id,{from:'me',text:m});say(s.id,[eng(s,m,!had)])}
+  else if(!had)say(s.id,[{text:`Karibu! 👋 Welcome to ${s.name}. I can help you pick, check prices and place your order in a few taps. What are you looking for today?`,catalog:true,qr:QB}])};
 
- const reply=(s,t)=>{const q=t.toLowerCase();
-  if(/catalog|show|price|cost|item|product/.test(q))return[{from:'bot',text:'Here are our top picks right now:'},{from:'bot',catalog:true}];
-  if(/track|status|where/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return[{from:'bot',text:o?`Your order ${o.id} (${o.item}) is currently: ${o.status}.`:'You have no orders with us yet. Tap "Order now" on any item to place one.'}]}
-  if(/deliver|ship/.test(q))return[{from:'bot',text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.'}];
-  if(/pay|mpesa|m-pesa|card/.test(q))return[{from:'bot',text:'We accept M-Pesa, bank cards and cash on delivery.'}];
-  if(/person|human|agent|help/.test(q))return[{from:'bot',text:'Connecting you to a team member. They usually reply within 10 minutes.'}];
-  if(/hi|hello|hey|sasa|mambo/.test(q))return[{from:'bot',text:`Hello! 😊 How can I help you today at ${s.name}?`}];
-  return[{from:'bot',text:'Thanks for your message! I can help with the catalog, order tracking, delivery and payments.'}]};
+ /* ---- rule-based sales assistant: browse → option → delivery → payment → confirm → order placed ---- */
+ const fl=id=>flowRef.current[id]||(flowRef.current[id]={st:'browse'});
+ const feeOf=f=>delFee(f.price)+(f.zone==='other'?150:0);
+ const QB=['🔥 Best seller','Browse catalog','Delivery info','Payment options'],QD=['Track my order','Order something else','Delivery info','Talk to a person'],MID=['option','delivery','payment','confirm'];
+ const sumry=(s,f)=>{const fee=feeOf(f);return{text:'Here’s your order summary. Does everything look right?',summary:{item:f.item,lbl:SOPT[s.id].lbl,opt:f.opt,col:f.col,loc:f.loc,pay:f.pay,price:f.price,fee,total:f.price+fee},qr:['✅ Confirm order','Change option','Change delivery','Cancel']}};
+ const ask=(s,f)=>{const st=f.st;
+  if(st==='option'){const o=SOPT[s.id];return{text:o.q,qr:[...o.o,'See other items']}}
+  if(st==='delivery'){const d=delFee(f.price);return{text:'Where should we deliver it? Tap an option or type your area.',qr:[`Nairobi · ${ksh(d)}`,`Outside Nairobi · ${ksh(d+150)}`,'Change option']}}
+  if(st==='payment')return{text:'How would you like to pay?',qr:['M-Pesa','Bank card','Cash on delivery','Change delivery']};
+  if(st==='confirm')return sumry(s,f);
+  if(st==='done')return{text:'Anything else I can help with?',qr:QD};
+  return{text:'What would you like to do?',qr:QB}};
+ const place=(s,f)=>{const fee=feeOf(f),nm=f.item+(f.opt||f.col?` (${[f.opt,f.col].filter(Boolean).join(', ')})`:''),id=secure(s,nm,f.price,fee);f.st='done';track(id,s.id);
+  return{text:`Order ${id} confirmed 🎉\n${f.pay==='Cash on delivery'?'Please have the cash ready for the rider.':'Your payment is held securely until your order arrives.'} I’ll update you here at every step.`,placed:id,qr:['Track my order','Order something else','Talk to a person']}};
+ const eng=(s,text,first)=>{const f=fl(s.id),q=strip(text),T=q.split(' '),hi=first?`Karibu! 👋 Welcome to ${s.name}.\n`:'',W=o=>({...o,text:hi+o.text});
+  const go=(st,pre)=>{f.st=st;const a=ask(s,f);return W({...a,text:(pre||'')+a.text})};
+  const tail=a=>MID.includes(f.st)?['Continue my order',...a]:a;
+  const CMD=/^(change|see other|browse|show|track|continue|order something|talk|delivery info|payment options|best seller|cancel|hi|hello|hey|sasa|thank)/,INFO=/price|how much|cost|discount|cheap|return|refund|warrant|human|person|agent|help|stock|available|catalog|mpesa|m pesa|card|cash|pay\b/;
+  if(/^(cancel|stop|start over|restart|never mind|nevermind)\b/.test(q)){flowRef.current[s.id]={st:'browse'};return W({text:'No problem, I’ve cleared that. Want to look at something else?',qr:QB})}
+  const pi=findProd(s,text),mm=text.match(/interested in the (.+?) in (.+)$/i);
+  if(pi>=0){const o=SOPT[s.id];f.item=s.prods[pi][0];f.price=s.prods[pi][1];f.opt=f.col=f.loc=f.pay=f.zone=null;
+   if(mm){const c=mm[2].trim();if(o.c){f.opt=c;return go('delivery',`Great choice! The ${f.item} in ${c} is ${ksh(f.price)} and in stock. 🎉\n`)}f.col=c;return go('option',`Great choice — ${c} it is! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+   return go('option',`Great choice! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+  if(/^change option/.test(q)&&f.item)return go('option');
+  if(/^change delivery/.test(q)&&f.item)return go('delivery');
+  if(f.st==='option'){const o=SOPT[s.id],syn={small:'S',medium:'M',large:'L'},hit=o.o.find(x=>T.includes(x.toLowerCase()))||(s.id==='luxe'?T.map(t=>syn[t]).find(Boolean):null);if(hit){f.opt=hit;return go('delivery',`${hit} noted ✔️\n`)}}
+  if(f.st==='delivery'&&!CMD.test(q)&&!INFO.test(q)&&!/\?/.test(text)&&q.length>2){const z=/outside|other town|upcountry/.test(q)?'other':NBO.test(q)?'nairobi':'other';f.zone=z;f.loc=/^outside nairobi/.test(q)?'Outside Nairobi':/^nairobi ksh/.test(q)?'Nairobi':text.trim().replace(/^(deliver(y)?( it)? to|to|in|at)\s+/i,'').slice(0,40);return go('payment',`Delivery to ${f.loc} (${z==='nairobi'?'within 24 hours':'2–3 days'}) is ${ksh(feeOf(f))}.\n`)}
+  if(f.st==='payment'){const pay=/mpesa|m pesa/.test(q)?'M-Pesa':/card|visa|master/.test(q)?'Bank card':/cash|cod|on delivery/.test(q)?'Cash on delivery':null;if(pay){f.pay=pay;return go('confirm')}}
+  if(f.st==='confirm'&&/^(confirm|yes|yep|yeah|ok|okay|sure|proceed|place|go ahead|looks good|correct)\b/.test(q))return W(place(s,f));
+  if(/best seller|bestseller|popular|recommend/.test(q)){f.st='offer';return W({text:`Our best seller right now is the ${s.prods[0][0]} at ${ksh(s.prods[0][1])}. ⭐ Want me to reserve one for you?`,qr:['Yes, order it','Browse catalog','Delivery info']})}
+  if(f.st==='offer'&&/^(yes|yep|yeah|sure|ok|okay|order it|i want it|reserve)/.test(q)){f.item=s.prods[0][0];f.price=s.prods[0][1];f.opt=f.col=f.loc=f.pay=f.zone=null;return go('option',`Excellent pick! The ${f.item} is ${ksh(f.price)}.\n`)}
+  if(/continue my order|^continue$/.test(q))return W(ask(s,f));
+  if(/track|status|where is my|my order/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return W({text:o?`Your order ${o.id} · ${o.item} is currently ${o.status}.`:'You have no orders with us yet. Pick something you love and I’ll set it up in under a minute.',qr:o?QD.slice(1):QB})}
+  if(/catalog|catalogue|browse|show|menu|products?|what do you (have|sell)|other items|order something|see more/.test(q)){if(f.st==='done'||f.st==='offer')f.st='browse';return W({text:'Here are our top picks 👇 Tap “Order now” on anything you like and I’ll take it from there.',catalog:true,qr:tail(['🔥 Best seller','Delivery info','Payment options'])})}
+  if(/deliver|ship|how long|arrive|when will/.test(q))return W({text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.',qr:tail(['Browse catalog','Payment options'])});
+  if(/price|how much|cost/.test(q)){if(f.item)return W({text:`The ${f.item} is ${ksh(f.price)}. Delivery starts at ${ksh(delFee(f.price))}.`,qr:tail(['Browse catalog','Payment options'])});return W({text:'Here are our current prices 👇',catalog:true,qr:QB})}
+  if(/stock|available|availability/.test(q))return W({text:'Everything in our catalog is in stock and ready to dispatch. ✅',qr:tail(['Browse catalog','Delivery info'])});
+  if(/pay|mpesa|m pesa|card|cash|wallet/.test(q))return W({text:'We accept M-Pesa, bank cards and cash on delivery. Your payment is held securely until your order is delivered.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/discount|cheap|offer|bargain|negotiat|last price|reduce/.test(q))return W({text:'Our listed prices are fixed so every customer gets the same fair deal. You also get secure payment, fast delivery and easy returns. 💛',qr:tail(['Browse catalog','Delivery info'])});
+  if(/return|refund|exchange|warrant/.test(q))return W({text:'Easy returns: if something isn’t what you ordered, tell us here and we’ll make it right. Your payment stays secured until delivery.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/person|human|agent|help|support|call/.test(q))return W({text:'Connecting you to a team member 👩🏾‍💼 They usually reply within 10 minutes. I can keep helping with your order meanwhile.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/thank|asante|cheers/.test(q))return W({text:'Karibu sana! 💛 Let me know if you need anything else.',qr:f.st==='done'?QD:tail(QB)});
+  if(/^(hi|hello|hey|sasa|mambo|niaje|hola|good (morning|afternoon|evening))\b/.test(q))return MID.includes(f.st)?go(f.st,'Hello again! 😊\n'):W({text:`Hello! 😊 How can I help you today at ${s.name}?`,qr:QB});
+  if(MID.includes(f.st)){const a=ask(s,f);return W({...a,text:'Just so I get it right 🙂 '+a.text})}
+  return W({text:'Thanks for your message! I can show you our catalog, check prices, delivery and payment, or place your order in a few taps. What would you like?',qr:QB})};
 
- const send=t=>{t=(t||'').trim();if(!t||typing)return;push(chat.id,{from:'me',text:t});setText('');say(chat.id,reply(chat,t))};
+ const send=t=>{t=(t||'').trim();if(!t||!chat)return;push(chat.id,{from:'me',text:t});setText('');say(chat.id,[eng(chat,t,false)])};
 
- const secure=(s,item,price)=>{const fee=delFee(price);
-  const id='TQ-'+Math.floor(1000+Math.random()*9000);setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);return id};
- const track=async id=>{await wait(5000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x));await wait(7000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x))};
- const buy=async(s,item,price)=>{if(typing)return;const id=secure(s,item,price);if(!id)return;
-  push(s.id,{from:'me',text:`I'd like to order: ${item}`});
-  await say(s.id,[{from:'bot',text:`Order ${id} received ✅ — ${item} for ${ksh(price)} plus ${ksh(delFee(price))} delivery. Your funds are secured in your wallet until delivery.`}]);
-  track(id)};
+ const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price);
+ const id='TQ-'+Math.floor(1000+Math.random()*9000);setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);return id};
+ const track=async(id,sid)=>{await wait(5000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x));if(sid)push(sid,{from:'sys',text:`Order ${id} · Shipped 🚚`});await wait(7000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x));if(sid)push(sid,{from:'sys',text:`Order ${id} · Delivered ✅`})};
+ const buy=(s,item)=>send(`I'd like to order: ${item}`);
  const quick=async(s,item,price)=>{const id=secure(s,item,price);if(!id)return;note(`Order ${id} secured`);track(id)};
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
  const adv=o=>{if(o.status==='Secured'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Shipped'}:x));note('Marked as shipped')}else if(o.status==='Shipped'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Delivered'}:x));setTimeout(()=>{setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Paid out'}:x));setEarn(e=>e+o.amt-o.comm);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+o.id,amt:o.amt-o.comm,r:'merchant'},...x]);note('Payout added to your earnings')},1500)}};
@@ -679,12 +824,30 @@ function App(){
  const addProd=()=>{const ph=mp.pids.map(id=>photos.find(p=>p.id===id)).filter(Boolean);if(!ph.length)return note('Pick at least one product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:ph.map(x=>x.src)},...m]);setMp({name:'',price:'',comm:'',stock:'',pids:[]});note('Product uploaded')};
  const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
- const dealList=allDeals.filter(d=>dq==='All'||d.cat===dq).sort((x,y)=>dsort==='comm'?cmm(y)-cmm(x):x.price-y.price);
+ const nf=(dfl.sort!=='earn'?1:0)+(dfl.min?1:0)+(dfl.price!=='any'?1:0)+(dfl.cat!=='All'?1:0)+(dfl.stock?1:0),ql=dsq.trim().toLowerCase();
+ const dealList=allDeals.filter(d=>(dfl.cat==='All'||d.cat===dfl.cat)&&d.pct>=dfl.min&&d.price>=PRR[dfl.price][0]&&d.price<PRR[dfl.price][1]&&(!dfl.stock||d.stock>0)&&(!ql||(d.name+' '+d.by+' '+d.cat).toLowerCase().includes(ql))).sort(DSORT[dfl.sort]);
+ const resetF=()=>{setDfl({sort:'earn',min:0,price:'any',cat:'All',stock:false});setDsq('')};
+ const fg=(t,opts,k)=><div className="fgrp"><div className="sect" style={{padding:0}}>{t}</div><div className="chips2">{opts.map(([v,l])=><button key={String(v)} className={dfl[k]===v?'on':''} onClick={()=>setDfl(f=>({...f,[k]:v}))}>{l}</button>)}</div></div>;
+ /* real-time dropshipper orders: a new order is secured on one of the live posts, then ships and is delivered; commission is released only on delivery */
+ useEffect(()=>{const live=myPosts.filter(p=>p.deal);if(!live.length)return;const iv=setInterval(()=>{const p=live[Math.floor(Math.random()*live.length)],comm=Math.round(p.price*(p.pct||10)/100),id='DR-'+Math.floor(1000+Math.random()*9000);setDsOrders(o=>[{id,t:Date.now(),item:p.name,amt:p.price,comm,status:'Secured'},...o]);note('New order secured via your post · expected '+ksh(comm));setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x)),30000);setTimeout(()=>{setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x));setEarnD(e=>e+comm);setTxs(x=>[{id:'t'+Date.now(),k:'Commission released · '+id,amt:comm,r:'dropshipper'},...x])},75000)},45000);return()=>clearInterval(iv)},[myPosts]);
+ useEffect(()=>{const iv=setInterval(()=>setTick(t=>t+1),60000);return()=>clearInterval(iv)},[]);
+ const startEdit=p=>{const dl=allDeals.find(d=>d.id===p.deal),list=[...p.imgs,...((dl&&dl.imgs)||[]).filter(x=>!p.imgs.includes(x))];setEdp({id:p.id,name:p.name,cap:p.cap||'',list,sel:p.imgs.map((_,i)=>i)})};
+ const addEditPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;setEdp(v=>({...v,list:[...v.list,...out],sel:[...v.sel,...out.map((_,i)=>v.list.length+i)]}))};
+ const saveEdit=()=>{if(!edp.sel.length)return note('Pick at least one photo');if(!edp.name.trim())return note('Enter a title');setMyPosts(m=>m.map(x=>x.id===edp.id?{...x,name:edp.name.trim(),cap:edp.cap.trim(),imgs:edp.sel.map(i=>edp.list[i])}:x));setEdp(null);note('Post updated')};
  const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
  const startPromo=d=>{setPromo(d);setPlist(d.imgs);setPsel(d.imgs.map((_,i)=>i));setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
  const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
  const secured=orders.filter(o=>o.status==='Secured'||o.status==='Shipped'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
- const lastBot=chat&&(chats[chat.id]||[]).length>0;
+ const cmsgs=chat?(chats[chat.id]||[]):[],lm=[...cmsgs].reverse().find(m=>m.from!=='sys'),isTyp=!!(chat&&typing[chat.id]),qrs=lm&&lm.from==='bot'&&!isTyp?lm.qr:null;
+ const fmtT=ts=>new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
+ const renderMsg=(m,i,a)=>{const pv=a[i-1],nx=a[i+1],gs=!pv||pv.from!==m.from||pv.from==='sys';
+  if(m.from==='sys')return <div key={m.k} className="sysm">{m.text}</div>;
+  if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
+  const last=!nx||nx.from!=='bot';
+  return <div key={m.k} style={{display:'contents'}}>
+   {(m.text||m.summary||m.placed)&&<div className={'mr'+(gs?' gs':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {m.catalog&&<div className="hs cat">{[0,1,2].map(i=><Product key={i} store={chat} i={i} onBuy={buy}/>)}</div>}
+  </div>};
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
  const brand=<div className="brand">Te<b>Q</b>x</div>;
@@ -746,34 +909,40 @@ function App(){
        {(o.status==='Secured'||o.status==='Shipped')&&<button className="btn" style={{marginTop:12}} onClick={()=>adv(o)}>{o.status==='Secured'?'Mark as shipped':'Mark as delivered'}</button>}</div>)}
      </>}
 
-     {ptab==='wal'&&(()=>{const m=role==='merchant',av=m?earn:earnD,pend=mord.filter(o=>o.status==='Secured'||o.status==='Shipped').reduce((a,o)=>a+(m?o.amt-o.comm:o.comm),0),H=txs.filter(x=>m?x.r==='merchant':x.r==='dropshipper');return <>
+     {ptab==='wal'&&(()=>{const m=role==='merchant',av=m?earn:earnD,pend=m?mord.filter(o=>o.status==='Secured'||o.status==='Shipped').reduce((a,o)=>a+o.amt-o.comm,0):dsOrders.filter(o=>o.status!=='Delivered').reduce((a,o)=>a+o.comm,0),H=txs.filter(x=>m?x.r==='merchant':x.r==='dropshipper');return <>
       <div className="wh"><small>{m?'Sale payouts available':'Commissions available'}</small><b className="big">{ksh(av)}</b>
-       <div className="wrow"><div><small>{m?'Held until delivery':'Pending commission'}</small><b>{ksh(pend)}</b></div><div><small>{m?'Orders to deliver':'Orders in progress'}</small><b>{mord.filter(o=>o.status==='Secured'||o.status==='Shipped').length}</b></div></div></div>
-      <p className="bd" style={{margin:'0 0 12px'}}>{m?'Buyers have already secured their money. It is paid out here after you deliver, minus the dropshipper commission.':'You earn commission when the buyer receives an order placed from your posts.'}</p>
+       <div className="wrow"><div><small>{m?'Held until delivery':'Expected commission'}</small><b>{ksh(pend)}</b></div><div><small>{m?'Orders to deliver':'Orders in progress'}</small><b>{m?mord.filter(o=>o.status==='Secured'||o.status==='Shipped').length:dsOrders.filter(o=>o.status!=='Delivered').length}</b></div></div></div>
+      <p className="bd" style={{margin:'0 0 12px'}}>{m?'Buyers have already secured their money. It is paid out here after you deliver, minus the dropshipper commission.':'These orders are already secured by buyers, so this commission is expected, not earned yet. It moves to Commissions available once each order is delivered.'}</p>
       <button className="btn" style={{marginBottom:16}} onClick={()=>withdraw(role)}>Withdraw to M-Pesa</button>
       <div className="card"><div className="ch"><div className="nm" style={{fontSize:15}}><Ic.Wallet s={18}/><span>History</span></div></div>
        {H.length?H.slice(0,10).map(x=><div key={x.id} className="sec"><div className="grow nm">{x.k}</div><div className="amt" style={{color:x.amt<0?'var(--text)':'#0fb85b'}}>{x.amt<0?'−':'+'}{ksh(Math.abs(x.amt))}</div></div>):<p className="bd" style={{margin:0}}>No transactions yet.</p>}</div>
      </>})()}
 
-     {role==='dropshipper'&&ptab==='dash'&&<>
-      <div className="kpis"><Kp i={<Ic.Wallet s={20}/>} l="Sales" v={ksh(229000)} dl="+24%"/><Kp i={<Ic.Up s={20}/>} l="Commission earned" v={ksh(27300)} dl="+21%"/><Kp i={<Ic.Pkg s={20}/>} l="Orders" v="64"/><Kp i={<Ic.Eye s={20}/>} l="Conversion" v="3.8%"/></div>
+     {role==='dropshipper'&&ptab==='dash'&&(()=>{const [win,nb]=PER[dper],now=Date.now(),size=win/nb,inP=dsOrders.filter(o=>now-o.t<win),exp=inP.filter(o=>o.status!=='Delivered'),rel=inP.filter(o=>o.status==='Delivered'),sum=(a,k)=>a.reduce((t,o)=>t+o[k],0),
+       bk=Array.from({length:nb},(_,i)=>inP.filter(o=>Math.min(nb-1,Math.floor((now-o.t)/size))===nb-1-i)),
+       fm=t=>{const d=new Date(t);return dper==='24h'?d.toLocaleTimeString([],{hour:'numeric'}):dper==='7d'?d.toLocaleDateString([],{weekday:'short'}):dper==='30d'?d.toLocaleDateString([],{day:'numeric',month:'short'}):d.toLocaleDateString([],{month:'short'})},
+       lab=bk.map((_,i)=>fm(now-(nb-i-.5)*size)),top={};inP.forEach(o=>{top[o.item]=(top[o.item]||0)+o.comm});const tr=Object.entries(top).sort((x,y)=>y[1]-x[1]).slice(0,4);
+       return <>
+      <div className="per">{PERL.map(([k,l])=><button key={k} className={dper===k?'on':''} onClick={()=>setDper(k)}>{l}</button>)}</div>
+      <p className="live"><i/>Live · updates as orders are placed through your posts</p>
+      <div className="kpis"><Kp i={<Ic.Up s={20}/>} l="Expected commission" v={ksh(sum(exp,'comm'))}/><Kp i={<Ic.Wallet s={20}/>} l="Sales secured" v={ksh(sum(inP,'amt'))}/><Kp i={<Ic.Pkg s={20}/>} l="Orders placed" v={inP.length}/><Kp i={<Ic.Users s={20}/>} l="Released after delivery" v={ksh(sum(rel,'comm'))}/></div>
+      <p className="bd" style={{margin:'-4px 0 14px'}}>Buyers have already secured their money for these orders, so your commission is expected, not earned yet. It moves to your wallet once each order is delivered.</p>
       <div className="qa" style={{gridTemplateColumns:'repeat(3,1fr)'}}><button onClick={()=>setPtab('deals')}><span><Ic.Tag s={20}/></span>Browse deals</button><button onClick={()=>setPtab('posts')}><span><Ic.Pen s={20}/></span>My posts</button><button onClick={shareShop}><span><Ic.Link s={20}/></span>Share page</button></div>
-      <Acc icon={<Ic.Up s={18}/>} title="Sales growth" badge={<span className="pc">+24%</span>}><Spark gid="gd" d={[18,24,22,35,31,47,52]} lab={D7}/><p className="bd" style={{margin:'8px 0 0'}}>Sales per day this week (demo data)</p></Acc>
-      <Acc icon={<Ic.Wallet s={18}/>} title="Commission revenue" badge={<span className="pc">{ksh(27300)}</span>}><Bars d={[2.1,2.9,2.6,4.2,3.7,5.6,6.2]} lab={D7}/></Acc>
-      <Acc icon={<Ic.Tag s={18}/>} title="Top deals by commission"><Hbar f={v=>ksh(v)} rows={[['Smart Watch Series X',6450],['Air Max Retro Horizon',5600],['Premium Cotton Hoodie',3100],['Leather Tote Bag',2340]]}/></Acc>
+      <Acc icon={<Ic.Up s={18}/>} title="Sales secured" badge={<span className="pc">{ksh(sum(inP,'amt'))}</span>}><Spark gid="gd" d={bk.map(x=>sum(x,'amt'))} lab={lab}/></Acc>
+      <Acc icon={<Ic.Wallet s={18}/>} title="Expected commission" badge={<span className="pc">{ksh(sum(inP,'comm'))}</span>}><Bars d={bk.map(x=>sum(x,'comm'))} lab={lab}/><p className="bd" style={{margin:'8px 0 0'}}>Commission on all orders placed in this period, including those already delivered.</p></Acc>
+      <Acc icon={<Ic.Tag s={18}/>} title="Top deals by commission">{tr.length?<Hbar f={v=>ksh(v)} rows={tr}/>:<p className="bd" style={{margin:0}}>No orders in this period yet.</p>}</Acc>
       <Acc icon={<Ic.Pen s={18}/>} title="Post performance" badge={<span className="pc">{myPosts.length}</span>}><div className="kpis" style={{marginBottom:0}}><Kp i={<Ic.Pen s={20}/>} l="Live posts" v={myPosts.length}/><Kp i={<Ic.HeartS s={20}/>} l="Likes" v={dash.likes.toLocaleString()}/><Kp i={<Ic.MsgS s={20}/>} l="Comments" v={dash.cm}/><Kp i={<Ic.Users s={20}/>} l="Followers" v="0"/></div></Acc>
       {details}
-     </>}
+     </>})()}
 
      {role==='dropshipper'&&ptab==='deals'&&<>
       <p className="bd" style={{margin:'0 0 12px'}}>Merchant products you can promote. You earn the commission on every sale from your posts.</p>
-      <div className="chips2">{cats.map(c=><button key={c} className={dq===c?'on':''} onClick={()=>setDq(c)}>{c}</button>)}</div>
-      <div className="chips2"><button className={dsort==='comm'?'on':''} onClick={()=>setDsort('comm')}>Highest commission</button><button className={dsort==='price'?'on':''} onClick={()=>setDsort('price')}>Lowest price</button></div>
-      <div className="card" style={{padding:'4px 16px'}}>{dealList.map(d=><div key={d.id} className="deal"><img src={d.imgs[0]} alt="" loading="lazy"/><div className="grow"><div className="pn2">{d.name}</div><small>{d.by} · {d.stock} in stock</small><div className="amt" style={{fontSize:14,marginTop:3}}>{ksh(d.price)}</div><div className="cm">Earn {ksh(cmm(d))} ({d.pct}%)</div></div><button className="btn" onClick={()=>startPromo(d)}>Promote</button></div>)}</div>
+      <div className="dsb"><div className="sbx"><Ic.Search/><input placeholder="Search deals or shops" value={dsq} onChange={e=>setDsq(e.target.value)}/>{dsq&&<button className="lnk" onClick={()=>setDsq('')}>Clear</button>}</div><button className={'fbtn'+(nf?' on':'')} aria-label="Filter deals" onClick={()=>setFopen(true)}><Ic.Filter/>{nf>0&&<em>{nf}</em>}</button></div>
+      <div className="card" style={{padding:'4px 16px'}}>{dealList.map(d=><div key={d.id} className="deal"><img src={d.imgs[0]} alt="" loading="lazy"/><div className="grow"><div className="pn2">{d.name}</div><small>{d.by} · {d.stock} in stock</small><div className="amt" style={{fontSize:14,marginTop:3}}>{ksh(d.price)}</div><div className="cm">Earn {ksh(cmm(d))} ({d.pct}%)</div></div><button className="btn" onClick={()=>startPromo(d)}>Promote</button></div>)}{!dealList.length&&<div style={{padding:'16px 0'}}><p className="bd" style={{margin:'0 0 12px'}}>No deals match your search or filters.</p><button className="btn" onClick={resetF}>Reset filters</button></div>}</div>
      </>}
 
      {role==='dropshipper'&&ptab==='posts'&&<>
-      {myPosts.length?myPosts.map(p=><div key={p.id} className="card" style={{padding:'12px 16px'}}><div className="deal" style={{padding:0,border:0}}><img src={p.imgs[0]} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</small>{p.pct&&<div className="cm">Commission {p.pct}%</div>}</div><button className="lnk" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div></div>):<div className="card"><p className="bd" style={{margin:'0 0 12px'}}>No posts yet. Pick a deal and tap Promote to create your first post.</p><button className="btn" onClick={()=>setPtab('deals')}>Browse deals</button></div>}
+      {myPosts.length?myPosts.map(p=><div key={p.id} className="card" style={{padding:'12px 16px'}}><div className="deal" style={{padding:0,border:0}}><img src={p.imgs[0]} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</small>{p.pct&&<div className="cm">Commission {p.pct}%</div>}</div><div style={{display:'flex',flexDirection:'column',gap:10,alignItems:'flex-end'}}><button className="lnk" onClick={()=>startEdit(p)}>Edit</button><button className="lnk" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div></div></div>):<div className="card"><p className="bd" style={{margin:'0 0 12px'}}>No posts yet. Pick a deal and tap Promote to create your first post.</p><button className="btn" onClick={()=>setPtab('deals')}>Browse deals</button></div>}
      </>}
     
  </>;
@@ -792,15 +961,18 @@ function App(){
    </div></>}
 
    {tab==='inbox'&&chat&&<div className="chat">
-    <div className="chdr"><button className="back" aria-label="Back" onClick={()=>setChat(null)}><Ic.Back/></button><div className="av">{chat.icon}</div>
-     <div className="grow"><div className="nm"><span>{chat.name}</span><Verified s={15}/></div><div className="on">● Auto-replies on</div></div></div>
+    <svg width="0" height="0" style={{position:'absolute'}} aria-hidden="true"><defs><linearGradient id="tkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#5bffa5"/><stop offset=".55" stopColor="#12c062"/><stop offset="1" stopColor="#079244"/></linearGradient></defs></svg>
+    <div className="chdr"><button className="back" aria-label="Back" onClick={()=>setChat(null)}><Ic.Back/></button><div className="hav"><div className="av">{chat.icon}</div><i/></div>
+     <div className="grow"><div className="nm"><span>{chat.name}</span><Verified s={15}/></div>{isTyp?<div key="t" className="ctyp"><span className="gtxt">typing</span><span className="gd"><i/><i/><i/></span></div>:<div key="c" className="ccat">{SCAT[chat.id]}</div>}</div></div>
     <div className="msgs">
-     {(chats[chat.id]||[]).map(m=>m.catalog?<div key={m.k} className="hs cat">{[0,1,2].map(i=><Product key={i} store={chat} i={i} onBuy={buy}/>)}</div>:<div key={m.k} className={'b '+m.from}>{m.from==='bot'?<Amt t={m.text}/>:m.text}</div>)}
-     {typing&&<div className="b bot typing"><i/><i/><i/></div>}
+     <div className="dchip">Today</div>
+     <div className="secn">🔒 Payments are held securely until your order is delivered</div>
+     {cmsgs.map(renderMsg)}
+     {isTyp&&<div className="mr gs"><div className="mav">{chat.icon}</div><div className="bb bot typing"><i/><i/><i/></div></div>}
      <div ref={end}/>
     </div>
-    {lastBot&&<div className="chips">{CHIPS.map(c=><button key={c} className="chip" onClick={()=>send(c)}>{c}</button>)}</div>}
-    <div className="bar"><input placeholder="Type a message…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className="send" aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
+    {qrs&&<div className="qrs">{qrs.map(c=><button key={c} className={'qr'+(c[0]==='✅'?' pri':'')} onClick={()=>send(c)}>{c}</button>)}</div>}
+    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>send('Show catalog')}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
@@ -858,9 +1030,12 @@ function App(){
    <div className="ovb">{q.trim()?(()=>{const R=STORES.filter(x=>(x.name+' '+x.tag+' '+x.prods.map(p=>p[0]).join(' ')).toLowerCase().includes(q.trim().toLowerCase()));return R.length?R.map(x=><button key={x.id} className="row" style={{padding:'12px 0'}} onClick={()=>{setRecent(r=>[q.trim(),...r.filter(y=>y!==q.trim())].slice(0,5));open(x)}}><div className="av">{x.icon}</div><div className="grow"><div className="nm"><span>{x.name}</span><Verified/></div><div className="pv">{x.prods.map(p=>p[0]).join(' · ')}</div></div></button>):<p className="bd">No shops or products found for “{q}”.</p>})():<>
     <div className="sect" style={{padding:'0 0 10px'}}>Recent</div><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{recent.map(r=><button key={r} className="chip" onClick={()=>setQ(r)}>{r}</button>)}</div>
     <div className="sect" style={{padding:'22px 0 6px'}}>Trending shops</div>{STORES.map(x=><button key={x.id} className="row" style={{padding:'12px 0'}} onClick={()=>open(x)}><div className="av">{x.icon}</div><div className="grow"><div className="nm"><span>{x.name}</span><Verified/></div><div className="pv">{x.tag}</div></div></button>)}</>}</div></div>}
-  {cm&&<div className="ov sheetw" onClick={()=>setCm(null)}><div className="sheet" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div><div className="nm" style={{padding:'0 20px 10px',justifyContent:'center'}}>Comments</div>
-   <div className="cl">{[...SEED,...(cmts[cm]||[])].map((c,i)=><div key={i} className="cmt"><div className="av" style={{width:36,height:36,fontSize:14}}>{c[0][0].toUpperCase()}</div><div><b>{c[0]}</b><div>{c[1]}</div></div></div>)}</div>
-   <div className="bar"><input placeholder="Add a comment…" value={ct} onChange={e=>setCt(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addCm()}/><button className="send" aria-label="Post" onClick={addCm}><Ic.Send/></button></div></div></div>}
+  {cm&&<div className="ov sheetw" onClick={closeCm}><div className="sheet cz" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div>
+   <div className="czh"><div className="czt">Comments<span className="czn2">{tops.reduce((n,c)=>n+1+(c.replies||[]).length+mine.filter(x=>x.parent===c.id).length,0)}</span></div><div className="czs"><button className={cSort==='top'?'on':''} onClick={()=>setCSort('top')}>Top</button><button className={cSort==='new'?'on':''} onClick={()=>setCSort('new')}>Newest</button></div><button className="czx2" aria-label="Close" onClick={closeCm}>×</button></div>
+   <div className="cl czl">{tops.map(c=>cmItem(c,false))}</div>
+   {rpl&&<div className="czr"><span>Replying to <b>@{rpl.u}</b></span><button aria-label="Cancel reply" onClick={()=>setRpl(null)}>×</button></div>}
+   <div className="czem">{['❤️','🙌','🔥','👏','😍','😂','😮'].map(e=><button key={e} onClick={()=>{setCt(v=>v+e);inRef.current&&inRef.current.focus()}}>{e}</button>)}</div>
+   <div className="czbar"><div className="czav sm" style={{background:gr('you')}}>{((me.name||'you')[0]).toUpperCase()}</div><input ref={inRef} placeholder={rpl?'Reply to @'+rpl.u+'…':'Add a comment…'} value={ct} onChange={e=>setCt(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addCm()}/><button className={'czsend'+(ct.trim()?' on':'')} aria-label="Post comment" onClick={addCm}><Ic.Send/></button></div></div></div>}
   {st!==null&&(()=>{const x=STORES[st];return <div className="sv"><img src={x.img} alt="" onError={e=>{e.target.style.display='none'}}/>
    <div className="svbars">{STORES.map((y,i)=><i key={y.id} className={i<st?'d':''}>{i===st&&<b key={st} onAnimationEnd={()=>goStory(1)}/>}</i>)}</div>
    <div className="svh"><div className="av" style={{width:38,height:38,fontSize:18}}>{x.icon}</div><div className="nm" style={{color:'#fff'}}><span>{x.name}</span><Verified s={15}/></div><span style={{flex:1}}/><button onClick={()=>setSt(null)} style={{color:'#fff',fontSize:26,padding:'0 4px'}} aria-label="Close">×</button></div>
@@ -873,6 +1048,19 @@ function App(){
     <div className="tm" style={{marginTop:4}}>{promo.by} · {ksh(promo.price)} · You earn {ksh(cmm(promo))} ({promo.pct}%)</div>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={pcap} onChange={e=>setPcap(e.target.value)}/>
     <button className="btn" style={{marginTop:14}} onClick={publishDeal}>Publish post</button></div></div></div>}
+  {fopen&&<div className="ov sheetw" onClick={()=>setFopen(false)}><div className="sheet" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div><div className="nm" style={{padding:'0 20px 10px',justifyContent:'center'}}>Filter deals</div>
+   <div style={{padding:'0 20px 20px',maxHeight:'68vh',overflowY:'auto'}}>
+    {fg('Sort by',[['earn','Highest earnings'],['comm','Highest commission rate'],['low','Lowest price'],['high','Highest price']],'sort')}
+    {fg('Commission rate',[[0,'Any'],[10,'10%+'],[20,'20%+'],[30,'30%+'],[40,'40%+']],'min')}
+    {fg('Price',[['any','Any'],['u2','Under 2,000'],['m','2,000 – 5,000'],['o5','Over 5,000']],'price')}
+    {fg('Shop / category',cats.map(c=>[c,c]),'cat')}
+    {fg('Availability',[[false,'All'],[true,'In stock only']],'stock')}
+    <div style={{display:'flex',gap:10,marginTop:20}}><button className="btn" style={{flex:1,background:'var(--surf2)',color:'var(--text)',boxShadow:'none'}} onClick={resetF}>Reset</button><button className="btn" style={{flex:2}} onClick={()=>setFopen(false)}>Show {dealList.length} deal{dealList.length===1?'':'s'}</button></div></div></div></div>}
+  {edp&&<div className="ov sheetw" onClick={()=>setEdp(null)}><div className="sheet" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div><div className="nm" style={{padding:'0 20px 10px',justifyContent:'center'}}>Edit live post</div>
+   <div style={{padding:'0 20px 20px',maxHeight:'68vh',overflowY:'auto'}}><div className="sect" style={{padding:'0 0 8px'}}>Photos ({edp.sel.length} selected)</div><p className="bd" style={{margin:'0 0 10px'}}>Tap to add or remove photos. Numbers show the order people swipe.</p><div className="hs" style={{gap:10}}><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addEditPhotos}/></label>{edp.list.map((im,i)=>{const k=edp.sel.indexOf(i);return <button key={i} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setEdp(v=>({...v,sel:k>-1?v.sel.filter(x=>x!==i):[...v.sel,i]}))}><img src={im} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>
+    <input className="fi" placeholder="Post title" value={edp.name} onChange={e=>setEdp(v=>({...v,name:e.target.value}))}/>
+    <textarea className="fi" rows={3} placeholder="Write a caption" value={edp.cap} onChange={e=>setEdp(v=>({...v,cap:e.target.value}))}/>
+    <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
   {toast&&<div className="toast">{toast}</div>}
 
   {!chat&&<div className="navw"><nav className="nav">
