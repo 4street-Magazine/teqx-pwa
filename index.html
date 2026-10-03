@@ -289,7 +289,7 @@ h1{font-size:24px;margin-bottom:6px}
 .fi{display:block;width:100%;padding:14px 16px;border-radius:16px;border:0;background:var(--surf2);color:var(--text);outline:0;font-size:14px;margin-top:10px}
 .pg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pt3{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;background:var(--surf2);flex-shrink:0;display:block;padding:0}
-.hs .pt3{width:84px}
+.hs .pt3{width:84px}.sheet .hs .pt3{width:88px}
 .pt3 img{width:100%;height:100%;object-fit:cover;display:block}
 .pt3 .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:16px;line-height:1;display:grid;place-items:center}
 .addp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--accent);cursor:pointer}
@@ -402,12 +402,12 @@ h1{font-size:24px;margin-bottom:6px}
 .acci{display:grid;place-items:center;flex-shrink:0;color:var(--accent);margin-right:6px;overflow:visible!important}
 
 /* standard post image container (16:9) */
-.sl{aspect-ratio:16/9;height:auto;min-height:0;display:block}
+.sl{aspect-ratio:16/9.6;height:auto;min-height:0;display:block}
 .sl img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain;z-index:1}
 .slx{position:absolute;inset:0;display:grid;place-items:center;z-index:1;color:var(--mut)}
 .burst svg{width:96px;height:96px;color:#ff4d2e}
 /* six-tab nav */
-.nav{padding:8px 4px}.nav button{font-size:10.5px;gap:5px}
+.nav{padding:8px}.nav button{font-size:11.5px;gap:6px}
 /* wallet */
 .wh{background:var(--grad);color:#fff;border-radius:24px;padding:20px;margin-bottom:16px;box-shadow:var(--glow)}
 .wh small{display:block;opacity:.88;font-size:12.5px;font-weight:600}
@@ -446,6 +446,24 @@ h1{font-size:24px;margin-bottom:6px}
 .bkrow b{font-size:13.5px}
 
 .ptabs{gap:4px}.ptabs button{font-size:12px;padding:9px 2px}
+
+/* ===== v8: theme-aware stage + cutout pop-out (post image container only) ===== */
+[data-theme=dark]{--st1:#30303a;--st2:#141418;--pnl:#26262e;--fl:rgba(0,0,0,.6);--gl:rgba(0,0,0,.42);--gt:#fff;--gd:rgba(255,255,255,.4);--gdo:#fff}
+[data-theme=light]{--st1:#ffffff;--st2:#e9e0d7;--pnl:#ece4db;--fl:rgba(70,40,20,.38);--gl:rgba(255,255,255,.75);--gt:#17120e;--gd:rgba(30,20,10,.22);--gdo:#17120e}
+.pmi{background:radial-gradient(120% 90% at 50% 38%,var(--st1),var(--st2))}
+.sl{aspect-ratio:1/.9;background:transparent}
+.sl .bg{display:none}
+.sl:before{display:none}
+.sl:after{content:"";position:absolute;z-index:0;left:20%;right:20%;bottom:8%;height:6%;border-radius:50%;background:var(--fl);filter:blur(13px)}
+.sl img{inset:8% 9% 15% 9%;width:82%;height:77%;object-fit:contain;filter:drop-shadow(0 22px 18px var(--fl))}
+.badge{background:var(--gl);color:var(--gt);border:1px solid var(--cardline);backdrop-filter:blur(10px)}
+.seg{padding:6px 9px;border-radius:99px;background:var(--gl);border:1px solid var(--cardline);backdrop-filter:blur(10px);top:14px;right:14px}
+.seg i{background:var(--gd)}.seg i.on{background:var(--gdo)}
+/* cutout: product pops out of a panel */
+.sl.cut{background:var(--surf)}
+.sl.cut:before{display:block;content:"";position:absolute;z-index:0;top:36%;left:7%;right:7%;bottom:8%;height:auto;border-radius:28px;background:var(--pnl);border:1px solid var(--cardline);box-shadow:0 26px 40px -18px var(--fl)}
+.sl.cut:after{left:24%;right:24%;bottom:11%}
+.sl.cut img{inset:5% 9% 13% 9%;width:82%;height:82%;object-position:center bottom;filter:drop-shadow(0 20px 16px var(--fl))}
 </style>
 </head>
 <body>
@@ -557,7 +575,7 @@ function Product({store,i,onBuy}){
  </div>;
 }
 
-function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
+function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className={'sl'+(typeof src==='string'&&src.startsWith('data:image/png')?' cut':'')}><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
 function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
  const cols=s.cols||COL[s.id].map(c=>c[0]),[menu,setMenu]=useState(false);
@@ -595,6 +613,9 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  </article>;
 }
 
+const loadMod=u=>new Function('u','return import(u)')(u);
+const cutImg=async(f,note,mx=640)=>{try{note&&note('Removing background…');const m=await loadMod('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm');const blob=await m.removeBackground(f,{output:{format:'image/png'}});const url=URL.createObjectURL(blob),im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});const w=im.naturalWidth,h=im.naturalHeight,t=document.createElement('canvas');t.width=w;t.height=h;const tc=t.getContext('2d');tc.drawImage(im,0,0);const d=tc.getImageData(0,0,w,h).data;let x0=w,y0=h,x1=0,y1=0;for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>16){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}if(x1<=x0||y1<=y0)return null;const cw=x1-x0+1,ch=y1-y0+1,k=Math.min(1,mx/Math.max(cw,ch)),c=document.createElement('canvas');c.width=Math.round(cw*k);c.height=Math.round(ch*k);c.getContext('2d').drawImage(t,x0,y0,cw,ch,0,0,c.width,c.height);URL.revokeObjectURL(url);return c.toDataURL('image/png')}catch(e){return null}};
+const prepImg=async(f,note)=>{const c=await cutImg(f,note);if(c)return c;note&&note('Could not remove the background, using the original photo');return readImg(f)};
 const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
 function Spark({d,lab,gid}){const w=300,h=110,p=8,mx=Math.max(...d),x=i=>p+i*(w-2*p)/(d.length-1),y=v=>h-p-(v/(mx||1))*(h-2*p-8),pts=d.map((v,i)=>[x(i),y(v)]),line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(''),area=line+`L${x(d.length-1)} ${h-p}L${x(0)} ${h-p}Z`;return <div className="chart"><svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="Growth chart"><defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff5c0a" stopOpacity=".35"/><stop offset="1" stopColor="#ff5c0a" stopOpacity="0"/></linearGradient></defs><path d={area} fill={`url(#${gid})`}/><path d={line} fill="none" stroke="#ff5c0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill="#ff5c0a"/></svg><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
 function Bars({d,lab}){const mx=Math.max(...d);return <div className="chart"><div className="bars">{d.map((v,i)=><div key={i} className="bc"><i style={{height:(v/mx*100)+'%'}}/></div>)}</div><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
@@ -624,7 +645,7 @@ function App(){
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
- const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'10',stock:'',pid:null}),[mord,setMord]=useState(DEMO_MORD),[dq,setDq]=useState('All'),[dsort,setDsort]=useState('comm'),[promo,setPromo]=useState(null),[pcap,setPcap]=useState('');
+ const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'10',stock:'',pid:null}),[mord,setMord]=useState(DEMO_MORD),[dq,setDq]=useState('All'),[dsort,setDsort]=useState('comm'),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts,bal,txs,mprods,earn,earnD}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
@@ -632,7 +653,7 @@ function App(){
  const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
- const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
+ const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await prepImg(f,note);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
  const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
@@ -676,18 +697,19 @@ function App(){
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
  const adv=o=>{if(o.status==='Secured'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Shipped'}:x));note('Marked as shipped')}else if(o.status==='Shipped'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Delivered'}:x));setTimeout(()=>{setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Paid out'}:x));setEarn(e=>e+o.amt-o.comm);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+o.id,amt:o.amt-o.comm,r:'merchant'},...x]);note('Payout added to your earnings')},1500)}};
  const mpr=parseInt(String(mp.price).replace(/\D/g,''),10)||0,mpc=Math.min(60,Math.max(0,parseFloat(mp.comm)||0));
- const addProd=()=>{const ph=photos.find(p=>p.id===mp.pid);if(!ph)return note('Pick a product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,img:ph.src},...m]);setMp({name:'',price:'',comm:'10',stock:'',pid:null});note('Product uploaded')};
- const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
+ const addProd=()=>{const ph=photos.find(p=>p.id===mp.pid);if(!ph)return note('Pick a product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:[ph.src]},...m]);setMp({name:'',price:'',comm:'10',stock:'',pid:null});note('Product uploaded')};
+ const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
  const dealList=allDeals.filter(d=>dq==='All'||d.cat===dq).sort((x,y)=>dsort==='comm'?cmm(y)-cmm(x):x.price-y.price);
- const startPromo=d=>{setPromo(d);setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
- const publishDeal=()=>{if(!promo)return;setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:promo.imgs,deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
+ const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await prepImg(f,note);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
+ const startPromo=d=>{setPromo(d);setPlist(d.imgs);setPsel(d.imgs.map((_,i)=>i));setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
+ const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
  const secured=orders.filter(o=>o.status==='Secured'||o.status==='Shipped'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
  const lastBot=chat&&(chats[chat.id]||[]).length>0;
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
  const brand=<div className="brand">Te<b>Q</b>x</div>;
- const nav=[['discover','Home',Ic.Home],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['wallet','Wallet',Ic.WalletN],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
+ const nav=[['discover','Home',Ic.Home],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  const dash={likes:myPosts.reduce((a,p)=>a+842+(liked[p.id]?1:0),0),cm:myPosts.reduce((a,p)=>a+12+(cmts[p.id]||[]).length,0),val:myPosts.reduce((a,p)=>a+p.price,0)};
  const checks=[['Add a shop photo',!!shop.avatar,'info'],['Write a short bio',!!shop.bio,'info'],['Choose a category',!!shop.cat,'info'],['Add a contact number',!!shop.phone,'info'],['Add your location',!!shop.loc,'info'],['Set opening hours',!!shop.hours,'info'],['Upload product photos',photos.length>0,'store'],['Publish your first post',myPosts.length>0,'store']];
@@ -734,7 +756,7 @@ function App(){
        {mpr>0&&mpc>0&&<p className="bd" style={{margin:'12px 0 0'}}>Dropshipper earns {ksh(Math.round(mpr*mpc/100))} per sale. You receive {ksh(mpr-Math.round(mpr*mpc/100))}.</p>}
        <button className="btn" style={{marginTop:16}} onClick={addProd}>Upload product</button></Acc>
       <Acc icon={<Ic.Pkg s={18}/>} title="Your products" badge={<span className="pc">{mprods.length}</span>}>
-       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.stock} in stock</small><div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>setMprods(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
+       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.imgs?p.imgs[0]:p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.stock} in stock · {(p.imgs||[p.img]).length} photo{(p.imgs||[p.img]).length>1?'s':''}</small><div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>setMprods(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
      </>}
 
      {role==='merchant'&&ptab==='ords'&&<>
@@ -807,15 +829,11 @@ function App(){
    </div>}
 
    {tab==='orders'&&<div className="page">
+    <div className="wh"><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until your orders are delivered</small></div>
     {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
-     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
+     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1 · + {ksh(o.fee||delFee(o.price))} delivery</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
    </div>}
 
-   {tab==='wallet'&&<div className="page">
-    <div className="wh"><small>Total secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div></div>
-    <div className="card"><div className="ch"><div className="nm" style={{fontSize:15}}><Ic.Lock s={18}/><span>Secured for orders</span></div><span className="pc">{ksh(totSec)}</span></div>
-     {secured.length?secured.map(o=><div key={o.id} className="sec"><div className="av" style={{width:42,height:42}}><Ic.Pkg s={20}/></div><div className="grow"><div className="nm"><span>{o.item}</span></div><small>{o.id} · {ksh(o.price)} + {ksh(o.fee||delFee(o.price))} delivery</small></div><div style={{textAlign:'right'}}><div className="amt">{ksh(o.price+(o.fee||delFee(o.price)))}</div><span className="pill2">{o.status==='Shipped'?'On its way':'Held'}</span></div></div>):<p className="bd" style={{margin:0}}>Nothing secured yet. Place an order and it will show up here until delivery.</p>}</div>
-   </div>}
    {tab==='alerts'&&<div className="page">
     {STORES.map((s,i)=><div key={s.id} className="card tapc" onClick={()=>{setReadA(r=>({...r,[s.id]:true}));i%2===0?open(s):setTab('discover')}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{s.icon}</span><span>{s.name}</span><Verified s={15}/></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!readA[s.id]&&<span className="udot"/>}<span className="st mu">{i+2}h ago</span></span></div>
      <p className="bd">{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div>)}
@@ -868,7 +886,7 @@ function App(){
    <div className="svt"><h3 className="pt">{x.prods[0][0]}</h3><div className="pp">{ksh(x.prods[0][1])}</div></div>
    <div className="bar svr"><input placeholder={'Reply to '+x.name+'…'} value={sr} onChange={e=>setSr(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&sr.trim()){const m=sr.trim();setSt(null);open(x,m)}}}/><button className="send" aria-label="Send" onClick={()=>{if(sr.trim()){const m=sr.trim();setSt(null);open(x,m)}}}><Ic.Send/></button></div></div>})()}
   {promo&&<div className="ov sheetw" onClick={()=>setPromo(null)}><div className="sheet" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div><div className="nm" style={{padding:'0 20px 10px',justifyContent:'center'}}>Promote this deal</div>
-   <div style={{padding:'0 20px 20px',maxHeight:'68vh',overflowY:'auto'}}><img className="pvimg" src={promo.imgs[0]} alt=""/>
+   <div style={{padding:'0 20px 20px',maxHeight:'68vh',overflowY:'auto'}}><div className="sect" style={{padding:'0 0 8px'}}>Photos for your post ({psel.length} selected)</div><p className="bd" style={{margin:'0 0 10px'}}>Tap photos to include them in the order people will swipe, or add your own.</p><div className="hs" style={{gap:10}}><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPromoPhotos}/></label>{plist.map((im,i)=>{const k=psel.indexOf(i);return <button key={i} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setPsel(v=>k>-1?v.filter(x=>x!==i):[...v,i])}><img src={im} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>
     <div className="nm" style={{marginTop:12}}>{promo.name}</div>
     <div className="tm" style={{marginTop:4}}>{promo.by} · {ksh(promo.price)} · You earn {ksh(cmm(promo))} ({promo.pct}%)</div>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={pcap} onChange={e=>setPcap(e.target.value)}/>
