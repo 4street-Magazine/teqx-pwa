@@ -67,7 +67,9 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(18,192,98,.55);animation:bl 1.1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
-.cat{padding:14px 30px 46px;margin:-14px -30px -40px;animation:pop .3s ease;background:transparent}
+.cat{padding:14px 30px 46px;margin:-14px -30px -40px;animation:pop .3s ease;background:transparent;flex-shrink:0}
+.msgs>*{flex-shrink:0}
+.prod{flex-shrink:0}
 .prod{width:208px;flex-shrink:0;background:var(--surf);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.14)}
 .pimg{height:138px;position:relative;overflow:hidden;background:var(--surf2);display:grid;place-items:center;font-size:40px}
 .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -528,6 +530,10 @@ h1{font-size:24px;margin-bottom:6px}
 .czsend{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf);color:var(--mut);flex-shrink:0;transition:all .2s}
 .czsend.on{background:var(--grad);color:#fff;box-shadow:var(--glow);transform:scale(1.05)}
 .czempty{text-align:center;color:var(--mut);padding:30px 0;font-size:14px}
+.brandw{display:flex;align-items:center;gap:7px}
+.qmark{height:30px;width:auto;display:block;flex-shrink:0;overflow:visible;transform:translateY(-1px)}
+.brandw .brand{line-height:1;padding-bottom:2px}
+.qstar{stroke:var(--bg);stroke-width:1.6px;paint-order:stroke;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -850,7 +856,7 @@ function App(){
   </div>};
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
- const brand=<div className="brand">Te<b>Q</b>x</div>;
+ const brand=<div className="brandw"><div className="brand">Te<b>Q</b>x</div><svg className="qmark" viewBox="0 0 34 32" role="img" aria-label="TeQx AI shopping"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="34" y2="32"><stop offset="0" stopColor="#ff8f1c"/><stop offset=".48" stopColor="#ff5c0a"/><stop offset="1" stopColor="#f03a0e"/></linearGradient></defs><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="url(#qg)" strokeWidth="2.6" strokeLinecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="url(#qg)"/><path className="qstar" d="M27 .8C27.6 4.5 29 6.9 33.7 7.5C29 8.1 27.6 10.5 27 14.2C26.4 10.5 25 8.1 20.3 7.5C25 6.9 26.4 4.5 27 .8z" fill="url(#qg)"/></g></svg></div>;
  const nav=[['discover','Home',Ic.Home],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  const dash={likes:myPosts.reduce((a,p)=>a+842+(liked[p.id]?1:0),0),cm:myPosts.reduce((a,p)=>a+12+(cmts[p.id]||[]).length,0),val:myPosts.reduce((a,p)=>a+p.price,0)};
@@ -972,7 +978,7 @@ function App(){
      <div ref={end}/>
     </div>
     {qrs&&<div className="qrs">{qrs.map(c=><button key={c} className={'qr'+(c[0]==='✅'?' pri':'')} onClick={()=>send(c)}>{c}</button>)}</div>}
-    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>send('Show catalog')}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
+    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>{if(chat)say(chat.id,[eng(chat,'show catalog',false)])}}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
