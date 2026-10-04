@@ -61,26 +61,26 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 @keyframes gsh{to{background-position:-220% 0}}
 .gd{display:inline-flex;gap:3px;align-items:center}.gd i{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(18,192,98,.65);animation:bl 1.1s infinite}.gd i:nth-child(2){animation-delay:.15s}.gd i:nth-child(3){animation-delay:.3s}
 .on{font-size:12px;font-weight:600;color:#22c55e;margin-top:1px}
-.msgs{flex:1;overflow-y:auto;scrollbar-width:none;padding:14px 14px 10px;display:flex;flex-direction:column;gap:5px}
+.msgs{flex:1;overflow-y:auto;scrollbar-width:none;padding:16px 14px 14px;display:flex;flex-direction:column;gap:12px}
 @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .typing{display:flex;gap:5px;padding:14px 16px}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(18,192,98,.55);animation:bl 1.1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes bl{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-4px)}}
-.cat{padding:14px 30px 46px;margin:-14px -30px -40px;animation:pop .3s ease;background:transparent;flex-shrink:0}
+.cat{padding:14px 30px 46px;margin:-2px -30px -28px;gap:22px;animation:pop .3s ease;background:transparent;flex-shrink:0}
 .msgs>*{flex-shrink:0}
 .prod{flex-shrink:0}
 .prod{width:208px;flex-shrink:0;background:var(--surf);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.14)}
 .pimg{height:138px;position:relative;overflow:hidden;background:var(--surf2);display:grid;place-items:center;font-size:40px}
 .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(8px)}
-.pbody{padding:14px}
+.pbody{padding:16px}
 .pn{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .amt{background:var(--green);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
-.pr{font-size:18px;margin:3px 0 12px}
+.pr{font-size:18px;margin:6px 0 14px}
 .btn{width:100%;padding:11px;border-radius:14px;background:var(--grad);color:#fff;font-weight:700;font-size:13.5px;box-shadow:var(--glow);transition:transform .15s}
 .btn:active{transform:scale(.97)}
-.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 16px 0}
+.chips{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:12px 16px 4px}
 .chip{flex-shrink:0;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--accent);color:var(--accent);background:transparent}
 .chip:active{background:var(--accent);color:#fff}
 .bar{display:flex;gap:8px;align-items:center;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
@@ -90,10 +90,10 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .send.off{background:var(--surf2);color:var(--mut);box-shadow:none}.send{transition:all .2s}
 .dchip{align-self:center;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);padding:5px 12px;border-radius:99px;background:var(--surf2);margin:2px 0 0}
 .secn{align-self:center;text-align:center;font-size:11.5px;font-weight:600;color:var(--mut);padding:7px 14px;border-radius:14px;background:rgba(18,192,98,.09);border:1px solid rgba(18,192,98,.22);margin:6px 18px 8px}
-.mr{display:flex;align-items:flex-end;gap:8px;animation:pop .28s cubic-bezier(.2,.8,.2,1)}.mr.gs{margin-top:10px}.mr.me{justify-content:flex-end}
+.mr{display:flex;align-items:flex-end;gap:8px;animation:pop .28s cubic-bezier(.2,.8,.2,1)}.mr.gs{margin-top:14px}.mr.cn{margin-top:8px}.mr.me{justify-content:flex-end}
 .mav{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:14px;border:1.5px solid transparent;background:linear-gradient(var(--surf),var(--surf)) padding-box,var(--grad) border-box;margin-bottom:1px}.mav.sp{visibility:hidden}
-.mc{display:flex;flex-direction:column;gap:6px;max-width:80%;min-width:0}.mr.me .mc{align-items:flex-end}
-.bb{padding:10px 15px;border-radius:20px;font-size:14.5px;line-height:1.5;word-break:break-word;white-space:pre-line}
+.mc{display:flex;flex-direction:column;gap:10px;max-width:80%;min-width:0}.mr.me .mc{align-items:flex-end}
+.bb{padding:12px 16px;border-radius:20px;font-size:14.5px;line-height:1.55;word-break:break-word;white-space:pre-line}
 .bb.bot{background:var(--surf);border:1px solid var(--line);border-bottom-left-radius:6px;box-shadow:0 3px 12px rgba(0,0,0,.07);align-self:flex-start}
 .bb.me{background:var(--grad);color:#fff;border-bottom-right-radius:6px;font-weight:500;box-shadow:0 6px 16px rgba(255,92,10,.28)}
 .mt{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mut);font-weight:600;margin:0 4px}
@@ -752,7 +752,7 @@ function App(){
  const delCm=id=>setCmts(c=>({...c,[cm]:(c[cm]||[]).filter(x=>x.id!==id&&x.parent!==id)}));
  const closeCm=()=>{setCm(null);setRpl(null)};
  const mine=cm?(cmts[cm]||[]):[],tops=[...mine.filter(x=>!x.parent).reverse(),...SEED].map((c,i)=>({...c,_i:i})).sort((a,b)=>cSort==='top'?((b.likes||0)+(clk[b.id]?1:0))-((a.likes||0)+(clk[a.id]?1:0)):a._i-b._i);
- const cmItem=(c,isRep)=>{const kids=[...(c.replies||[]),...mine.filter(x=>x.parent===c.id)];return <div key={c.id} className={'czc'+(isRep?' rp':'')}><div className="czav" style={{background:gr(c.u)}}>{c.u[0].toUpperCase()}</div><div className="czb"><div className={'czbub'+(c.shop?' own':'')}><div className="czn"><b>{c.u}</b>{c.shop&&<span className="czsh">✓ Shop</span>}{c.u==='you'&&<span className="czyou">You</span>}</div><div className="czx">{c.t}</div></div><div className="czac"><span className="czag">{c.ts?tAgo(c.ts):c.ago}</span><button onClick={()=>{setRpl({id:c.parentId||c.id,u:c.u});setTimeout(()=>inRef.current&&inRef.current.focus(),60)}}>Reply</button>{c.u==='you'&&<button onClick={()=>delCm(c.id)}>Delete</button>}</div>{!isRep&&kids.length>0&&<button className="czvr" onClick={()=>setEx(m=>({...m,[c.id]:!m[c.id]}))}><i/>{ex[c.id]?'Hide replies':'View '+kids.length+(kids.length>1?' replies':' reply')}</button>}{!isRep&&ex[c.id]&&kids.map(k=>cmItem({...k,parentId:c.id},true))}</div><button className={'czlk'+(clk[c.id]?' on':'')} aria-label="Like comment" onClick={()=>flip(setClk,c.id)}><Ic.HeartM on={clk[c.id]}/><span>{(c.likes||0)+(clk[c.id]?1:0)||''}</span></button></div>};
+ const cmItem=(c,isRep)=>{const kids=[...(c.replies||[]),...mine.filter(x=>x.parent===c.id)];return <div key={c.id} className={'czc'+(isRep?' rp':'')}><div className="czav" style={c.u==='you'&&me.avatar?{backgroundImage:`url("${me.avatar}")`,backgroundSize:'cover',backgroundPosition:'center'}:{background:gr(c.u)}}>{c.u==='you'&&me.avatar?null:(c.u==='you'?(me.name||'you'):c.u)[0].toUpperCase()}</div><div className="czb"><div className={'czbub'+(c.shop?' own':'')}><div className="czn"><b>{c.u}</b>{c.shop&&<span className="czsh">✓ Shop</span>}{c.u==='you'&&<span className="czyou">You</span>}</div><div className="czx">{c.t}</div></div><div className="czac"><span className="czag">{c.ts?tAgo(c.ts):c.ago}</span><button onClick={()=>{setRpl({id:c.parentId||c.id,u:c.u});setTimeout(()=>inRef.current&&inRef.current.focus(),60)}}>Reply</button>{c.u==='you'&&<button onClick={()=>delCm(c.id)}>Delete</button>}</div>{!isRep&&kids.length>0&&<button className="czvr" onClick={()=>setEx(m=>({...m,[c.id]:!m[c.id]}))}><i/>{ex[c.id]?'Hide replies':'View '+kids.length+(kids.length>1?' replies':' reply')}</button>}{!isRep&&ex[c.id]&&kids.map(k=>cmItem({...k,parentId:c.id},true))}</div><button className={'czlk'+(clk[c.id]?' on':'')} aria-label="Like comment" onClick={()=>flip(setClk,c.id)}><Ic.HeartM on={clk[c.id]}/><span>{(c.likes||0)+(clk[c.id]?1:0)||''}</span></button></div>};
  const flip=(set,id)=>set(m=>({...m,[id]:!m[id]}));
  const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
 
@@ -851,12 +851,12 @@ function App(){
   if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
-   {(m.text||m.summary||m.placed)&&<div className={'mr'+(gs?' gs':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {(m.text||m.summary||m.placed)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
    {m.catalog&&<div className="hs cat">{[0,1,2].map(i=><Product key={i} store={chat} i={i} onBuy={buy}/>)}</div>}
   </div>};
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
- const brand=<div className="brandw"><div className="brand">Te<b>Q</b>x</div><svg className="qmark" viewBox="0 0 34 32" role="img" aria-label="TeQx AI shopping"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="34" y2="32"><stop offset="0" stopColor="#ff8f1c"/><stop offset=".48" stopColor="#ff5c0a"/><stop offset="1" stopColor="#f03a0e"/></linearGradient></defs><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="url(#qg)" strokeWidth="2.6" strokeLinecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="url(#qg)"/><path className="qstar" d="M27 .8C27.6 4.5 29 6.9 33.7 7.5C29 8.1 27.6 10.5 27 14.2C26.4 10.5 25 8.1 20.3 7.5C25 6.9 26.4 4.5 27 .8z" fill="url(#qg)"/></g></svg></div>;
+ const brand=<div className="brandw"><svg className="qmark" viewBox="0 0 34 32" role="img" aria-label="TeQx AI shopping"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="34" y2="32"><stop offset="0" stopColor="#ff8f1c"/><stop offset=".48" stopColor="#ff5c0a"/><stop offset="1" stopColor="#f03a0e"/></linearGradient></defs><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="url(#qg)" strokeWidth="2.6" strokeLinecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="none" stroke="url(#qg)" strokeWidth="2.4" strokeLinejoin="round"/><path className="qstar" d="M27 .8C27.6 4.5 29 6.9 33.7 7.5C29 8.1 27.6 10.5 27 14.2C26.4 10.5 25 8.1 20.3 7.5C25 6.9 26.4 4.5 27 .8z" fill="url(#qg)"/></g></svg><div className="brand">Te<b>Q</b>x</div></div>;
  const nav=[['discover','Home',Ic.Home],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
 
  const dash={likes:myPosts.reduce((a,p)=>a+842+(liked[p.id]?1:0),0),cm:myPosts.reduce((a,p)=>a+12+(cmts[p.id]||[]).length,0),val:myPosts.reduce((a,p)=>a+p.price,0)};
@@ -865,9 +865,10 @@ function App(){
  const SHOPROWS=[['name','Shop name','e.g. Zuri Fashions'],['cat','Category','e.g. Fashion & accessories'],['bio','About the shop','Tell customers what you sell','area'],['phone','Phone / WhatsApp','+254 7XX XXX XXX','tel'],['loc','Location','e.g. Westlands, Nairobi'],['hours','Opening hours','e.g. Mon–Sat, 8am–7pm'],['deliv','Delivery info','e.g. Nairobi same-day, countrywide in 2 days'],['till','M-Pesa till / paybill','e.g. Till 123456']];
  const MEROWS=[['name','Full name','Your name'],['user','Username','username'],['phone','Phone number','+254 7XX XXX XXX','tel'],['email','Email','you@example.com','email'],['loc','Delivery address','e.g. Kilimani, Nairobi'],['mpesa','M-Pesa number','+254 7XX XXX XXX','tel'],['bio','Bio','A line about you','area']];
  const details=<>
-  <Acc icon={<Ic.Store s={18}/>} title="Shop information" action={<button className="lnk" onClick={()=>setEdShop(v=>!v)}>{edShop?'Done':'Edit'}</button>}>
+  <Acc icon={<Ic.Store s={18}/>} title="Shop information" action={!edShop&&<button className="lnk" onClick={()=>setEdShop(true)}>Edit</button>}>
    <Fields rows={SHOPROWS} val={shop} edit={edShop} set={(k,v)=>setShop(x=>({...x,[k]:v}))}/>
-   {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}</Acc>
+   {shop.avatar&&edShop&&<button className="lnk" style={{marginTop:12}} onClick={()=>setShop(x=>({...x,avatar:undefined}))}>Remove shop photo</button>}
+   {edShop&&<button className="btn" style={{marginTop:18}} onClick={()=>{setEdShop(false);note('Details saved')}}>Save</button>}</Acc>
   <Acc icon={<Ic.Gear s={18}/>} title="Store settings">
    <Toggle label="Open for orders" sub={shop.open?'Customers can chat and order now':'Shown as closed on your profile'} on={shop.open} onClick={()=>setShop(x=>({...x,open:!x.open}))}/>
    <Toggle label="Order notifications" sub="Get alerted when customers message you" on={shop.notif} onClick={()=>setShop(x=>({...x,notif:!x.notif}))}/>
@@ -1012,9 +1013,10 @@ function App(){
     <div className="page pscroll">
     {mode==='shop'&&biz(role,role==='merchant'?ptab:dtab,role==='merchant'?setPtab:setDtab)}
     {mode==='client'&&<>
-     <Acc open icon={<Ic.Person s={18}/>} title="Personal details" action={<button className="lnk" onClick={()=>setEdMe(v=>!v)}>{edMe?'Done':'Edit'}</button>}>
+     <Acc open icon={<Ic.Person s={18}/>} title="Personal details" action={!edMe&&<button className="lnk" onClick={()=>setEdMe(true)}>Edit</button>}>
       <Fields rows={MEROWS} val={me} edit={edMe} set={(k,v)=>setMe(x=>({...x,[k]:v}))}/>
-      {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}</Acc>
+      {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}
+      {edMe&&<button className="btn" style={{marginTop:18}} onClick={()=>{setEdMe(false);note('Details saved')}}>Save</button>}</Acc>
      <Acc icon={<Ic.Pkg s={18}/>} title="Recent orders" badge={<span className="pc">{orders.length}</span>} action={orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}>
       {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{<Ic.Store s={20}/>}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</Acc>
      <Acc icon={<Ic.Users s={18}/>} title="Following" badge={<span className="pc">{Object.values(fol).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}><Ic.Store s={18}/></div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</Acc>
@@ -1041,7 +1043,7 @@ function App(){
    <div className="cl czl">{tops.map(c=>cmItem(c,false))}</div>
    {rpl&&<div className="czr"><span>Replying to <b>@{rpl.u}</b></span><button aria-label="Cancel reply" onClick={()=>setRpl(null)}>×</button></div>}
    <div className="czem">{['❤️','🙌','🔥','👏','😍','😂','😮'].map(e=><button key={e} onClick={()=>{setCt(v=>v+e);inRef.current&&inRef.current.focus()}}>{e}</button>)}</div>
-   <div className="czbar"><div className="czav sm" style={{background:gr('you')}}>{((me.name||'you')[0]).toUpperCase()}</div><input ref={inRef} placeholder={rpl?'Reply to @'+rpl.u+'…':'Add a comment…'} value={ct} onChange={e=>setCt(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addCm()}/><button className={'czsend'+(ct.trim()?' on':'')} aria-label="Post comment" onClick={addCm}><Ic.Send/></button></div></div></div>}
+   <div className="czbar"><div className="czav sm" style={me.avatar?{backgroundImage:`url("${me.avatar}")`,backgroundSize:'cover',backgroundPosition:'center'}:{background:gr('you')}}>{me.avatar?null:((me.name||'you')[0]).toUpperCase()}</div><input ref={inRef} placeholder={rpl?'Reply to @'+rpl.u+'…':'Add a comment…'} value={ct} onChange={e=>setCt(e.target.value)} onKeyDown={e=>e.key==='Enter'&&addCm()}/><button className={'czsend'+(ct.trim()?' on':'')} aria-label="Post comment" onClick={addCm}><Ic.Send/></button></div></div></div>}
   {st!==null&&(()=>{const x=STORES[st];return <div className="sv"><img src={x.img} alt="" onError={e=>{e.target.style.display='none'}}/>
    <div className="svbars">{STORES.map((y,i)=><i key={y.id} className={i<st?'d':''}>{i===st&&<b key={st} onAnimationEnd={()=>goStory(1)}/>}</i>)}</div>
    <div className="svh"><div className="av" style={{width:38,height:38,fontSize:18}}>{x.icon}</div><div className="nm" style={{color:'#fff'}}><span>{x.name}</span><Verified s={15}/></div><span style={{flex:1}}/><button onClick={()=>setSt(null)} style={{color:'#fff',fontSize:26,padding:'0 4px'}} aria-label="Close">×</button></div>
