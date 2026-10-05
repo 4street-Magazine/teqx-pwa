@@ -567,6 +567,16 @@ h1{font-size:24px;margin-bottom:6px}
 .icard .isi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(18,192,98,.14);font-size:16px;flex-shrink:0}
 .icard .ist b{display:block;font-size:13.5px;font-weight:700}.icard .ist small{display:block;font-size:12.5px;color:var(--mut);line-height:1.45;margin-top:1px}
 .icard .ifoot{text-align:center;font-size:13px;font-weight:600;color:var(--mut);padding:4px 0 0}
+.rcpt.stc2,.rcpt.osm,.rcpt.icard{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--cardline);background:linear-gradient(160deg,var(--surf) 0%,var(--surf2) 100%);box-shadow:0 14px 34px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.06)}
+.rcpt.stc2::before,.rcpt.osm::before,.rcpt.icard::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--green)}
+.chd{display:flex;align-items:center;gap:11px;margin:4px 0 14px}.chd b{display:block;font-size:15px;font-weight:800;letter-spacing:-.01em}.chd small{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+.chi,.stp,.isi,.nti{display:grid;place-items:center;flex-shrink:0;color:#12c062;background:rgba(18,192,98,.13);border:1px solid rgba(18,192,98,.28)}
+.chi{width:38px;height:38px;border-radius:13px}.nti{width:32px;height:32px;border-radius:11px;margin-right:2px}
+.stp{width:36px;height:36px;border-radius:12px}.isi{width:34px;height:34px;border-radius:11px}
+.stn,.icard .ist{border-radius:16px;border:1px solid var(--line);background:var(--surf);box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.osm .oh{background:transparent;border-bottom:1px solid var(--line);border-radius:0;padding:6px 4px;margin-bottom:4px}
+.osm .orw{padding:8px 4px}.osm .otot{background:linear-gradient(135deg,rgba(18,192,98,.2),rgba(18,192,98,.07));border:1px solid rgba(18,192,98,.4);box-shadow:0 6px 18px rgba(18,192,98,.16)}
+.card.nt.un{border-color:rgba(18,192,98,.45)}
 </style>
 </head>
 <body>
@@ -680,6 +690,17 @@ const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
 const Ticks=()=><svg className="tk" width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="url(#tkg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Delivered"><path className="t1" pathLength="1" d="M1 6.5 4.5 10 11 2.5"/><path className="t2" pathLength="1" d="M6.5 6.5 10 10 16.5 2.5"/></svg>;
 const BagI=()=><I s={21}><path d="M5.5 8h13l1 12.5h-15z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></I>;
+const CI={
+ pin:()=><I s={18}><path d="M12 21s7-6.2 7-11.5a7 7 0 1 0-14 0C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></I>,
+ lock:()=><I s={18}><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></I>,
+ box:()=><I s={18}><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></I>,
+ refund:()=><I s={18}><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 8v8M9.5 14.2c.6.9 1.5 1.3 2.5 1.3 1.4 0 2.5-.7 2.5-1.8s-1-1.5-2.5-1.8S9.500 11 9.500 10s1.100-1.800 2.500-1.800c1 0 1.800.4 2.300 1"/></I>,
+ bell:()=><I s={18}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.300 21a1.900 1.900 0 0 0 3.400 0"/></I>,
+ route:()=><I s={18}><circle cx="6" cy="19" r="2.500"/><circle cx="18" cy="5" r="2.500"/><path d="M8.500 19H15a3.500 3.500 0 0 0 0-7H9a3.500 3.500 0 0 1 0-7h6.500"/></I>,
+ receipt:()=><I s={18}><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2Z"/><path d="M9 8h6M9 12h6"/></I>,
+ check:()=><I s={18}><circle cx="12" cy="12" r="9"/><path d="m8 12.200 2.800 2.800L16 9.500"/></I>,
+ truck:()=><I s={18}><path d="M2 6h11v10H2zM13 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></I>,
+ shield:()=><I s={18}><path d="M12 3 5 6v5c0 4.500 3 8 7 10 4-2 7-5.500 7-10V6Z"/><path d="m9 12 2 2 4-4"/></I>};
 const Rcpt=({r})=><div className="rcpt"><h4>Order summary</h4><div className="rr"><span>Item</span><b>{r.item}</b></div>{r.col&&<div className="rr"><span>Colour</span><b>{r.col}</b></div>}{r.opt&&<div className="rr"><span>{r.lbl}</span><b>{r.opt}</b></div>}<div className="rr"><span>Deliver to</span><b>{r.loc}</b></div><div className="rr"><span>Payment</span><b>{r.pay}</b></div><div className="rr"><span>Price</span><b>{ksh(r.price)}</b></div><div className="rr"><span>Delivery</span><b>{ksh(r.fee)}</b></div><div className="rr tot"><span>Total</span><b className="amt">{ksh(r.total)}</b></div></div>;
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
@@ -765,7 +786,7 @@ function App(){
  const [text,setText]=useState('');
  const [chats,setChats]=useState({});
  const [typing,setTyping]=useState({});
- const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,s.unread])));
+ const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,0])));
  const [orders,setOrders]=useState([
   {id:'TQ-4821',store:STORES[0],item:STORES[0].prods[0][0],price:18500,fee:delFee(18500),status:'Shipped'},
   {id:'TQ-4790',store:STORES[1],item:STORES[1].prods[0][0],price:6200,fee:delFee(6200),status:'Secured'},
@@ -803,7 +824,8 @@ function App(){
  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
  useEffect(()=>{end.current&&end.current.scrollIntoView({behavior:'smooth',block:'end'})},[chats,typing,chat]);
 
- const push=(id,m)=>setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));
+ const chatIdRef=useRef(null);
+ const push=(id,m)=>{setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));if(m.from!=='me'&&chatIdRef.current!==id)setUnread(u=>({...u,[id]:(u[id]||0)+1}))};
  const qref=useRef({}),pend=useRef({}),flowRef=useRef({});
  /* every shop reply lands after a 3s typing delay; replies to the same shop are queued in order */
  const say=(id,msgs)=>{pend.current[id]=(pend.current[id]||0)+1;setTyping(t=>({...t,[id]:true}));
@@ -825,14 +847,14 @@ function App(){
   const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Nice choice 👌, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
- const payNow=(s,f)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE);f.cs='done';track(id,s.id);setC(s.id,[]);
-  return[{text:'Payment processing is underway!',qr:['Try again','Cancel Order']},{delay:2000,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'✅',steps:[['🔔','Stay notified',"You'll be notified as soon as it's on its way."],['📍','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}]};
+ const payNow=(s,f)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
+  return[{text:'Payment processing is underway!',qr:['Try again','Cancel Order']},{delay:2000,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}]};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
   if(q==='keep shopping'||q==='explore more products')return{text:"Sure thing 👇 Here's more you might like.",catalog:true};
   if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent 👍, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
-  if(f.cs==='station'&&/pick up station x\d/.test(q)){f.cs='sum';return{text:`Perfect 👍 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
+  if(f.cs==='station'&&/pick up station x\d/.test(q)){f.cs='sum';f.station=text.trim();return{text:`Perfect 👍 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
   if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Great 👍 So how would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
-  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Sure 👍 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'🚚',steps:[['🔒','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['📦','Shop delivers','The shop delivers to your selected pick-up station.'],['💚','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
+  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Sure 👍 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'truck',steps:[['lock','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['box','Shop delivers','The shop delivers to your selected pick-up station.'],['refund','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
   if(q==='secure funds'&&f.cs==='pay'&&f.pod)return payNow(s,f);
   if(q==='pay before delivery'&&f.cs==='pay'){f.pod=0;return payNow(s,f)}
   if(q==='try again'&&c.length&&f.cs==='pay')return payNow(s,f);
@@ -891,9 +913,15 @@ function App(){
 
  const send=t=>{t=(t||'').trim();if(!t||!chat)return;if(/^exit shop$/i.test(t)){setChat(null);setTab('discover');return}push(chat.id,{from:'me',text:t});setText('');say(chat.id,[].concat(eng(chat,t,false)))};
 
- const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price);
- const id='TQ-'+Math.floor(1000+Math.random()*9000);setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);return id};
- const track=async(id,sid)=>{await wait(5000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x));if(sid)push(sid,{from:'sys',text:`Order ${id} · Shipped 🚚`});await wait(7000);setOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x));if(sid)push(sid,{from:'sys',text:`Order ${id} · Delivered ✅`})};
+ const [notifs,setNotifs]=useState([]),ordMeta=useRef({});
+ const addN=(s,kind,text)=>setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n]);
+ const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(1000+Math.random()*9000);
+  ordMeta.current[id]={s,price};setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
+  addN(s,'secured',`Order ${id} secured. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
+ const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x)),ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
+  await wait(5000);up('Shipped');ms('Shipped');ev('shipped',`Order ${id} · Shipped and on its way`);
+  await wait(7000);up('Delivered');ms('Delivered');ev('delivered',`Order ${id} · Delivered at ${stn||'your pick-up station'}, ready for collection`);
+  await wait(8000);up('Collected');ms('Paid out');setEarn(e=>e+(M.price||0));setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:M.price||0,r:'merchant'},...x]);ev('collected',`Order ${id} · Collected at ${stn||'the pick-up station'}. Payment released to the shop`)};
  const buy=(s,item)=>send(`I'd like to order: ${item}`);
  const quick=async(s,item,price)=>{const id=secure(s,item,price);if(!id)return;note(`Order ${id} secured`);track(id)};
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
@@ -915,7 +943,7 @@ function App(){
  const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
  const startPromo=d=>{setPromo(d);setPlist(d.imgs);setPsel(d.imgs.map((_,i)=>i));setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
  const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
- const secured=orders.filter(o=>o.status==='Secured'||o.status==='Shipped'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
+ const secured=orders.filter(o=>o.status!=='Collected'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
  const cmsgs=chat?(chats[chat.id]||[]):[],lm=[...cmsgs].reverse().find(m=>m.from!=='sys'),isTyp=!!(chat&&typing[chat.id]),qrs=lm&&lm.from==='bot'&&!isTyp?lm.qr:null;
  const fmtT=ts=>new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
  const renderMsg=(m,i,a)=>{const pv=a[i-1],nx=a[i+1],gs=!pv||pv.from!==m.from||pv.from==='sys';
@@ -923,9 +951,10 @@ function App(){
   if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
-   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><h4>📍 Pick-up stations · {m.stations.loc}</h4>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">📍</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><h4>🧾 Order summary</h4><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="ict"><i>{m.info.icon}</i><b>{m.info.title}</b></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{x[0]}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>Pick-up stations</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
    {m.catalog&&<div className="hs cat">{[0,1,2].map(i=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div>}
   </div>};
+ chatIdRef.current=chat?chat.id:null;
  const d=tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
  const brand=<div className="brandw"><svg className="qmark" viewBox="0 0 33 32" role="img" aria-label="TeQx AI shopping"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="34" y2="32"><stop offset="0" stopColor="#ff8f1c"/><stop offset=".48" stopColor="#ff5c0a"/><stop offset="1" stopColor="#f03a0e"/></linearGradient></defs><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="url(#qg)" strokeWidth="2.6" strokeLinecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="none" stroke="url(#qg)" strokeWidth="2.4" strokeLinejoin="round"/><path className="qstar" d="M28.5 -.2C29.02 2.95 30.2 4.99 34.2 5.5C30.2 6.01 29.02 8.05 28.5 11.2C27.98 8.05 26.8 6.01 22.8 5.5C26.8 4.99 27.98 2.95 28.5 -.2z" fill="url(#qg)"/></g></svg><div className="brand">Te<b>Q</b>x</div></div>;
@@ -951,7 +980,7 @@ function App(){
      <div className="ptabs">{(role==='merchant'?[['dash','Dashboard'],['store','Products'],['ords','Orders'],['wal','Wallet']]:[['dash','Dashboard'],['deals','Deals'],['posts','My posts'],['wal','Wallet']]).map(([k,l])=><button key={k} className={ptab===k?'on':''} onClick={()=>setPtab(k)}>{l}</button>)}</div>
 
      {role==='merchant'&&ptab==='dash'&&<>
-      <div className="kpis"><Kp i={<Ic.Wallet s={20}/>} l="Gross sales" v={ksh(478000)} dl="+18%"/><Kp i={<Ic.Pkg s={20}/>} l="Orders to ship" v={mord.filter(o=>o.status==='Secured').length}/><Kp i={<Ic.Up s={20}/>} l="Net payout" v={ksh(416300)} dl="+16%"/><Kp i={<Ic.Users s={20}/>} l="Commissions paid" v={ksh(61700)}/></div>
+      <div className="kpis"><Kp i={<Ic.Wallet s={20}/>} l="Gross sales" v={ksh(478000+mord.filter(o=>o.drop==='Direct').reduce((a,o)=>a+o.amt,0))} dl="+18%"/><Kp i={<Ic.Pkg s={20}/>} l="Orders to ship" v={mord.filter(o=>o.status==='Secured').length}/><Kp i={<Ic.Up s={20}/>} l="Net payout" v={ksh(416300+mord.filter(o=>o.drop==='Direct'&&o.status==='Paid out').reduce((a,o)=>a+o.amt,0))} dl="+16%"/><Kp i={<Ic.Users s={20}/>} l="Commissions paid" v={ksh(61700)}/></div>
       <div className="qa" style={{gridTemplateColumns:'repeat(3,1fr)'}}><button onClick={()=>setPtab('store')}><span><Ic.Tag s={20}/></span>Add product</button><button onClick={()=>setPtab('ords')}><span><Ic.Pkg s={20}/></span>Orders</button><button onClick={shareShop}><span><Ic.Link s={20}/></span>Share shop</button></div>
       <Acc icon={<Ic.Up s={18}/>} title="Sales growth" badge={<span className="pc">+18%</span>}><Spark gid="gm" d={[42,58,51,76,69,94,88]} lab={D7}/><p className="bd" style={{margin:'8px 0 0'}}>Gross sales per day this week (demo data)</p></Acc>
       <Acc icon={<Ic.Chart s={18}/>} title="Orders per day" badge={<span className="pc">128</span>}><Bars d={[14,19,16,22,20,31,26]} lab={D7}/></Acc>
@@ -1032,11 +1061,11 @@ function App(){
     <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
      <div className="sect" style={{paddingTop:14}}>Conversations</div></div>
     <div className="page" style={{padding:'4px 0 24px'}}>
-    {STORES.map(s=>{const m=chats[s.id]&&[...chats[s.id]].reverse().find(x=>x.text);return <button key={s.id} className="row" onClick={()=>open(s)}>
+    {(()=>{const L=STORES.filter(s=>chats[s.id]).sort((x,y)=>((chats[y.id].slice(-1)[0]||{}).ts||Date.now())-((chats[x.id].slice(-1)[0]||{}).ts||Date.now()));return L.length?L.map(s=>{const A=chats[s.id],m=[...A].reverse().find(x=>x.text),l=A[A.length-1];return <button key={s.id} className="row" onClick={()=>open(s)}>
      <div className="av">{s.icon}</div>
-     <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{m?m.text:s.msg}</div></div>
-     <div className="meta"><span className="tm">{s.time}</span>{unread[s.id]>0&&<span className="pill">{unread[s.id]}</span>}</div>
-    </button>})}
+     <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{typing[s.id]?'typing…':m?m.text:'Say hello'}</div></div>
+     <div className="meta"><span className="tm">{l?fmtT(l.ts):'Now'}</span>{unread[s.id]>0&&<span className="pill">{unread[s.id]}</span>}</div>
+    </button>}):<p className="bd" style={{padding:'24px 20px',textAlign:'center'}}>No conversations yet. Tap a shop above to start chatting.</p>})()}
    </div></>}
 
    {tab==='inbox'&&chat&&<div className="chat">
@@ -1060,15 +1089,16 @@ function App(){
    </div>}
 
    {tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
-    <div className="wh" style={{flexShrink:0}}><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until your orders are delivered</small></div>
+    <div className="wh" style={{flexShrink:0}}><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until you collect your orders</small></div>
     <div style={{flexShrink:0,fontSize:18,fontWeight:800,letterSpacing:'-.01em',margin:'2px 4px 12px'}}>Your Orders</div>
     <div style={{flex:1,minHeight:0,overflowY:'auto',scrollbarWidth:'none',paddingBottom:24}}>
-    {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'?' ok':'')}>{o.status}</span></div>
-     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1 · + {ksh(o.fee||delFee(o.price))} delivery</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
+    {orders.map(o=><div key={o.id} className="card"><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{o.store.icon}</span><span>{o.store.name}</span><Verified s={15}/></div><span className={'st'+(o.status==='Delivered'||o.status==='Collected'?' ok':'')}>{o.status}</span></div>
+     <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><div className="grow"><div style={{fontWeight:700,fontSize:14.5}}>{o.item}</div><div className="tm" style={{marginTop:3}}>{o.id} · Qty 1 · + {ksh(o.fee||delFee(o.price))} delivery{o.station?' · '+o.station:''}</div></div><div className="amt" style={{fontSize:16}}>{ksh(o.price)}</div></div></div>)}
     </div>
    </div>}
 
    {tab==='alerts'&&<div className="page">
+    {notifs.map(n=><div key={n.id} className={'card tapc nt'+(n.r?'':' un')} onClick={()=>{setNotifs(a=>a.map(x=>x.id===n.id?{...x,r:true}:x));setTab('orders')}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span className="nti">{CI[{secured:'lock',shipped:'truck',delivered:'pin',collected:'check'}[n.kind]]()}</span><span>{n.s.name}</span><Verified s={15}/></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!n.r&&<span className="udot"/>}<span className="st mu">{fmtT(n.ts)}</span></span></div><p className="bd">{n.text}</p></div>)}
     {STORES.map((s,i)=><div key={s.id} className="card tapc" onClick={()=>{setReadA(r=>({...r,[s.id]:true}));i%2===0?open(s):setTab('discover')}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span style={{fontSize:20}}>{s.icon}</span><span>{s.name}</span><Verified s={15}/></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!readA[s.id]&&<span className="udot"/>}<span className="st mu">{i+2}h ago</span></span></div>
      <p className="bd">{i%2===0?'Added new items to the catalog. Open the chat to see prices in KSh.':'Posted a new lookbook on your Discover feed. Take a look!'}</p></div>)}
    </div>}
@@ -1145,7 +1175,7 @@ function App(){
   {toast&&<div className="toast">{toast}</div>}
 
   {!chat&&<div className="navw"><nav className="nav">
-   {nav.map(([k,l,Icon])=>{const b=k==='inbox'?Object.values(unread).reduce((a,c)=>a+c,0):k==='alerts'?STORES.filter(x=>!readA[x.id]).length:0;return <button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><span className="ni"><Icon/>{b>0&&<span className="nb">{b}</span>}</span><span>{l}</span></button>})}
+   {nav.map(([k,l,Icon])=>{const b=k==='inbox'?Object.values(unread).reduce((a,c)=>a+c,0):k==='alerts'?notifs.filter(n=>!n.r).length+STORES.filter(x=>!readA[x.id]).length:0;return <button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><span className="ni"><Icon/>{b>0&&<span className="nb">{b}</span>}</span><span>{l}</span></button>})}
   </nav></div>}
  </div>;
 }
