@@ -50,7 +50,7 @@ h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px}
 .tm{font-size:11.5px;color:var(--mut)}
 .pill{font-size:11.5px;font-weight:700;color:#fff;background:var(--grad);border-radius:99px;min-width:21px;padding:2px 7px;text-align:center}
 .chat{position:absolute;inset:0;display:flex;flex-direction:column;background:radial-gradient(110% 50% at 100% 0%,rgba(255,92,10,.08),transparent 60%),radial-gradient(90% 45% at 0% 100%,rgba(18,192,98,.07),transparent 60%),var(--bg);z-index:20}
-.chdr{display:flex;align-items:center;gap:11px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 11px;background:var(--surf);border-bottom:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.08);position:relative;z-index:2}
+.chdr{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 11px;background:var(--surf);border-bottom:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.08);position:relative;z-index:2}
 .back{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surf2)}
 .hav{position:relative;padding:2.5px;border-radius:50%;background:var(--grad);flex-shrink:0}
 .hav .av{width:40px;height:40px;font-size:19px;border:2.5px solid var(--surf)}
@@ -536,8 +536,8 @@ h1{font-size:24px;margin-bottom:6px}
 .qstar{stroke:var(--bg);stroke-width:1.6px;paint-order:stroke;stroke-linejoin:round}
 .cartic{position:relative;width:40px;height:40px;display:grid;place-items:center;color:var(--text);pointer-events:none;flex-shrink:0}
 .cbd{position:absolute;top:0;right:-3px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--grad);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;animation:pop .25s ease}
-.vchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-.vchip{padding:7px 13px;border-radius:99px;border:1.5px solid var(--line);background:var(--surf2);color:var(--text);font-size:13px;font-weight:700}
+.vchips{display:flex;flex-wrap:nowrap;gap:6px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.vchips::-webkit-scrollbar{display:none}
+.vchip{flex-shrink:0;white-space:nowrap;padding:5px 11px;border-radius:99px;border:1.5px solid var(--line);background:var(--surf2);color:var(--text);font-size:12px;font-weight:700;line-height:1.3}
 .vchip.on{border-color:transparent;background:var(--grad);color:#fff}
 .vq{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px}
 .vq button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);background:var(--surf2);color:var(--text);font-size:18px;font-weight:700}
@@ -545,6 +545,28 @@ h1{font-size:24px;margin-bottom:6px}
 .prod .btn[disabled]{opacity:.4}
 .strow{display:flex;justify-content:space-between;width:100%;padding:11px 0;background:none;border:0;border-top:1px solid var(--line);color:var(--text);font-size:14px;font-weight:600;text-align:left}
 .qr.pri{background:linear-gradient(135deg,#2be37f,#0daf5b);color:#fff;box-shadow:0 4px 16px rgba(13,175,91,.4)}
+.chdr .grow{margin-left:-6px}
+.stc2{padding:14px 14px 8px;min-width:264px;border-radius:22px;background:linear-gradient(180deg,var(--surf),var(--surf2));border:1px solid var(--cardline)}
+.stn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;margin:0 0 8px;border-radius:16px;background:var(--surf);border:1.5px solid var(--line);text-align:left;box-shadow:0 3px 10px rgba(0,0,0,.08);transition:transform .12s,border-color .15s}
+.stn:active{transform:scale(.98);border-color:#12c062}
+.stp{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(18,192,98,.14);font-size:16px;flex-shrink:0}
+.stt{flex:1;min-width:0;display:flex;flex-direction:column}.stt b{font-size:14px;font-weight:700}.stt small{font-size:11.5px;color:var(--mut)}
+.stf{font-size:13px;font-weight:800;color:#12c062;background:rgba(18,192,98,.12);padding:4px 10px;border-radius:99px;flex-shrink:0}
+.stg{color:var(--mut);font-size:20px;line-height:1}
+.osm{min-width:260px;border-radius:22px;padding:16px 16px 14px;border:1px solid var(--cardline);background:linear-gradient(180deg,var(--surf),var(--surf2))}
+.osm .oh{display:flex;justify-content:space-between;padding:7px 12px;margin-bottom:6px;border-radius:10px;background:var(--surf2);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.osm .orw{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 12px;font-size:13.5px}
+.osm .orw span{color:var(--text);flex:1;min-width:0}.osm .orw b{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.osm .orw b.gr{color:#12c062}
+.osm .osep{border-top:1.5px dashed var(--line);margin:6px 12px}
+.osm .otot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:12px;border-radius:14px;background:rgba(18,192,98,.12);border:1px solid rgba(18,192,98,.35)}
+.osm .otot span{font-size:14px;font-weight:800}.osm .otot b{font-size:18px;font-weight:800;color:#12c062;font-variant-numeric:tabular-nums}
+.icard{min-width:264px;border-radius:22px;padding:14px 14px 12px;border:1px solid var(--cardline);background:linear-gradient(180deg,var(--surf),var(--surf2))}
+.icard .ict{display:flex;align-items:center;gap:9px;margin-bottom:10px}.icard .ict i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--green);font-size:15px}.icard .ict b{font-size:15px;font-weight:800}
+.icard .ist{display:flex;gap:11px;align-items:flex-start;padding:10px 10px;margin-bottom:7px;border-radius:14px;background:var(--surf);border:1px solid var(--line)}
+.icard .isi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(18,192,98,.14);font-size:16px;flex-shrink:0}
+.icard .ist b{display:block;font-size:13.5px;font-weight:700}.icard .ist small{display:block;font-size:12.5px;color:var(--mut);line-height:1.45;margin-top:1px}
+.icard .ifoot{text-align:center;font-size:13px;font-weight:600;color:var(--mut);padding:4px 0 0}
 </style>
 </head>
 <body>
@@ -797,20 +819,20 @@ function App(){
  const cartRef=useRef({}),[cart,setCart]=useState({});
  const cartOf=id=>cartRef.current[id]||[],setC=(id,v)=>{cartRef.current={...cartRef.current,[id]:v};setCart(cartRef.current)},cnt=id=>cartOf(id).reduce((a,x)=>a+x.qty,0);
  const FEE=300,lbl=x=>x.name+(x.opt?` (${x.opt})`:'');
- const welcome=(s,pi)=>{const [n,pr]=s.prods[pi>=0?pi:0];return{text:`Hello 👋 How are you? Welcome to ${s.name}. ${n} is ${ksh(pr)} and it's available. Here we go 👇\nPlease choose one for your choice`,catalog:true}};
+ const welcome=(s,pi)=>{const [n,pr]=s.prods[pi>=0?pi:0];return{text:`Hi 👋, how are you? Welcome to ${s.name}. The ${n} is available for shopping.\nHere we go 👇, please choose one for your choice`,catalog:true}};
  const addCart=(s,name,price,opt,qty)=>{const k=name+'|'+(opt||''),c=[...cartOf(s.id)],ex=c.find(x=>x.k===k),L=name+(opt?` (${opt})`:'')+(qty>1?` × ${qty}`:'');
   if(ex)ex.qty+=qty;else c.push({k,name,opt,price,qty});setC(s.id,c);
-  const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:c.length===1?`Nice choice! 🙌 The ${L} is in your cart. Want to look at a few more things, or are you ready to complete your order?`:`Got it, the ${L} is in too 😄 Anything else, or shall we complete your order?`;
+  const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Nice choice 👌, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
  const payNow=(s,f)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE);f.cs='done';track(id,s.id);setC(s.id,[]);
-  return[{text:'Payment processing is underway!',qr:['Try again','Cancel Order']},{delay:2000,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.\n\n• You'll be notified as soon as it's on its way\n• Feel free to track your order status anytime in the Orders tab\n\nPlease enjoy a nice day! 🤝😊`,qr:['Keep Shopping','Exit Shop']}]};
+  return[{text:'Payment processing is underway!',qr:['Try again','Cancel Order']},{delay:2000,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'✅',steps:[['🔔','Stay notified',"You'll be notified as soon as it's on its way."],['📍','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}]};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
   if(q==='keep shopping'||q==='explore more products')return{text:"Sure thing 👇 Here's more you might like.",catalog:true};
-  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent! 👌, Where should we send your order? Please Enter your address for delivery e.g Eldoret'}}
+  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent 👍, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
   if(f.cs==='station'&&/pick up station x\d/.test(q)){f.cs='sum';return{text:`Perfect 👍 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
   if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Great 👍 So how would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
-  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Sure 👍 With Pay on Delivery, this is how it goes:\n\n• You secure your funds with TeQx Buyer Protection\n• The shop then delivers to your selected pick-up station\n• If the parcel fails to get delivered within the agreed duration, your funds are refunded fully",qr:['Secure Funds','Cancel Order']}}
+  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Sure 👍 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'🚚',steps:[['🔒','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['📦','Shop delivers','The shop delivers to your selected pick-up station.'],['💚','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
   if(q==='secure funds'&&f.cs==='pay'&&f.pod)return payNow(s,f);
   if(q==='pay before delivery'&&f.cs==='pay'){f.pod=0;return payNow(s,f)}
   if(q==='try again'&&c.length&&f.cs==='pay')return payNow(s,f);
@@ -901,8 +923,7 @@ function App(){
   if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
-   {(m.text||m.summary||m.placed||m.stations||m.osum)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.stations&&<div className="rcpt"><h4>📍 Pick-up stations · {m.stations.loc}</h4>{m.stations.rows.map(r=><button key={r[0]} className="strow" onClick={()=>send(r[0])}><span>{r[0]}</span><b>{ksh(r[1])}</b></button>)}</div>}{m.osum&&<div className="rcpt"><h4>🧾 Order summary</h4>{m.osum.lines.map(l=><div key={l[0]} className="rr"><span>{l[0]}</span><b>{ksh(l[1])}</b></div>)}<div className="rr"><span>Items</span><b>{ksh(m.osum.items)}</b></div><div className="rr"><span>Parcel fee</span><b>{ksh(m.osum.fee)}</b></div><div className="rr tot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>}
-{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Amt t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><h4>📍 Pick-up stations · {m.stations.loc}</h4>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">📍</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><h4>🧾 Order summary</h4><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="ict"><i>{m.info.icon}</i><b>{m.info.title}</b></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{x[0]}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
    {m.catalog&&<div className="hs cat">{[0,1,2].map(i=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div>}
   </div>};
  const d=tab==='discover';
