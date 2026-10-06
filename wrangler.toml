@@ -1,5 +1,5 @@
 name = "teqx-pwa"
-main = "src/index.js"
+main = "SRC/index.js"
 compatibility_date = "2026-10-01"
 
 [assets]
