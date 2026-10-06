@@ -699,7 +699,7 @@ const DEMO_MORD=[{id:'DS-2041',item:'Pulse Wireless Earbuds',qty:2,amt:15800,com
 const FILT=['none','hue-rotate(50deg) saturate(1.1)','hue-rotate(190deg)'];
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
-const RX=new RegExp('(KSh [\\d,]+|TQ-\\d+|'+[...new Set([...STORES.flatMap(x=>x.prods.map(q=>q[0])),...STORES.map(x=>x.name)])].sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');
+const mkRX=()=>new RegExp('(KSh [\\d,]+|TQ-\\d+|'+[...new Set([...STORES.flatMap(x=>x.prods.map(q=>q[0])),...STORES.map(x=>x.name)])].sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');let RX=mkRX();
 const Rich=({t})=>t.split(RX).map((x,i)=>i%2===0?x:/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:<b key={i} className="bw">{x}</b>);
 const Ticks=()=><svg className="tk" width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="url(#tkg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Delivered"><path className="t1" pathLength="1" d="M1 6.5 4.5 10 11 2.5"/><path className="t2" pathLength="1" d="M6.5 6.5 10 10 16.5 2.5"/></svg>;
 const BagI=()=><I s={21}><path d="M5.5 8h13l1 12.5h-15z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></I>;
@@ -719,21 +719,22 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
 function Product({store,i,onBuy}){
- const [p,price]=store.prods[i],[bad,setBad]=useState(false);
+ const [p,price]=store.prods[i],[bad,setBad]=useState(false),A=(store.attrs&&store.attrs[i])||[],pim=store.dyn&&store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
-  <div className="pimg">{bad?store.icon:<img src={store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}}/>}<span className="tag">In stock</span></div>
-  <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div><button className="btn" onClick={()=>onBuy(store,p,price)}>Order now</button></div>
+  <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}<span className="tag">In stock</span></div>
+  <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div>{A.length>0&&<div style={{fontSize:12,color:'var(--mut)',marginTop:4}}>{A.map(a=>a.k+': '+a.v.join('/')).join(' · ')}</div>}<button className="btn" onClick={()=>onBuy(store,p,price)}>Order now</button></div>
  </div>;
 }
 
 function Card({store,i,onAdd}){
- const [p,price]=store.prods[i],o=(SOPT[store.id]||{}).o||[],[bad,setBad]=useState(false),[sz,setSz]=useState(null),[q,setQ]=useState('1'),n=Math.max(1,parseInt(q,10)||1);
+ const [p,price]=store.prods[i],A=(store.attrs&&store.attrs[i])||[],o=store.dyn?[]:((SOPT[store.id]||{}).o||[]),[bad,setBad]=useState(false),[sz,setSz]=useState(null),[pick,setPick]=useState({}),[q,setQ]=useState('1'),n=Math.max(1,parseInt(q,10)||1),need=A.filter(a=>a.v.length>1),done=need.every(a=>pick[a.k]),opt=need.length?need.map(a=>a.k+': '+pick[a.k]).join(', '):sz,pim=store.dyn&&store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
-  <div className="pimg">{bad?store.icon:<img src={store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${STYLE[i].scale})`,objectPosition:STYLE[i].pos}}/>}</div>
+  <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}</div>
   <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div>
+   {A.length>0&&<div className="attrs">{A.map(a=>a.v.length>1?<div key={a.k} style={{marginTop:6}}><small style={{color:'var(--mut)'}}>{a.k}</small><div className="vchips">{a.v.map(x=><button key={x} className={'vchip'+(pick[a.k]===x?' on':'')} onClick={()=>setPick(m=>({...m,[a.k]:x}))}>{x}</button>)}</div></div>:<div key={a.k} style={{marginTop:6,fontSize:12,color:'var(--mut)'}}>{a.k}: <b style={{color:'var(--text)'}}>{a.v[0]}</b></div>)}</div>}
    {o.length>0&&<div className="vchips">{o.map(x=><button key={x} className={'vchip'+(sz===x?' on':'')} onClick={()=>setSz(x)}>{x}</button>)}</div>}
    <div className="vq"><button aria-label="Less" onClick={()=>setQ(String(Math.max(1,n-1)))}>−</button><input value={q} inputMode="numeric" aria-label="Quantity" onChange={e=>setQ(e.target.value.replace(/\D/g,'').slice(0,2))} onBlur={()=>setQ(String(n))}/><button aria-label="More" onClick={()=>setQ(String(Math.min(99,n+1)))}>+</button></div>
-   <button className="btn" disabled={o.length>0&&!sz} onClick={()=>{onAdd(store,p,price,sz,n);setQ('1')}}>Add to cart</button></div>
+   <button className="btn" disabled={(o.length>0&&!sz)||!done} onClick={()=>{onAdd(store,p,price,opt,n);setQ('1')}}>Add to cart</button></div>
  </div>;
 }
 
@@ -806,7 +807,7 @@ function App(){
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
- const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods||[]),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',pids:[]}),[mord,setMord]=useState(DEMO_MORD),[dper,setDper]=useState('24h'),[dsOrders,setDsOrders]=useState(()=>init.dsOrders||seedDs()),[dsq,setDsq]=useState(''),[dfl,setDfl]=useState({sort:'earn',min:0,price:'any',cat:'All',stock:false}),[fopen,setFopen]=useState(false),[edp,setEdp]=useState(null),[,setTick]=useState(0),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
+ const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods&&init.mprods.length?init.mprods:(window.__MYITEMS||[])),[earn,setEarn]=useState(init.earn??12600),[earnD,setEarnD]=useState(init.earnD??27300),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',pids:[],attrs:[{k:'',v:''}]}),[mord,setMord]=useState(DEMO_MORD),[dper,setDper]=useState('24h'),[dsOrders,setDsOrders]=useState(()=>init.dsOrders||seedDs()),[dsq,setDsq]=useState(''),[dfl,setDfl]=useState({sort:'earn',min:0,price:'any',cat:'All',stock:false}),[fopen,setFopen]=useState(false),[edp,setEdp]=useState(null),[,setTick]=useState(0),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
@@ -937,7 +938,10 @@ function App(){
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
  const adv=o=>{if(o.status==='Secured'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Shipped'}:x));note('Marked as shipped')}else if(o.status==='Shipped'){setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Delivered'}:x));setTimeout(()=>{setMord(m=>m.map(x=>x.id===o.id?{...x,status:'Paid out'}:x));setEarn(e=>e+o.amt-o.comm);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+o.id,amt:o.amt-o.comm,r:'merchant'},...x]);note('Payout added to your earnings')},1500)}};
  const mpr=parseInt(String(mp.price).replace(/\D/g,''),10)||0,mpc=Math.min(60,Math.max(0,parseFloat(mp.comm)||0));
- const addProd=()=>{const ph=mp.pids.map(id=>photos.find(p=>p.id===id)).filter(Boolean);if(!ph.length)return note('Pick at least one product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!mpc)return note('Set a commission for dropshippers');setMprods(m=>[{id:'mp'+Date.now(),name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:ph.map(x=>x.src)},...m]);setMp({name:'',price:'',comm:'',stock:'',pids:[]});note('Product uploaded')};
+ const ensureShop=async()=>{if(window.__MYSHOPID)return window.__MYSHOPID;const img_id=shop.avatar?await uploadImg(shop.avatar):undefined;const r=await apiJ('/api/stores','POST',{device_id:DEV,name:shop.name||'My Shop',icon:shop.icon||'🏪',category:shop.cat||'General',tag:'#'+(shop.name||'MyShop').replace(/\s/g,''),img_id});if(r&&r.id){window.__MYSHOPID=r.id;return r.id}return null};
+ const syncProd=async(lid,ph,name,price,pct,stock,attrs)=>{try{const sid=await ensureShop();if(!sid)throw 0;const ids=[];for(const x of ph){const i=await uploadImg(x.src);if(i)ids.push(i)}const r=await apiJ('/api/products','POST',{device_id:DEV,store_id:sid,name,price,pct,stock,attrs,img_ids:ids});if(!r||!r.ok)throw 0;setMprods(m=>m.map(x=>x.id===lid?{...x,dbId:r.id}:x));note('Saved online. Customers can now see it')}catch(e){note('Saved on this phone only')}};
+ useEffect(()=>{const t=setTimeout(async()=>{const id=window.__MYSHOPID;if(!id)return;const img_id=shop.avatar?await uploadImg(shop.avatar):undefined;apiJ('/api/stores/'+id,'PATCH',{device_id:DEV,name:shop.name,icon:shop.icon,open:shop.open,img_id}).catch(()=>{})},1200);return()=>clearTimeout(t)},[shop.name,shop.icon,shop.open,shop.avatar]);
+ const addProd=()=>{const at=(mp.attrs||[]).map(a=>({k:a.k.trim().slice(0,20),v:a.v.split(',').map(x=>x.trim().slice(0,20)).filter(Boolean).slice(0,12)})).filter(a=>a.k&&a.v.length).slice(0,6);const ph=mp.pids.map(id=>photos.find(p=>p.id===id)).filter(Boolean);if(!ph.length)return note('Pick at least one product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!at.length)return note('Add at least one attribute, e.g. Weight: 500g, 1kg, 2kg');if(!mpc)return note('Set a commission for dropshippers');const lid='mp'+Date.now();setMprods(m=>[{id:lid,name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,imgs:ph.map(x=>x.src),attrs:at},...m]);setMp({name:'',price:'',comm:'',stock:'',pids:[],attrs:[{k:'',v:''}]});note('Product uploaded');syncProd(lid,ph,mp.name.trim(),mpr,mpc,parseInt(mp.stock,10)||0,at)};
  const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
  const nf=(dfl.sort!=='earn'?1:0)+(dfl.min?1:0)+(dfl.price!=='any'?1:0)+(dfl.cat!=='All'?1:0)+(dfl.stock?1:0),ql=dsq.trim().toLowerCase();
@@ -962,7 +966,7 @@ function App(){
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
    {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>Pick-up stations</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
-   {m.catalog&&<div className="hs cat">{[0,1,2].map(i=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div>}
+   {m.catalog&&<div className="hs cat">{chat.prods.map((_,i)=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div>}
   </div>};
  chatIdRef.current=chat?chat.id:null;
  const d=tab==='discover';
@@ -1013,10 +1017,14 @@ function App(){
        <input className="fi" placeholder="Price (KSh)" inputMode="numeric" value={mp.price} onChange={e=>setMp(v=>({...v,price:e.target.value}))}/>
        <input className="fi" placeholder="Commission for dropshippers (%)" inputMode="decimal" value={mp.comm} onChange={e=>setMp(v=>({...v,comm:e.target.value}))}/>
        <input className="fi" placeholder="Units in stock" inputMode="numeric" value={mp.stock} onChange={e=>setMp(v=>({...v,stock:e.target.value}))}/>
+       <div className="sect" style={{padding:'14px 0 6px'}}>Attributes (required)</div>
+       <p className="bd" style={{margin:'0 0 8px'}}>Help customers decide. e.g. Weight → 500g, 1kg, 2kg, 5kg, or Size → S, M, L.</p>
+       {(mp.attrs||[]).map((a,ix)=><div key={ix} style={{display:'flex',gap:8,alignItems:'center'}}><input className="fi" style={{flex:1,minWidth:0}} placeholder="e.g. Weight or Size" value={a.k} onChange={e=>setMp(v=>({...v,attrs:(v.attrs||[]).map((x,j)=>j===ix?{...x,k:e.target.value}:x)}))}/><input className="fi" style={{flex:2,minWidth:0}} placeholder="e.g. 500g, 1kg, 2kg, 5kg" value={a.v} onChange={e=>setMp(v=>({...v,attrs:(v.attrs||[]).map((x,j)=>j===ix?{...x,v:e.target.value}:x)}))}/><button className="lnk" aria-label="Remove attribute" onClick={()=>setMp(v=>({...v,attrs:(v.attrs||[]).filter((_,j)=>j!==ix)}))}>✕</button></div>)}
+       {(mp.attrs||[]).length<6&&<button className="lnk" style={{marginTop:6}} onClick={()=>setMp(v=>({...v,attrs:[...(v.attrs||[]),{k:'',v:''}]}))}>+ Add attribute</button>}
        {mpr>0&&mpc>0&&<p className="bd" style={{margin:'12px 0 0'}}>Dropshipper earns {ksh(Math.round(mpr*mpc/100))} per sale. You receive {ksh(mpr-Math.round(mpr*mpc/100))}.</p>}
        <button className="btn" style={{marginTop:16}} onClick={addProd}>Upload product</button></Acc>
       <Acc icon={<Ic.Pkg s={18}/>} title="Your products" badge={<span className="pc">{mprods.length}</span>}>
-       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.imgs?p.imgs[0]:p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.stock} in stock · {(p.imgs||[p.img]).length} photo{(p.imgs||[p.img]).length>1?'s':''}</small><div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>setMprods(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
+       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.imgs?p.imgs[0]:p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.stock} in stock · {(p.imgs||[p.img]).length} photo{(p.imgs||[p.img]).length>1?'s':''}</small>{(p.attrs||[]).length>0&&<small style={{display:'block'}}>{p.attrs.map(a=>a.k+': '+a.v.join('/')).join(' · ')}</small>}<div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>{if(p.dbId)fetch('/api/products/'+p.dbId+'?device='+encodeURIComponent(DEV),{method:'DELETE'}).catch(()=>{});setMprods(m=>m.filter(x=>x.id!==p.id))}}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
      </>}
 
      {role==='merchant'&&ptab==='ords'&&<>
@@ -1190,12 +1198,28 @@ function App(){
  </div>;
 }
 const DEV=(()=>{try{let d=localStorage.getItem('teqx-device');if(!d){d='d-'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('teqx-device',d)}return d}catch(e){return 'd-'+Math.random().toString(36).slice(2)}})();
-const apiSaveOrder=o=>{try{fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...o,device_id:DEV})}).catch(()=>{})}catch(e){}};
-const apiPatchOrder=(id,status,station)=>{try{fetch('/api/orders/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status,station:station||null,device_id:DEV})}).catch(()=>{})}catch(e){}};
+const apiJ=(u,method,body)=>fetch(u,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(r=>r.json());
+const apiSaveOrder=o=>{try{apiJ('/api/orders','POST',{...o,device_id:DEV}).catch(()=>{})}catch(e){}};
+const apiPatchOrder=(id,status,station)=>{try{apiJ('/api/orders/'+id,'PATCH',{status,station:station||null,device_id:DEV}).catch(()=>{})}catch(e){}};
+const IMGC=new Map();
+const shrink=(src,mx,q)=>new Promise(res=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.onerror=()=>res(null);im.src=src});
+const uploadImg=async src=>{if(!src||!String(src).startsWith('data:'))return null;if(IMGC.has(src))return IMGC.get(src);let d=src;if(d.length>300000)d=(await shrink(d,800,.7))||d;if(d.length>380000)d=(await shrink(d,600,.6))||d;try{const r=await apiJ('/api/images','POST',{device_id:DEV,data:d});if(r&&r.id){IMGC.set(src,r.id);return r.id}}catch(e){}return null};
+const DEF_OPT={lbl:'Option',q:'Which option would you like?',o:['Standard','Other']};
 const root=ReactDOM.createRoot(document.getElementById('root'));
 const getJ=u=>fetch(u).then(r=>r.ok?r.json():Promise.reject());
 Promise.all([
- getJ('/api/stores').then(rows=>{rows.forEach(r=>{const s=STORES.find(x=>x.id===r.id);if(s)Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods})})}).catch(()=>{}),
+ getJ('/api/stores?device='+encodeURIComponent(DEV)).then(rows=>{
+  rows.forEach(r=>{
+   if(r.mine){window.__MYSHOPID=r.id;window.__MYITEMS=(r.items||[]).map(it=>({id:'db'+it.id,dbId:it.id,name:it.name,price:it.price,pct:it.pct,stock:it.stock,imgs:it.imgs,attrs:it.attrs||[]}));return}
+   const s=STORES.find(x=>x.id===r.id);
+   if(s){Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods});return}
+   if(r.open===false||!r.prods.length)return;
+   STORES.push({id:r.id,name:r.name,tag:r.tag||('#'+r.name.replace(/\s/g,'')),icon:r.icon||'🏪',msg:'Say hello',time:'',unread:0,img:r.img||'',prods:r.prods,dyn:true,attrs:(r.items||[]).map(it=>it.attrs||[]),pimgs:(r.items||[]).map(it=>it.imgs[0]||'')});
+   SCAT[r.id]=r.category||'General';SOPT[r.id]=SOPT[r.id]||DEF_OPT;CAP[r.id]=CAP[r.id]||'New in the store.';COL[r.id]=r.prods.map(()=>['','']);
+   (r.items||[]).forEach(it=>{if(it.imgs.length&&!FEED.find(p=>p.pid==='db'+it.id))FEED.unshift({pid:'db'+it.id,sid:r.id,name:it.name,price:it.price,cap:'New in the store.',ago:'New',imgs:it.imgs,cols:it.imgs.map(()=>'')})})
+  });
+  RX=mkRX();
+ }).catch(()=>{}),
  getJ('/api/orders?device='+encodeURIComponent(DEV)).then(rows=>{window.__ORD=rows.map(r=>({id:r.id,store:STORES.find(x=>x.id===r.store_id)||STORES[0],item:r.item,price:r.price,fee:r.fee,status:r.status,station:r.station||undefined}))}).catch(()=>{})
 ]).then(()=>root.render(<App/>));
 </script>
