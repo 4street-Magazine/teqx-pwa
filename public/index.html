@@ -578,6 +578,16 @@ h1{font-size:24px;margin-bottom:6px}
 .osm .orw{padding:8px 4px}.osm .otot{background:linear-gradient(135deg,rgba(18,192,98,.2),rgba(18,192,98,.07));border:1px solid rgba(18,192,98,.4);box-shadow:0 6px 18px rgba(18,192,98,.16)}
 .card.nt.un{border-color:rgba(18,192,98,.45)}
 .bw{font-weight:800;color:var(--text)}.sysm .bw{color:var(--text)}
+
+/* chat text colour fix (light + dark) */
+.bb.bot,.bb.bot *:not(.amt):not(.tag){color:var(--text)}
+.bb.bot .amt{color:transparent}
+.rcpt,.stc2,.osm,.icard,.stn,.icard .ist,.chd b,.stt b,.icard .ict b,.icard .ist b,.osm .orw span,.osm .orw b,.osm .otot span,.rr b,.okc b,.strow{color:var(--text)}
+.osm .orw b.gr,.osm .otot b,.stf{color:#12c062}
+.stt small,.icard .ist small,.chd small,.icard .ifoot,.rr span,.rcpt h4,.okc small{color:var(--mut)}
+.sysm,.dchip{color:var(--mut)}
+[data-theme=light] .bb.bot{color:#17120e;background:#fff}
+[data-theme=light] .bb.me{color:#fff}
 </style>
 </head>
 <body>
@@ -1179,7 +1189,8 @@ function App(){
   </nav></div>}
  </div>;
 }
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+const root=ReactDOM.createRoot(document.getElementById('root'));
+fetch('/api/stores').then(r=>r.ok?r.json():Promise.reject()).then(rows=>{rows.forEach(r=>{const s=STORES.find(x=>x.id===r.id);if(s)Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods})})}).catch(()=>{}).then(()=>root.render(<App/>));
 </script>
 </body>
 </html>
