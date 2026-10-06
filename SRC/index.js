@@ -1,5 +1,18 @@
 const J = (d, s = 200) => Response.json(d, { status: s });
 
+const cleanAttrs = (a) =>
+  (Array.isArray(a) ? a : [])
+    .map((x) => ({
+      k: String((x && x.k) || "").trim().slice(0, 20),
+      v: (Array.isArray(x && x.v) ? x.v : []).map((y) => String(y).trim().slice(0, 20)).filter(Boolean).slice(0, 12),
+    }))
+    .filter((x) => x.k && x.v.length)
+    .slice(0, 6);
+
+const readAttrs = (t) => {
+  try { return JSON.parse(t || "[]"); } catch (e) { return []; }
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -25,7 +38,7 @@ export default {
           mine: !!device && s.owner_device === device,
           prods: mine.map((p) => [p.name, p.price]),
           items: mine.map((p) => ({
-            id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0,
+            id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0, attrs: readAttrs(p.attrs),
             imgs: (p.img_ids || "").split(",").filter(Boolean).map((i) => "/api/images/" + i),
           })),
         };
@@ -71,12 +84,14 @@ export default {
       if (!st || !b.device_id || st.owner_device !== b.device_id) return J({ error: "not your shop" }, 403);
       const price = parseInt(b.price, 10);
       if (!b.name || !(price > 0)) return J({ error: "name and price required" }, 400);
+      const attrs = cleanAttrs(b.attrs);
+      if (!attrs.length) return J({ error: "at least one attribute required" }, 400);
       const ids = (b.img_ids || []).map(Number).filter(Boolean).slice(0, 5).join(",");
       const r = await db.prepare(
-        "INSERT INTO products (store_id,name,price,pct,stock,img_ids) VALUES (?,?,?,?,?,?)"
+        "INSERT INTO products (store_id,name,price,pct,stock,img_ids,attrs) VALUES (?,?,?,?,?,?,?)"
       ).bind(
         b.store_id, String(b.name).slice(0, 80), price,
-        parseInt(b.pct, 10) || 0, parseInt(b.stock, 10) || 0, ids
+        parseInt(b.pct, 10) || 0, parseInt(b.stock, 10) || 0, ids, JSON.stringify(attrs)
       ).run();
       return J({ ok: true, id: r.meta.last_row_id });
     }
