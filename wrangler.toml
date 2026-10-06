@@ -6,3 +6,8 @@ compatibility_date = "2026-10-01"
 directory = "./public"
 binding = "ASSETS"
 run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "teqx-db"
+database_id = "498b9a8c-fee3-4915-ab5d-a98618b69838"
