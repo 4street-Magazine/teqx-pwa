@@ -800,7 +800,7 @@ function App(){
  const [chats,setChats]=useState({});
  const [typing,setTyping]=useState({});
  const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,0])));
- const [orders,setOrders]=useState([]);
+ const [orders,setOrders]=useState(window.__ORD||[]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
  const [fol,setFol]=useState({}),[toast,setToast]=useState('');
  const [init]=useState(()=>{try{return JSON.parse(localStorage.getItem('tumiqa-shop'))||{}}catch(e){return{}}});
@@ -925,10 +925,10 @@ function App(){
 
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({});
  const addN=(s,kind,text)=>setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n]);
- const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(1000+Math.random()*9000);
-  ordMeta.current[id]={s,price};setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
+ const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
+  ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured'});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
   addN(s,'secured',`Order secured · ${id}. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
- const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x)),ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
+ const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>{apiPatchOrder(id,v,stn);setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x))},ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
   await wait(8000);up('Shipped');ms('Shipped');ev('shipped',`Order shipped · ${id} is on its way to ${stn||'your pick-up station'}.`);
   await wait(8000);up('Delivered');ms('Delivered');ev('delivered',`Order delivered at pickup station · ${id} is ready for collection at ${stn||'your pick-up station'}.`);
   await wait(8000);up('Collected');ms('Paid out');setEarn(e=>e+(M.price||0));setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:M.price||0,r:'merchant'},...x]);ev('collected',`Order collected from pickup station · ${id} was collected at ${stn||'the pick-up station'}. Payment released to the shop.`)};
@@ -1189,8 +1189,15 @@ function App(){
   </nav></div>}
  </div>;
 }
+const DEV=(()=>{try{let d=localStorage.getItem('teqx-device');if(!d){d='d-'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('teqx-device',d)}return d}catch(e){return 'd-'+Math.random().toString(36).slice(2)}})();
+const apiSaveOrder=o=>{try{fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...o,device_id:DEV})}).catch(()=>{})}catch(e){}};
+const apiPatchOrder=(id,status,station)=>{try{fetch('/api/orders/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status,station:station||null,device_id:DEV})}).catch(()=>{})}catch(e){}};
 const root=ReactDOM.createRoot(document.getElementById('root'));
-fetch('/api/stores').then(r=>r.ok?r.json():Promise.reject()).then(rows=>{rows.forEach(r=>{const s=STORES.find(x=>x.id===r.id);if(s)Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods})})}).catch(()=>{}).then(()=>root.render(<App/>));
+const getJ=u=>fetch(u).then(r=>r.ok?r.json():Promise.reject());
+Promise.all([
+ getJ('/api/stores').then(rows=>{rows.forEach(r=>{const s=STORES.find(x=>x.id===r.id);if(s)Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods})})}).catch(()=>{}),
+ getJ('/api/orders?device='+encodeURIComponent(DEV)).then(rows=>{window.__ORD=rows.map(r=>({id:r.id,store:STORES.find(x=>x.id===r.store_id)||STORES[0],item:r.item,price:r.price,fee:r.fee,status:r.status,station:r.station||undefined}))}).catch(()=>{})
+]).then(()=>root.render(<App/>));
 </script>
 </body>
 </html>
