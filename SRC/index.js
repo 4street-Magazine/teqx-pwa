@@ -105,3 +105,41 @@ export default {
     if (path.startsWith("/api/images/") && m === "GET") {
       const id = Number(path.split("/").pop());
       const row = await db.prepare("SELECT data FROM images WHERE id = ?").bind(id).first();
+      if (!row) return new Response("not found", { status: 404 });
+      const mt = /^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i.exec(row.data);
+      if (!mt) return new Response("bad image", { status: 500 });
+      const bin = Uint8Array.from(atob(mt[2]), (c) => c.charCodeAt(0));
+      return new Response(bin, {
+        headers: { "Content-Type": mt[1], "Cache-Control": "public, max-age=31536000, immutable" },
+      });
+    }
+
+    // ---------- ORDERS ----------
+    if (path === "/api/orders" && m === "GET") {
+      const device = url.searchParams.get("device");
+      if (!device) return J([]);
+      const rows = (await db.prepare("SELECT * FROM orders WHERE device_id = ? ORDER BY created_at DESC").bind(device).all()).results;
+      return J(rows);
+    }
+
+    if (path === "/api/orders" && m === "POST") {
+      const o = await body();
+      if (!o.id || !o.device_id) return J({ error: "missing id or device_id" }, 400);
+      await db.prepare(
+        "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station) VALUES (?,?,?,?,?,?,?,?)"
+      ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null).run();
+      return J({ ok: true });
+    }
+
+    if (path.startsWith("/api/orders/") && m === "PATCH") {
+      const id = path.split("/").pop();
+      const o = await body();
+      await db.prepare(
+        "UPDATE orders SET status = COALESCE(?, status), station = COALESCE(?, station) WHERE id = ? AND device_id = ?"
+      ).bind(o.status || null, o.station || null, id, o.device_id).run();
+      return J({ ok: true });
+    }
+
+    return env.ASSETS.fetch(request);
+  },
+};
