@@ -858,8 +858,24 @@ function App(){
   const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Nice choice 👌, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
- const payNow=(s,f)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
-  return[{text:'Payment processing is underway!',qr:['Try again','Cancel Order']},{delay:2000,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}]};
+ const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0);
+ const finishPay=(s,f,tx)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
+  say(s.id,[{text:'M-Pesa payment confirmed ✅'},{delay:1500,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}])};
+ const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,phase:'phone',err:''});return{text:'Almost there 📲 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
+ const startPay=async()=>{const d=payDlg;if(!d)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
+  try{try{localStorage.setItem('teqx-phone',payPhone)}catch(e){}
+   const r=await apiJ('/api/pay','POST',{device_id:DEV,phone:payPhone,amount:d.amount});
+   if(!r||!r.ok)throw new Error((r&&r.error)||'Could not start the payment');
+   const t0=Date.now();
+   while(payRun.current===run&&Date.now()-t0<120000){
+    await new Promise(x=>setTimeout(x,3000));if(payRun.current!==run)return;
+    const st=await apiJ('/api/pay/status?tx_ref='+encodeURIComponent(r.tx_ref)+'&device='+encodeURIComponent(DEV));
+    if(st.status==='successful'){payRun.current++;setPayDlg(null);finishPay(d.s,d.f,r.tx_ref);return}
+    if(st.status==='failed')throw new Error('The payment was declined or cancelled');
+   }
+   if(payRun.current===run)throw new Error('We did not receive your payment in time. If money left your M-Pesa, keep the message and contact support.')
+  }catch(e){if(payRun.current===run)setPayDlg(x=>x?{...x,phase:'phone',err:e.message}:x)}};
+ const closePay=()=>{payRun.current++;setPayDlg(null)};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
   if(q==='keep shopping'||q==='explore more products')return{text:"Sure thing 👇 Here's more you might like.",catalog:true};
   if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent 👍, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
@@ -926,8 +942,8 @@ function App(){
 
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({});
  const addN=(s,kind,text)=>setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n]);
- const secure=(s,item,price,fe)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
-  ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured'});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
+ const secure=(s,item,price,fe,tx)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
+  ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
   addN(s,'secured',`Order secured · ${id}. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
  const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>{apiPatchOrder(id,v,stn);setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x))},ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
   await wait(8000);up('Shipped');ms('Shipped');ev('shipped',`Order shipped · ${id} is on its way to ${stn||'your pick-up station'}.`);
@@ -1190,6 +1206,21 @@ function App(){
     <input className="fi" placeholder="Post title" value={edp.name} onChange={e=>setEdp(v=>({...v,name:e.target.value}))}/>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={edp.cap} onChange={e=>setEdp(v=>({...v,cap:e.target.value}))}/>
     <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
+  {payDlg&&<div style={{position:'fixed',inset:0,zIndex:9999,background:'rgba(0,0,0,.6)',display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
+   <div style={{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
+    <h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
+    <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div>
+    {payDlg.phase==='phone'?<>
+     <input className="fi" inputMode="tel" placeholder="M-Pesa number e.g. 0712345678" value={payPhone} onChange={e=>setPayPhone(e.target.value)}/>
+     {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
+     <button className="btn" style={{width:'100%',marginTop:14}} disabled={!PHONE_RX.test(payPhone.replace(/\s/g,''))} onClick={startPay}>Send M-Pesa prompt</button>
+     <button className="lnk" style={{width:'100%',marginTop:8}} onClick={closePay}>Cancel</button>
+    </>:<div style={{textAlign:'center',padding:'10px 0'}}>
+     <div style={{fontSize:34}}>📲</div>
+     <p style={{margin:'8px 0 4px',fontWeight:600}}>Check your phone</p>
+     <p style={{color:'var(--mut)',fontSize:13,margin:0}}>Enter your M-Pesa PIN to approve {ksh(payDlg.amount)}. Please do not close this screen.</p>
+    </div>}
+   </div></div>}
   {toast&&<div className="toast">{toast}</div>}
 
   {!chat&&<div className="navw"><nav className="nav">
@@ -1201,6 +1232,7 @@ const DEV=(()=>{try{let d=localStorage.getItem('teqx-device');if(!d){d='d-'+Math
 const apiJ=(u,method,body)=>fetch(u,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(r=>r.json());
 const apiSaveOrder=o=>{try{apiJ('/api/orders','POST',{...o,device_id:DEV}).catch(()=>{})}catch(e){}};
 const apiPatchOrder=(id,status,station)=>{try{apiJ('/api/orders/'+id,'PATCH',{status,station:station||null,device_id:DEV}).catch(()=>{})}catch(e){}};
+const PHONE_RX=/^(?:\+?254|0)?[17]\d{8}$/;
 const IMGC=new Map();
 const shrink=(src,mx,q)=>new Promise(res=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.onerror=()=>res(null);im.src=src});
 const uploadImg=async src=>{if(!src||!String(src).startsWith('data:'))return null;if(IMGC.has(src))return IMGC.get(src);let d=src;if(d.length>300000)d=(await shrink(d,800,.7))||d;if(d.length>380000)d=(await shrink(d,600,.6))||d;try{const r=await apiJ('/api/images','POST',{device_id:DEV,data:d});if(r&&r.id){IMGC.set(src,r.id);return r.id}}catch(e){}return null};
