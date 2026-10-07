@@ -9,8 +9,6 @@ const cleanAttrs = (a) =>
     .filter((x) => x.k && x.v.length)
     .slice(0, 6);
 
-const FLW = "https://api.flutterwave.com/v3";
-
 const normPhone = (p) => {
   let d = String(p || "").replace(/\D/g, "");
   if (d.startsWith("0")) d = "254" + d.slice(1);
@@ -18,11 +16,35 @@ const normPhone = (p) => {
   return /^254[17]\d{8}$/.test(d) ? d : null;
 };
 
-const flw = (env, path, init = {}) =>
-  fetch(FLW + path, {
-    ...init,
-    headers: { Authorization: "Bearer " + env.FLW_SECRET_KEY, "Content-Type": "application/json" },
-  }).then((r) => r.json());
+// IntaSend (sandbox by default; set INTASEND_BASE in wrangler.toml to go live)
+const isCall = async (env, path, payload) => {
+  const r = await fetch((env.INTASEND_BASE || "https://sandbox.intasend.com") + "/api/v1" + path, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + env.INTASEND_SECRET_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return { ok: r.ok, data: await r.json().catch(() => ({})) };
+};
+
+// Ask IntaSend for the real state of a payment and save it. (flw_id column holds the IntaSend invoice id.)
+const settle = async (env, db, p) => {
+  if (p.status !== "pending" || !env.INTASEND_SECRET_KEY) return p.status;
+  try {
+    const r = await isCall(env, "/payment/status/", { invoice_id: p.flw_id });
+    const inv = r.data && r.data.invoice;
+    if (r.ok && inv && inv.invoice_id === p.flw_id) {
+      if (inv.state === "COMPLETE" && inv.currency === "KES" && Number(inv.value) >= p.amount && (!inv.api_ref || inv.api_ref === p.tx_ref)) {
+        await db.prepare("UPDATE payments SET status = 'successful' WHERE tx_ref = ?").bind(p.tx_ref).run();
+        return "successful";
+      }
+      if (inv.state === "FAILED" || inv.state === "CANCELED") {
+        await db.prepare("UPDATE payments SET status = 'failed' WHERE tx_ref = ?").bind(p.tx_ref).run();
+        return "failed";
+      }
+    }
+  } catch (e) {}
+  return "pending";
+};
 
 const readAttrs = (t) => {
   try { return JSON.parse(t || "[]"); } catch (e) { return []; }
@@ -144,9 +166,9 @@ export default {
       });
     }
 
-    // ---------- PAYMENTS (Flutterwave M-Pesa) ----------
+    // ---------- PAYMENTS (IntaSend M-Pesa STK push) ----------
     if (path === "/api/pay" && m === "POST") {
-      if (!env.FLW_SECRET_KEY) return J({ error: "Payments are not set up yet" }, 503);
+      if (!env.INTASEND_SECRET_KEY) return J({ error: "Payments are not set up yet" }, 503);
       const b = await body();
       const phone = normPhone(b.phone);
       const amount = parseInt(b.amount, 10);
@@ -155,20 +177,18 @@ export default {
       const tx_ref = "TQP-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
       let r;
       try {
-        r = await flw(env, "/charges?type=mpesa", {
-          method: "POST",
-          body: JSON.stringify({
-            phone_number: phone, amount, currency: "KES",
-            email: "buyer+" + phone + "@teqx.app", fullname: "TeQx Customer", tx_ref,
-          }),
-        });
+        r = await isCall(env, "/payment/mpesa-stk-push/", { amount, phone_number: phone, api_ref: tx_ref });
       } catch (e) {
         return J({ error: "Could not reach the payment provider" }, 502);
       }
-      if (!r || r.status !== "success" || !r.data) return J({ error: (r && r.message) || "Payment could not be started" }, 400);
+      const invoice = r.data && r.data.invoice;
+      if (!r.ok || !invoice || !invoice.invoice_id) {
+        const why = r.data && (r.data.detail || r.data.message || r.data.error);
+        return J({ error: typeof why === "string" ? why : "Payment could not be started" }, 400);
+      }
       await db.prepare(
         "INSERT INTO payments (tx_ref, flw_id, device_id, phone, amount, status) VALUES (?,?,?,?,?,'pending')"
-      ).bind(tx_ref, String(r.data.id), b.device_id, phone, amount).run();
+      ).bind(tx_ref, String(invoice.invoice_id), b.device_id, phone, amount).run();
       return J({ ok: true, tx_ref });
     }
 
@@ -177,23 +197,20 @@ export default {
       const device = url.searchParams.get("device") || "";
       const p = await db.prepare("SELECT * FROM payments WHERE tx_ref = ? AND device_id = ?").bind(tx, device).first();
       if (!p) return J({ status: "unknown" }, 404);
-      if (p.status === "pending" && env.FLW_SECRET_KEY) {
-        try {
-          const v = await flw(env, "/transactions/" + p.flw_id + "/verify");
-          const d = v && v.data;
-          if (d && d.tx_ref === p.tx_ref) {
-            if (d.status === "successful" && d.currency === "KES" && Number(d.amount) >= p.amount) {
-              await db.prepare("UPDATE payments SET status = 'successful' WHERE tx_ref = ?").bind(tx).run();
-              return J({ status: "successful" });
-            }
-            if (d.status === "failed") {
-              await db.prepare("UPDATE payments SET status = 'failed' WHERE tx_ref = ?").bind(tx).run();
-              return J({ status: "failed" });
-            }
-          }
-        } catch (e) {}
+      return J({ status: await settle(env, db, p) });
+    }
+
+    // IntaSend webhook: records a payment even if the customer closed the app
+    if (path === "/api/pay/webhook" && m === "POST") {
+      const e = await body();
+      if (!env.INTASEND_WEBHOOK_CHALLENGE || e.challenge !== env.INTASEND_WEBHOOK_CHALLENGE) {
+        return new Response("", { status: 401 });
       }
-      return J({ status: p.status });
+      if (e.topic === "collection_event" && e.api_ref) {
+        const p = await db.prepare("SELECT * FROM payments WHERE tx_ref = ?").bind(e.api_ref).first();
+        if (p) await settle(env, db, p);
+      }
+      return new Response("", { status: 200 });
     }
 
     // ---------- ORDERS ----------
