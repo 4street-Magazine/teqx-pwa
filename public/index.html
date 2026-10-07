@@ -8,7 +8,7 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap');
 :root{--green:linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%);--gglow:0 6px 16px rgba(18,192,98,.4);--grad:linear-gradient(135deg,#ff8f1c 0%,#ff5c0a 48%,#f03a0e 100%);--accent:#ff5c0a;--glow:0 6px 18px rgba(255,92,10,.42)}
 [data-theme=dark]{--bg:#0a0a0c;--surf:#151519;--surf2:#1e1e24;--text:#f5f5f7;--mut:#9b9ba8;--line:rgba(255,255,255,.1);--nav:#1a1a20;--shadow:0 10px 34px rgba(0,0,0,.7),0 2px 8px rgba(0,0,0,.5);--card:0 6px 20px rgba(0,0,0,.35);--cardline:rgba(255,255,255,.1)}
 [data-theme=light]{--bg:#faf7f4;--surf:#fff;--surf2:#f3eee9;--text:#17120e;--mut:#6f655c;--line:rgba(30,20,10,.09);--nav:#fff;--shadow:0 -4px 24px rgba(40,25,10,.08),0 8px 24px rgba(40,25,10,.14);--card:0 6px 20px rgba(40,25,10,.1);--cardline:rgba(30,20,10,.12)}
@@ -588,6 +588,31 @@ h1{font-size:24px;margin-bottom:6px}
 .sysm,.dchip{color:var(--mut)}
 [data-theme=light] .bb.bot{color:#17120e;background:#fff}
 [data-theme=light] .bb.me{color:#fff}
+
+/* ===== v6: high-end post image + catalog card ===== */
+/* post image container (.pm): image + shop chip + name + price + rating + chat button */
+.pm{border-radius:30px;background:var(--surf);box-shadow:0 28px 56px -20px rgba(0,0,0,.6),0 0 0 1px rgba(224,182,96,.22)}
+.pm .shopchip{display:flex;align-items:center;gap:7px;top:16px;left:16px;right:auto;max-width:62%;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:#fff;padding:7px 13px;background:rgba(10,8,6,.42);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(14px)}
+.pm .pmi:after{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:linear-gradient(180deg,transparent,var(--surf));pointer-events:none;z-index:2}
+.pm .pfoot{padding:6px 20px 20px;gap:16px;background:var(--surf)}
+.pm .pt{font-family:'Cormorant Garamond',Georgia,serif;font-style:normal;font-weight:700;font-size:32px;line-height:1;letter-spacing:-.005em;margin:0 0 10px;color:var(--text);text-shadow:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pm .pmeta{gap:12px}
+.pm .pp{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:19px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,#f3dba0 0%,#e0b660 55%,#c28a3a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:none}
+[data-theme=light] .pm .pp{background:linear-gradient(135deg,#b8832f,#8a5a16);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pm .rt{padding-left:12px;border-left:1px solid var(--line);font-size:12px;letter-spacing:.03em}
+.pm .pfoot .perk i{background:transparent;border:1px solid var(--line);width:34px;height:34px}
+.pm .pfoot .cta button{border-radius:16px;padding:15px 10px;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+
+.hs.cat{gap:16px;scroll-snap-type:x mandatory;scroll-padding-left:30px}
+.prod{width:clamp(244px,70vw,282px);scroll-snap-align:start;border-radius:28px;background:var(--surf);border:1px solid rgba(255,255,255,.07);box-shadow:0 22px 44px -16px rgba(0,0,0,.55)}
+[data-theme=light] .prod{border-color:var(--line);box-shadow:0 18px 36px -16px rgba(40,25,10,.25)}
+.prod .pimg{height:228px}
+.prod .pimg:after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(180deg,transparent,rgba(8,6,4,.38));pointer-events:none}
+.prod .tag{top:14px;left:14px;font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:6px 11px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(14px);z-index:2}
+.prod .pbody{padding:18px 18px 18px}
+.prod .pn{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:700;line-height:1.08;letter-spacing:-.005em;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prod .pr{font-size:16px;font-weight:700;letter-spacing:.02em;margin:8px 0 16px}
+.prod .btn{border-radius:99px;padding:13px 10px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -858,10 +883,10 @@ function App(){
   const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Nice choice 👌, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
- const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0);
+ const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0),[simPin,setSimPin]=useState('');
  const finishPay=(s,f,tx)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
   say(s.id,[{text:'M-Pesa payment confirmed ✅'},{delay:1500,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}])};
- const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,phase:'phone',err:''});return{text:'Almost there 📲 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
+ const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),phase:SIM_PAY?'confirm':'phone',err:''});return{text:SIM_PAY?'Almost there 📲 Approve the M-Pesa prompt on your phone.':'Almost there 📲 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
  const startPay=async()=>{const d=payDlg;if(!d)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
   try{try{localStorage.setItem('teqx-phone',payPhone)}catch(e){}
    const r=await apiJ('/api/pay','POST',{device_id:DEV,phone:payPhone,amount:d.amount});
@@ -875,7 +900,11 @@ function App(){
    }
    if(payRun.current===run)throw new Error('We did not receive your payment in time. If money left your M-Pesa, keep the message and contact support.')
   }catch(e){if(payRun.current===run)setPayDlg(x=>x?{...x,phase:'phone',err:e.message}:x)}};
- const closePay=()=>{payRun.current++;setPayDlg(null)};
+ const closePay=()=>{payRun.current++;setSimPin('');setPayDlg(null)};
+ const simOk=()=>{const d=payDlg;if(!d||simPin.length!==4)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
+  setTimeout(()=>{if(payRun.current!==run)return;
+   if(simPin==='0000'){setSimPin('');setPayDlg(x=>x?{...x,phase:'confirm',err:'Wrong M-PESA PIN. Please try again.'}:x);return}
+   setSimPin('');payRun.current++;setPayDlg(null);finishPay(d.s,d.f,null)},2200)};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
   if(q==='keep shopping'||q==='explore more products')return{text:"Sure thing 👇 Here's more you might like.",catalog:true};
   if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent 👍, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
@@ -1208,17 +1237,23 @@ function App(){
     <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
   {payDlg&&<div style={{position:'fixed',inset:0,zIndex:9999,background:'rgba(0,0,0,.6)',display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
    <div style={{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
-    <h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
-    <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div>
-    {payDlg.phase==='phone'?<>
+    {payDlg.phase!=='confirm'&&<><h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
+    <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div></>}
+    {payDlg.phase==='confirm'?<div style={{textAlign:'center'}}>
+     <div style={{fontWeight:700,letterSpacing:1,color:'#43b02a',fontSize:14}}>M-PESA</div>
+     <p style={{margin:'12px 0 14px',fontSize:15,lineHeight:1.4}}>Do you want to pay <b>{ksh(payDlg.amount)}</b> to <b>TeQx Market Ltd</b> for <b>{payDlg.item}</b>?</p>
+     <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="Enter M-PESA PIN" style={{textAlign:'center',letterSpacing:6}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
+     {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
+     <div style={{display:'flex',gap:10,marginTop:14}}><button className="lnk" style={{flex:1}} onClick={closePay}>Cancel</button><button className="btn" style={{flex:1}} disabled={simPin.length!==4} onClick={simOk}>OK</button></div>
+    </div>:payDlg.phase==='phone'?<>
      <input className="fi" inputMode="tel" placeholder="M-Pesa number e.g. 0712345678" value={payPhone} onChange={e=>setPayPhone(e.target.value)}/>
      {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
      <button className="btn" style={{width:'100%',marginTop:14}} disabled={!PHONE_RX.test(payPhone.replace(/\s/g,''))} onClick={startPay}>Send M-Pesa prompt</button>
      <button className="lnk" style={{width:'100%',marginTop:8}} onClick={closePay}>Cancel</button>
     </>:<div style={{textAlign:'center',padding:'10px 0'}}>
      <div style={{fontSize:34}}>📲</div>
-     <p style={{margin:'8px 0 4px',fontWeight:600}}>Check your phone</p>
-     <p style={{color:'var(--mut)',fontSize:13,margin:0}}>Enter your M-Pesa PIN to approve {ksh(payDlg.amount)}. Please do not close this screen.</p>
+     <p style={{margin:'8px 0 4px',fontWeight:600}}>{SIM_PAY?'Processing…':'Check your phone'}</p>
+     <p style={{color:'var(--mut)',fontSize:13,margin:0}}>{SIM_PAY?'Confirming your M-Pesa payment.':`Enter your M-Pesa PIN to approve ${ksh(payDlg.amount)}. Please do not close this screen.`}</p>
     </div>}
    </div></div>}
   {toast&&<div className="toast">{toast}</div>}
@@ -1232,6 +1267,7 @@ const DEV=(()=>{try{let d=localStorage.getItem('teqx-device');if(!d){d='d-'+Math
 const apiJ=(u,method,body)=>fetch(u,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(r=>r.json());
 const apiSaveOrder=o=>{try{apiJ('/api/orders','POST',{...o,device_id:DEV}).catch(()=>{})}catch(e){}};
 const apiPatchOrder=(id,status,station)=>{try{apiJ('/api/orders/'+id,'PATCH',{status,station:station||null,device_id:DEV}).catch(()=>{})}catch(e){}};
+const SIM_PAY=true; // true = simulated M-Pesa prompt (no real money, no Daraja). Set false to use the real /api/pay flow.
 const PHONE_RX=/^(?:\+?254|0)?[17]\d{8}$/;
 const IMGC=new Map();
 const shrink=(src,mx,q)=>new Promise(res=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.onerror=()=>res(null);im.src=src});
