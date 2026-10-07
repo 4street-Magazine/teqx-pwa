@@ -9,6 +9,21 @@ const cleanAttrs = (a) =>
     .filter((x) => x.k && x.v.length)
     .slice(0, 6);
 
+const FLW = "https://api.flutterwave.com/v3";
+
+const normPhone = (p) => {
+  let d = String(p || "").replace(/\D/g, "");
+  if (d.startsWith("0")) d = "254" + d.slice(1);
+  else if (/^[17]\d{8}$/.test(d)) d = "254" + d;
+  return /^254[17]\d{8}$/.test(d) ? d : null;
+};
+
+const flw = (env, path, init = {}) =>
+  fetch(FLW + path, {
+    ...init,
+    headers: { Authorization: "Bearer " + env.FLW_SECRET_KEY, "Content-Type": "application/json" },
+  }).then((r) => r.json());
+
 const readAttrs = (t) => {
   try { return JSON.parse(t || "[]"); } catch (e) { return []; }
 };
@@ -129,6 +144,58 @@ export default {
       });
     }
 
+    // ---------- PAYMENTS (Flutterwave M-Pesa) ----------
+    if (path === "/api/pay" && m === "POST") {
+      if (!env.FLW_SECRET_KEY) return J({ error: "Payments are not set up yet" }, 503);
+      const b = await body();
+      const phone = normPhone(b.phone);
+      const amount = parseInt(b.amount, 10);
+      if (!b.device_id || !phone) return J({ error: "Enter a valid M-Pesa number" }, 400);
+      if (!(amount >= 10 && amount <= 250000)) return J({ error: "Invalid amount" }, 400);
+      const tx_ref = "TQP-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      let r;
+      try {
+        r = await flw(env, "/charges?type=mpesa", {
+          method: "POST",
+          body: JSON.stringify({
+            phone_number: phone, amount, currency: "KES",
+            email: "buyer+" + phone + "@teqx.app", fullname: "TeQx Customer", tx_ref,
+          }),
+        });
+      } catch (e) {
+        return J({ error: "Could not reach the payment provider" }, 502);
+      }
+      if (!r || r.status !== "success" || !r.data) return J({ error: (r && r.message) || "Payment could not be started" }, 400);
+      await db.prepare(
+        "INSERT INTO payments (tx_ref, flw_id, device_id, phone, amount, status) VALUES (?,?,?,?,?,'pending')"
+      ).bind(tx_ref, String(r.data.id), b.device_id, phone, amount).run();
+      return J({ ok: true, tx_ref });
+    }
+
+    if (path === "/api/pay/status" && m === "GET") {
+      const tx = url.searchParams.get("tx_ref") || "";
+      const device = url.searchParams.get("device") || "";
+      const p = await db.prepare("SELECT * FROM payments WHERE tx_ref = ? AND device_id = ?").bind(tx, device).first();
+      if (!p) return J({ status: "unknown" }, 404);
+      if (p.status === "pending" && env.FLW_SECRET_KEY) {
+        try {
+          const v = await flw(env, "/transactions/" + p.flw_id + "/verify");
+          const d = v && v.data;
+          if (d && d.tx_ref === p.tx_ref) {
+            if (d.status === "successful" && d.currency === "KES" && Number(d.amount) >= p.amount) {
+              await db.prepare("UPDATE payments SET status = 'successful' WHERE tx_ref = ?").bind(tx).run();
+              return J({ status: "successful" });
+            }
+            if (d.status === "failed") {
+              await db.prepare("UPDATE payments SET status = 'failed' WHERE tx_ref = ?").bind(tx).run();
+              return J({ status: "failed" });
+            }
+          }
+        } catch (e) {}
+      }
+      return J({ status: p.status });
+    }
+
     // ---------- ORDERS ----------
     if (path === "/api/orders" && m === "GET") {
       const device = url.searchParams.get("device");
@@ -140,9 +207,17 @@ export default {
     if (path === "/api/orders" && m === "POST") {
       const o = await body();
       if (!o.id || !o.device_id) return J({ error: "missing id or device_id" }, 400);
+      let paid = 0;
+      if (o.tx_ref) {
+        const u = await db.prepare(
+          "UPDATE payments SET order_id = ? WHERE tx_ref = ? AND device_id = ? AND status = 'successful' AND order_id IS NULL AND amount >= ?"
+        ).bind(o.id, o.tx_ref, o.device_id, (o.price || 0) + (o.fee || 0)).run();
+        if (!u.meta.changes) return J({ error: "payment not valid" }, 402);
+        paid = 1;
+      }
       await db.prepare(
-        "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station) VALUES (?,?,?,?,?,?,?,?)"
-      ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null).run();
+        "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station, tx_ref, paid) VALUES (?,?,?,?,?,?,?,?,?,?)"
+      ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null, o.tx_ref || null, paid).run();
       return J({ ok: true });
     }
 
