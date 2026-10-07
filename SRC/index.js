@@ -16,31 +16,52 @@ const normPhone = (p) => {
   return /^254[17]\d{8}$/.test(d) ? d : null;
 };
 
-// IntaSend (sandbox by default; set INTASEND_BASE in wrangler.toml to go live)
-const isCall = async (env, path, payload) => {
-  const r = await fetch((env.INTASEND_BASE || "https://sandbox.intasend.com") + "/api/v1" + path, {
+// ---------- Safaricom Daraja (M-Pesa STK push) ----------
+// Sandbox by default. For live, set MPESA_BASE = "https://api.safaricom.co.ke" in wrangler.toml [vars].
+// (payments.flw_id column now holds Daraja's CheckoutRequestID.)
+const mBase = (env) => env.MPESA_BASE || "https://sandbox.safaricom.co.ke";
+const stamp = () => new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+
+let tok = { t: "", exp: 0 };
+const mToken = async (env) => {
+  if (tok.t && Date.now() < tok.exp) return tok.t;
+  const r = await fetch(mBase(env) + "/oauth/v1/generate?grant_type=client_credentials", {
+    headers: { Authorization: "Basic " + btoa(env.MPESA_CONSUMER_KEY + ":" + env.MPESA_CONSUMER_SECRET) },
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!d.access_token) throw new Error("auth");
+  tok = { t: d.access_token, exp: Date.now() + 3000 * 1000 };
+  return tok.t;
+};
+
+const mCall = async (env, path, payload) => {
+  const ts = stamp();
+  const r = await fetch(mBase(env) + path, {
     method: "POST",
-    headers: { Authorization: "Bearer " + env.INTASEND_SECRET_KEY, "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    headers: { Authorization: "Bearer " + (await mToken(env)), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      BusinessShortCode: env.MPESA_SHORTCODE,
+      Password: btoa(env.MPESA_SHORTCODE + env.MPESA_PASSKEY + ts),
+      Timestamp: ts,
+      ...payload,
+    }),
   });
   return { ok: r.ok, data: await r.json().catch(() => ({})) };
 };
 
-// Ask IntaSend for the real state of a payment and save it. (flw_id column holds the IntaSend invoice id.)
+// Ask Safaricom for the real state of a payment (fallback if the callback is late) and save it.
 const settle = async (env, db, p) => {
-  if (p.status !== "pending" || !env.INTASEND_SECRET_KEY) return p.status;
+  if (p.status !== "pending" || !env.MPESA_CONSUMER_KEY) return p.status;
+  const age = p.created_at ? Date.now() - Date.parse(String(p.created_at).replace(" ", "T") + "Z") : 1e9;
+  if (age < 15000) return "pending"; // give the callback a head start
   try {
-    const r = await isCall(env, "/payment/status/", { invoice_id: p.flw_id });
-    const inv = r.data && r.data.invoice;
-    if (r.ok && inv && inv.invoice_id === p.flw_id) {
-      if (inv.state === "COMPLETE" && inv.currency === "KES" && Number(inv.value) >= p.amount && (!inv.api_ref || inv.api_ref === p.tx_ref)) {
-        await db.prepare("UPDATE payments SET status = 'successful' WHERE tx_ref = ?").bind(p.tx_ref).run();
-        return "successful";
-      }
-      if (inv.state === "FAILED" || inv.state === "CANCELED") {
-        await db.prepare("UPDATE payments SET status = 'failed' WHERE tx_ref = ?").bind(p.tx_ref).run();
-        return "failed";
-      }
+    const r = await mCall(env, "/mpesa/stkpushquery/v1/query", { CheckoutRequestID: p.flw_id });
+    // ResultCode is absent while the customer is still on the prompt
+    if (r.data && r.data.ResultCode !== undefined) {
+      const ok = String(r.data.ResultCode) === "0";
+      await db.prepare("UPDATE payments SET status = ? WHERE tx_ref = ? AND status = 'pending'")
+        .bind(ok ? "successful" : "failed", p.tx_ref).run();
+      return ok ? "successful" : "failed";
     }
   } catch (e) {}
   return "pending";
@@ -166,29 +187,38 @@ export default {
       });
     }
 
-    // ---------- PAYMENTS (IntaSend M-Pesa STK push) ----------
+    // ---------- PAYMENTS (Safaricom Daraja M-Pesa STK push) ----------
     if (path === "/api/pay" && m === "POST") {
-      if (!env.INTASEND_SECRET_KEY) return J({ error: "Payments are not set up yet" }, 503);
+      if (!env.MPESA_CONSUMER_KEY || !env.MPESA_SHORTCODE || !env.MPESA_PASSKEY || !env.MPESA_CALLBACK_SECRET)
+        return J({ error: "Payments are not set up yet" }, 503);
       const b = await body();
       const phone = normPhone(b.phone);
-      const amount = parseInt(b.amount, 10);
+      const amount = Math.round(Number(b.amount));
       if (!b.device_id || !phone) return J({ error: "Enter a valid M-Pesa number" }, 400);
-      if (!(amount >= 10 && amount <= 250000)) return J({ error: "Invalid amount" }, 400);
+      if (!(amount >= 1 && amount <= 250000)) return J({ error: "Invalid amount" }, 400);
       const tx_ref = "TQP-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
       let r;
       try {
-        r = await isCall(env, "/payment/mpesa-stk-push/", { amount, phone_number: phone, api_ref: tx_ref });
+        r = await mCall(env, "/mpesa/stkpush/v1/processrequest", {
+          TransactionType: env.MPESA_TXN_TYPE || "CustomerPayBillOnline", // "CustomerBuyGoodsOnline" for a Till
+          Amount: amount,
+          PartyA: phone,
+          PartyB: env.MPESA_PARTY_B || env.MPESA_SHORTCODE, // for a Till: set MPESA_PARTY_B to the Till number
+          PhoneNumber: phone,
+          CallBackURL: url.origin + "/api/pay/callback/" + env.MPESA_CALLBACK_SECRET,
+          AccountReference: "TeQx",
+          TransactionDesc: "TeQx order",
+        });
       } catch (e) {
-        return J({ error: "Could not reach the payment provider" }, 502);
+        return J({ error: "Could not reach M-Pesa, try again" }, 502);
       }
-      const invoice = r.data && r.data.invoice;
-      if (!r.ok || !invoice || !invoice.invoice_id) {
-        const why = r.data && (r.data.detail || r.data.message || r.data.error);
+      if (!r.data || r.data.ResponseCode !== "0" || !r.data.CheckoutRequestID) {
+        const why = r.data && (r.data.errorMessage || r.data.CustomerMessage || r.data.ResponseDescription);
         return J({ error: typeof why === "string" ? why : "Payment could not be started" }, 400);
       }
       await db.prepare(
         "INSERT INTO payments (tx_ref, flw_id, device_id, phone, amount, status) VALUES (?,?,?,?,?,'pending')"
-      ).bind(tx_ref, String(invoice.invoice_id), b.device_id, phone, amount).run();
+      ).bind(tx_ref, String(r.data.CheckoutRequestID), b.device_id, phone, amount).run();
       return J({ ok: true, tx_ref });
     }
 
@@ -200,17 +230,22 @@ export default {
       return J({ status: await settle(env, db, p) });
     }
 
-    // IntaSend webhook: records a payment even if the customer closed the app
-    if (path === "/api/pay/webhook" && m === "POST") {
-      const e = await body();
-      if (!env.INTASEND_WEBHOOK_CHALLENGE || e.challenge !== env.INTASEND_WEBHOOK_CHALLENGE) {
-        return new Response("", { status: 401 });
-      }
-      if (e.topic === "collection_event" && e.api_ref) {
-        const p = await db.prepare("SELECT * FROM payments WHERE tx_ref = ?").bind(e.api_ref).first();
-        if (p) await settle(env, db, p);
-      }
-      return new Response("", { status: 200 });
+    // Safaricom calls this when the customer approves, cancels or times out.
+    // The secret in the URL is what keeps strangers from faking a payment.
+    if (env.MPESA_CALLBACK_SECRET && path === "/api/pay/callback/" + env.MPESA_CALLBACK_SECRET && m === "POST") {
+      try {
+        const cb = ((await body()).Body || {}).stkCallback || {};
+        const p = await db.prepare("SELECT * FROM payments WHERE flw_id = ?").bind(String(cb.CheckoutRequestID || "")).first();
+        if (p && p.status === "pending") {
+          let st = "failed";
+          if (Number(cb.ResultCode) === 0) {
+            const it = Object.fromEntries(((cb.CallbackMetadata || {}).Item || []).map((i) => [i.Name, i.Value]));
+            if (Number(it.Amount) >= p.amount) st = "successful";
+          }
+          await db.prepare("UPDATE payments SET status = ? WHERE tx_ref = ? AND status = 'pending'").bind(st, p.tx_ref).run();
+        }
+      } catch (e) {}
+      return J({ ResultCode: 0, ResultDesc: "Accepted" });
     }
 
     // ---------- ORDERS ----------
@@ -250,3 +285,4 @@ export default {
     return env.ASSETS.fetch(request);
   },
 };
+                                                                      
