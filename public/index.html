@@ -613,6 +613,46 @@ h1{font-size:24px;margin-bottom:6px}
 .prod .pn{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:700;line-height:1.08;letter-spacing:-.005em;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .prod .pr{font-size:16px;font-weight:700;letter-spacing:.02em;margin:8px 0 16px}
 .prod .btn{border-radius:99px;padding:13px 10px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ===== v7 tweaks ===== */
+/* post image container: moderate e-commerce type + catalog green price */
+.pm .pt{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-style:normal;font-weight:700;font-size:17px;line-height:1.3;letter-spacing:-.01em;margin:0 0 6px}
+.pm .pp,[data-theme=light] .pm .pp{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:18px;font-weight:800;letter-spacing:0;background:var(--green);-webkit-background-clip:text;background-clip:text;color:transparent;filter:none}
+/* notification cards: no green border lines */
+.card.nt.un{border-color:var(--cardline)}
+.nti{border:0}
+/* chat: no side shake */
+html,body{overflow:hidden;overscroll-behavior:none}
+.chat{overflow:hidden;max-width:100%}
+.msgs{overflow-x:hidden;overscroll-behavior:contain}
+.cat{margin:-2px -14px -28px;padding:14px 14px 46px}
+.hs.cat{scroll-padding-left:14px;overscroll-behavior-x:contain}
+.qrs{overscroll-behavior-x:contain}
+/* smaller attribute chips on catalog cards */
+.vchips{gap:5px;margin:0 0 8px}
+.vchip{padding:3px 9px;font-size:11px;font-weight:600;line-height:1.25;border-width:1px}
+/* chat header: flat back arrow in the far-left corner, shop details beside it */
+.chdr{padding-left:4px;gap:6px}
+.back{width:30px;height:38px;border-radius:0;background:transparent;margin:0}
+.back svg{width:22px;height:22px}
+.chdr .grow{margin-left:0}
+
+/* ===== v7: catalog shop avatar + shop profile ===== */
+.catrow{display:flex;align-items:flex-start;gap:8px;min-width:0}.catrow>.hs{flex:1;min-width:0}
+.cav{display:inline-grid;place-items:center;flex-shrink:0;border-radius:50%;overflow:hidden;margin-top:4px;border:1.5px solid transparent;background:linear-gradient(var(--surf),var(--surf)) padding-box,var(--grad) border-box}.cav img{width:100%;height:100%;object-fit:cover;display:block}.cav em{font-style:normal;font-size:14px}
+.nmb{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}.nmb:active{opacity:.6}
+.spb{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 8px}.spb b{font-size:16px}
+.sph{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 20px 18px}
+.spav{padding:3px;border-radius:50%;background:var(--grad);display:grid;place-items:center}.spav .cav{margin:0;border:3px solid var(--bg);background:var(--surf2)}.spav .cav em{font-size:38px}
+.spn{display:flex;align-items:center;gap:6px;font-size:20px;font-weight:800;margin-top:12px}.spt{font-size:12.5px;color:var(--mut);margin-top:3px}
+.sps{display:flex;width:100%;margin-top:16px;padding:12px 0;border-radius:20px;background:var(--surf);border:1px solid var(--line)}.sps>div{flex:1;display:flex;flex-direction:column;gap:2px}.sps>div+div{border-left:1px solid var(--line)}.sps b{font-size:18px;font-weight:800}.sps span{font-size:11px;color:var(--mut)}
+.spa{display:flex;gap:10px;width:100%;margin-top:14px}.spa button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:99px;font-weight:700;font-size:13.5px}
+.spf{background:var(--grad);color:#fff;box-shadow:var(--glow)}.spf.on{background:var(--surf2);color:var(--text);box-shadow:none}.spm{background:var(--surf2);color:var(--text)}
+.spg-h{padding:10px 20px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border-top:1px solid var(--line)}
+.spg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:0 3px}
+.spt2{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--surf2);padding:0;border:0;cursor:pointer}.spt2 img{width:100%;height:100%;object-fit:cover;display:block}
+.spm2{position:absolute;top:6px;right:7px;color:#fff;font-style:normal;font-size:13px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.spc{position:absolute;inset:auto 0 0 0;padding:16px 6px 6px;text-align:left;background:linear-gradient(180deg,transparent,rgba(0,0,0,.72));color:#fff;display:flex;flex-direction:column}.spc b{font-size:10.5px;font-weight:700;line-height:1.15;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.spc em{font-style:normal;font-size:10px;opacity:.9}
 </style>
 </head>
 <body>
@@ -669,7 +709,7 @@ const Ic={
 };
 const Verified=({s=16})=><svg width={s} height={s} viewBox="0 0 24 24" style={{flexShrink:0}} aria-label="Verified shop"><path fill="#0b3fd1" d="M22.250 12c0-1.430-.88-2.670-2.190-3.340.46-1.390.2-2.900-.81-3.910s-2.520-1.270-3.910-.81c-.66-1.310-1.910-2.190-3.340-2.190s-2.670.88-3.330 2.190c-1.400-.46-2.910-.2-3.920.81s-1.260 2.520-.8 3.910C2.640 9.330 1.750 10.570 1.750 12s.89 2.670 2.200 3.340c-.46 1.390-.21 2.900.8 3.910s2.520 1.260 3.910.81c.67 1.310 1.910 2.190 3.340 2.190s2.680-.88 3.340-2.190c1.390.45 2.900.2 3.910-.81s1.270-2.520.81-3.910c1.310-.67 2.190-1.910 2.190-3.340z"/><path d="m8.500 12.300 2.400 2.400 4.700-4.900" fill="none" stroke="#fff" strokeWidth="2.200" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const ksh=n=>'KSh '+n.toLocaleString('en-KE');
-const U=(id)=>`https://images.unsplash.com/${id}?w=600&q=80`;
+const U=(id)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=85`;
 const STORES=[
  {id:'apex',name:'Apex Tech',tag:'#TechGear',icon:'⚡',msg:'Your order has been confirmed.',time:'19:54',unread:2,img:U('photo-1505740420928-5e560c06d30e'),prods:[['AcousticMax Headphones',18500],['Pulse Wireless Earbuds',7900],['Volt 20K Power Bank',3200]]},
  {id:'luxe',name:'Luxe Attire',tag:'#Streetwear',icon:'👕',msg:'New styles drop tonight!',time:'18:30',unread:0,img:U('photo-1515886657613-9f3515b0c78f'),prods:[['Premium Cotton Hoodie',6200],['Essential Oversized Tee',2400],['Street Cargo Joggers',4800]]},
@@ -678,18 +718,28 @@ const STORES=[
  {id:'sole',name:'Sole Search',tag:'#Kicks',icon:'👟',msg:'Retro sneakers are back in stock!',time:'Yesterday',unread:3,img:U('photo-1542291026-7eec264c27ff'),prods:[['Air Max Retro Horizon',14000],['Classic Court Low',8500],['Trail Runner Pro',11200]]},
  {id:'zuri',name:'Zuri Home',tag:'#HomeDecor',icon:'🛋️',msg:'Your living room refresh is on the way.',time:'Mon',unread:0,img:U('photo-1555041469-a586c61ea9bc'),prods:[['Velvet Accent Chair',24500],['Ceramic Vase Set',3200],['Linen Cushion Pair',2900]]},
  {id:'peak',name:'Peak Fitness',tag:'#Fitness',icon:'🏋️',msg:'New gym gear just landed.',time:'Mon',unread:0,img:U('photo-1534438327276-14e5300c3a48'),prods:[['Adjustable Dumbbell Set',9800],['Yoga Mat Pro',2600],['Resistance Band Kit',1800]]},
- {id:'sav',name:'Savanna Bags',tag:'#Accessories',icon:'👜',msg:'Handcrafted leather, made in Nairobi.',time:'Sun',unread:0,img:U('photo-1548036328-c9fa89d128fa'),prods:[['Leather Tote Bag',7800],['Everyday Backpack',4500],['Mini Crossbody',3900]]}
+ {id:'sav',name:'Savanna Bags',tag:'#Accessories',icon:'👜',msg:'Handcrafted leather, made in Nairobi.',time:'Sun',unread:0,img:U('photo-1548036328-c9fa89d128fa'),prods:[['Leather Tote Bag',7800],['Everyday Backpack',4500],['Mini Crossbody',3900]]},
+ {id:"aura",name:"Aura Fragrance",tag:"#Perfume",icon:"🌸",msg:"Your signature scent is waiting.",time:"Sat",unread:0,img:U("photo-1541643600914-78b084683601"),prods:[["Oud Noir Eau de Parfum", 9800], ["Rose Bloom 50ml", 7400], ["Citrus Mist Cologne", 5200]]},
+ {id:"brew",name:"Brew & Bean",tag:"#Coffee",icon:"☕",msg:"Fresh roast just landed.",time:"Sat",unread:0,img:U("photo-1447933601403-0c6688de566e"),prods:[["Kenya AA Beans 500g", 1800], ["Pour-Over Brew Set", 4200], ["Ceramic Mug Duo", 1500]]},
+ {id:"pixel",name:"Pixel Hub",tag:"#Phones",icon:"📱",msg:"Warranty-backed phones and laptops.",time:"Fri",unread:0,img:U("photo-1511707171634-5f897ff02aa9"),prods:[["Nova X Smartphone", 54000], ["UltraBook Air 14in", 98000], ["Pro Gaming Controller", 6500]]},
+ {id:"glam",name:"Glam Jewels",tag:"#Jewellery",icon:"💎",msg:"Gold-plated, tarnish-resistant.",time:"Fri",unread:0,img:U("photo-1515562141207-7a88fb7ce338"),prods:[["Gold Layer Necklace", 5600], ["Stacking Ring Set", 3200], ["Pearl Drop Earrings", 3800]]},
+ {id:"leaf",name:"Leaf & Bloom",tag:"#Plants",icon:"🪴",msg:"Healthy plants, delivered in pots.",time:"Thu",unread:0,img:U("photo-1614594975525-e45190c55d0b"),prods:[["Monstera Deliciosa", 2800], ["Snake Plant in Pot", 1900], ["Succulent Trio", 1500]]},
+ {id:"chef",name:"Chef's Corner",tag:"#Kitchen",icon:"🍳",msg:"Cook like a pro at home.",time:"Thu",unread:0,img:U("photo-1593618998160-e34014e67546"),prods:[["Chef Knife Set", 8900], ["Acacia Cutting Board", 2400], ["Cast Iron Skillet", 4600]]},
+ {id:"page",name:"Page Turner",tag:"#Books",icon:"📚",msg:"Your next favourite read.",time:"Wed",unread:0,img:U("photo-1512820790803-83ca734da794"),prods:[["Bestseller Fiction Bundle", 3400], ["Leather Journal", 2200], ["Desk Reading Lamp", 3100]]},
+ {id:"lens",name:"Lens & Light",tag:"#Cameras",icon:"📷",msg:"Capture every moment.",time:"Wed",unread:0,img:U("photo-1516035069371-29a1b244cc32"),prods:[["Mirrorless Camera Kit", 72000], ["Retro Film Camera", 18500], ["Tripod & Ring Light", 5800]]}
 ];
+const PIMG={"apex": ["photo-1505740420928-5e560c06d30e", "photo-1590658268037-6bf12165a8df", "photo-1609091839311-d5365f9ff1c5"], "luxe": ["photo-1556821840-3a63f95609a7", "photo-1521572163474-6864f9cf17ab", "photo-1624378439575-d8705ad7ae80"], "nova": ["photo-1608248597481-496100c80836", "photo-1556228720-195a672e8a03", "photo-1556228578-8c89e6adf883"], "fresh": ["photo-1610832958506-aa56368176cf", "photo-1540420773420-3366772f4999", "photo-1622597467836-f3285f2131b8"], "sole": ["photo-1542291026-7eec264c27ff", "photo-1595950653106-6c9ebd614d3a", "photo-1460353581641-37baddab0fa2"], "zuri": ["photo-1555041469-a586c61ea9bc", "photo-1578500494198-246f612d3b3d", "photo-1584100936595-c0654b55a2e2"], "peak": ["photo-1534438327276-14e5300c3a48", "photo-1601925260368-ae2f83cf8b7f", "photo-1598289431512-b97b0917affc"], "sav": ["photo-1548036328-c9fa89d128fa", "photo-1553062407-98eeb64c6a62", "photo-1584917865442-de89df76afd3"], "aura": ["photo-1541643600914-78b084683601", "photo-1594035910387-fea47794261f", "photo-1523293182086-7651a899d37f"], "brew": ["photo-1447933601403-0c6688de566e", "photo-1495474472287-4d71bcdd2085", "photo-1514228742587-6b1558fcca3d"], "pixel": ["photo-1511707171634-5f897ff02aa9", "photo-1496181133206-80ce9b88a853", "photo-1606144042614-b2417e99c4e3"], "glam": ["photo-1515562141207-7a88fb7ce338", "photo-1605100804763-247f67b3557e", "photo-1535632066927-ab7c9ab60908"], "leaf": ["photo-1614594975525-e45190c55d0b", "photo-1459411552884-841db9b3cc2a", "photo-1485955900006-10f4d324d411"], "chef": ["photo-1593618998160-e34014e67546", "photo-1590794056226-79ef3a8147e1", "photo-1556909114-f6e7ad7d3136"], "page": ["photo-1512820790803-83ca734da794", "photo-1544816155-12df9643f363", "photo-1507473885765-e6ed057f782c"], "lens": ["photo-1516035069371-29a1b244cc32", "photo-1526170375885-4d8ecf77b99f", "photo-1598425237654-4fc758e50a93"]};
+STORES.forEach(x=>{if(PIMG[x.id])x.pimgs=PIMG[x.id].map(U)});
 const CHIPS=['Show catalog','Track my order','Delivery info','Payment options','Talk to a person'];
-const SCAT={apex:'Tech & Gadgets',luxe:'Fashion & Design',nova:'Beauty & Skincare',fresh:'Groceries & Fresh Food',sole:'Footwear & Sneakers',zuri:'Home & Living',peak:'Fitness & Wellness',sav:'Bags & Accessories'};
-const SOPT={apex:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Black','Silver','Blue']},luxe:{lbl:'Size',q:'Which size should I reserve for you?',o:['S','M','L','XL']},nova:{lbl:'Skin type',q:"What's your skin type? I'll make sure it suits you.",o:['Dry','Oily','Combination','Normal']},fresh:{lbl:'Size',q:'Which size works best — Small (1–2 people) or Family (3–5 people)?',o:['Small','Family']},sole:{lbl:'Size (EU)',q:'What size do you wear? (EU sizing)',o:['40','41','42','43','44','45']},zuri:{lbl:'Colour',c:1,q:'Which colour fits your space?',o:['Sage','Charcoal','Beige']},peak:{lbl:'Level',q:'Which level are you training at?',o:['Beginner','Intermediate','Advanced']},sav:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Tan','Black','Chocolate']}};
+const SCAT={aura:'Perfume & Fragrance',brew:'Coffee & Tea',pixel:'Phones & Computing',glam:'Jewellery',leaf:'Plants & Garden',chef:'Kitchen & Dining',page:'Books & Stationery',lens:'Cameras & Photo',apex:'Tech & Gadgets',luxe:'Fashion & Design',nova:'Beauty & Skincare',fresh:'Groceries & Fresh Food',sole:'Footwear & Sneakers',zuri:'Home & Living',peak:'Fitness & Wellness',sav:'Bags & Accessories'};
+const SOPT={aura:{lbl:'Size',q:'Which bottle size would you like?',o:['30ml','50ml','100ml']},brew:{lbl:'Grind',q:'How would you like it ground?',o:['Whole bean','Espresso','Filter']},pixel:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Black','Silver','Blue']},glam:{lbl:'Finish',q:'Which finish do you prefer?',o:['Gold','Silver','Rose gold']},leaf:{lbl:'Pot',q:'Which pot style?',o:['Terracotta','White','Black']},chef:{lbl:'Pack',q:'Which option do you want?',o:['Standard','Gift boxed']},page:{lbl:'Format',q:'Which format?',o:['Paperback','Hardcover']},lens:{lbl:'Bundle',q:'Which bundle would you like?',o:['Body only','With lens','Full kit']},apex:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Black','Silver','Blue']},luxe:{lbl:'Size',q:'Which size should I reserve for you?',o:['S','M','L','XL']},nova:{lbl:'Skin type',q:"What's your skin type? I'll make sure it suits you.",o:['Dry','Oily','Combination','Normal']},fresh:{lbl:'Size',q:'Which size works best — Small (1–2 people) or Family (3–5 people)?',o:['Small','Family']},sole:{lbl:'Size (EU)',q:'What size do you wear? (EU sizing)',o:['40','41','42','43','44','45']},zuri:{lbl:'Colour',c:1,q:'Which colour fits your space?',o:['Sage','Charcoal','Beige']},peak:{lbl:'Level',q:'Which level are you training at?',o:['Beginner','Intermediate','Advanced']},sav:{lbl:'Colour',c:1,q:'Which colour would you like?',o:['Tan','Black','Chocolate']}};
 const NBO=/nairobi|cbd|westlands|kilimani|kileleshwa|karen|lavington|lang'?ata|kasarani|roysambu|rongai|ruaka|parklands|eastleigh|south [bc]|embakasi|donholm|buruburu|thika r|ngong|upper hill|runda|muthaiga/i;
 const strip=t=>t.toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
 const findProd=(s,t)=>{const q=strip(t);let b=-1;s.prods.forEach(([n],i)=>{const sn=strip(n),w=sn.split(' ').filter(x=>x.length>=4),h=w.filter(x=>q.includes(x)).length;if(q.includes(sn))b=i;else if(b<0&&h>0&&h>=Math.min(2,w.length))b=i});return b};
 const TAG={profile:'Your account & settings',inbox:'Chat with your favourite shops',orders:"Track everything you've bought",alerts:'Updates from the shops you follow',wallet:'Funds secured for your orders'};
 const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128]];
-const CAP={apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.',zuri:'Make every room feel like home.',peak:'Train harder at home with gym-grade gear.',sav:'Handcrafted leather, made to carry your day.'};
-const COL={apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']],zuri:[['Grey','#888'],['Cream','#eee'],['Green','#3a7']],peak:[['Black','#111'],['Grey','#777'],['Blue','#36c']],sav:[['Tan','#b5835a'],['Black','#111'],['Brown','#5a3a22']]};
+const CAP={aura:'Long-lasting scents in elegant bottles.',brew:'Single-origin roasts and brew gear for a better morning.',pixel:'Genuine devices with warranty and same-day dispatch.',glam:'Everyday jewellery that catches the light.',leaf:'Healthy houseplants to green up any space.',chef:'Kitchen tools built to last, from prep to plate.',page:'Stories and stationery for slow evenings.',lens:'Cameras and kit for creators.',apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.',zuri:'Make every room feel like home.',peak:'Train harder at home with gym-grade gear.',sav:'Handcrafted leather, made to carry your day.'};
+const COL={aura:[['Oud','#3b2a1f'],['Rose','#e8a0a8'],['Citrus','#f5c542']],brew:[['Roast','#4a2c1a'],['Cream','#eee'],['Green','#3a7']],pixel:[['Black','#111'],['Silver','#c9ccd1'],['Blue','#36c']],glam:[['Gold','#d4af37'],['Silver','#c0c0c0'],['Rose','#e8a0a8']],leaf:[['Green','#3aa856'],['Terracotta','#c1693c'],['White','#eee']],chef:[['Steel','#aaa'],['Wood','#a67c52'],['Black','#111']],page:[['Cream','#f3ead8'],['Tan','#b5835a'],['Brass','#c9a227']],lens:[['Black','#111'],['Silver','#c9ccd1'],['Brown','#5a3a22']],apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']],zuri:[['Grey','#888'],['Cream','#eee'],['Green','#3a7']],peak:[['Black','#111'],['Grey','#777'],['Blue','#36c']],sav:[['Tan','#b5835a'],['Black','#111'],['Brown','#5a3a22']]};
 
 const F=(pid,sid,name,price,cap,ago,ids,cols)=>({pid,sid,name,price,cap,ago,imgs:ids.map(U),cols});
 const FEED=[
@@ -711,6 +761,13 @@ const FEED=[
  F('apex3','apex','Pulse Wireless Earbuds',7900,'Pocket-sized sound with noise cancelling.','17h ago',['photo-1590658268037-6bf12165a8df','photo-1572569511254-d8f925fe2cbb'],['White','Black']),
  F('luxe3','luxe','Everyday Denim',5200,'Straight-fit denim in washes that last.','18h ago',['photo-1542272604-787c3835535d','photo-1541099649105-f69ad21f3246'],['Mid wash','Dark wash'])
 ];
+const M=(pid,sid,cap,items)=>({pid,sid,name:items[0][0],price:items[0][1],cap,ago:'',imgs:items.map(x=>U(x[2])),cols:items.map(x=>x[0]),multi:items.map(x=>[x[0],x[1]])});
+{const P=(sid,i)=>{const s=STORES.find(x=>x.id===sid);return [s.prods[i][0],s.prods[i][1],PIMG[sid][i]]};
+const NEW=[["aura1", "aura", "Signature Scents", "Three scents, three moods. Swipe to find yours."], ["pixel1", "pixel", "Tech Essentials", "Phone, laptop and play, all genuine with warranty."], ["brew1", "brew", "Morning Ritual", "Beans, brew set and mugs for a slower morning."], ["glam1", "glam", "The Gold Edit", "Layer it, stack it, wear it everywhere."], ["sole3", "sole", "Sneaker Rotation", "Three pairs for every day of the week."], ["leaf1", "leaf", "Green Corner Picks", "Easy-care plants that thrive indoors."], ["zuri2", "zuri", "Living Room Refresh", "Chair, vase and cushions to finish the room."], ["chef1", "chef", "Kitchen Starter Set", "Sharp tools and sturdy boards for home chefs."], ["lens1", "lens", "Creator Camera Kit", "Shoot digital or film, with the gear to match."], ["page1", "page", "Reading Nook", "Books, a journal and the right light."], ["nova3", "nova", "Daily Glow Routine", "Serum, cream and SPF for an easy habit."], ["sav3", "sav", "Carry-All Collection", "Tote, backpack and crossbody in handcrafted leather."]].map(([pid,sid,t,cap])=>M(pid,sid,t+': '+cap,[0,1,2].map(i=>P(sid,i))));
+const old=FEED.splice(0);while(old.length||NEW.length){if(old.length)FEED.push(old.shift());if(old.length)FEED.push(old.shift());if(NEW.length)FEED.push(NEW.shift())}
+FEED.forEach((p,i)=>{p.ago=(i+1)+'h ago'})}
+const pc=(s,n)=>s.multi?s.multi[Math.min(n,s.multi.length-1)]:s.prods[0];
+const SPF={aura:[7420,640],brew:[5380,902],pixel:[18300,2210],glam:[6240,715],leaf:[3980,611],chef:[4760,380],page:[2890,340],lens:[8120,925],apex:[12480,1284],luxe:[8320,932],nova:[15700,1675],fresh:[5140,2410],sole:[21900,3120],zuri:[6870,478],peak:[9460,821],sav:[4310,389]};
 const PCT=[12,15,10,18,12,10,14,16,12,15,10,18,12,10,14,12,15];
 const DEALS=FEED.map((p,i)=>{const s=STORES.find(x=>x.id===p.sid);return {id:p.pid,name:p.name,price:p.price,pct:PCT[i%PCT.length],imgs:p.imgs,stock:12+(i*7)%40,cat:s.tag,by:s.name,cap:p.cap}});
 const cmm=d=>Math.round(d.price*d.pct/100);
@@ -744,7 +801,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
 function Product({store,i,onBuy}){
- const [p,price]=store.prods[i],[bad,setBad]=useState(false),A=(store.attrs&&store.attrs[i])||[],pim=store.dyn&&store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
+ const [p,price]=store.prods[i],[bad,setBad]=useState(false),A=(store.attrs&&store.attrs[i])||[],pim=store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
   <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}<span className="tag">In stock</span></div>
   <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div>{A.length>0&&<div style={{fontSize:12,color:'var(--mut)',marginTop:4}}>{A.map(a=>a.k+': '+a.v.join('/')).join(' · ')}</div>}<button className="btn" onClick={()=>onBuy(store,p,price)}>Order now</button></div>
@@ -752,7 +809,7 @@ function Product({store,i,onBuy}){
 }
 
 function Card({store,i,onAdd}){
- const [p,price]=store.prods[i],A=(store.attrs&&store.attrs[i])||[],o=store.dyn?[]:((SOPT[store.id]||{}).o||[]),[bad,setBad]=useState(false),[sz,setSz]=useState(null),[pick,setPick]=useState({}),[q,setQ]=useState('1'),n=Math.max(1,parseInt(q,10)||1),need=A.filter(a=>a.v.length>1),done=need.every(a=>pick[a.k]),opt=need.length?need.map(a=>a.k+': '+pick[a.k]).join(', '):sz,pim=store.dyn&&store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
+ const [p,price]=store.prods[i],A=(store.attrs&&store.attrs[i])||[],o=store.dyn?[]:((SOPT[store.id]||{}).o||[]),[bad,setBad]=useState(false),[sz,setSz]=useState(null),[pick,setPick]=useState({}),[q,setQ]=useState('1'),n=Math.max(1,parseInt(q,10)||1),need=A.filter(a=>a.v.length>1),done=need.every(a=>pick[a.k]),opt=need.length?need.map(a=>a.k+': '+pick[a.k]).join(', '):sz,pim=store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
   <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}</div>
   <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div>
@@ -763,9 +820,10 @@ function Card({store,i,onAdd}){
  </div>;
 }
 
+function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.img;return <span className="cav" style={{width:z,height:z}}>{bad||!src?<em>{s.icon}</em>:<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
 function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
-function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
+function Post({cc,onComment,onStory,onProfile,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
  const cols=s.cols||COL[s.id].map(c=>c[0]),[menu,setMenu]=useState(false);
  const last=useRef(0),[burst,setBurst]=useState(false),psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(!!f||!!s.custom),[spark,setSpark]=useState(false);
  const tap=()=>{const t=Date.now();if(t-last.current<300){if(!liked)onLike();setBurst(true);setTimeout(()=>setBurst(false),800)}last.current=t};
@@ -774,7 +832,7 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
  const share=async()=>{try{if(navigator.share)await navigator.share({title:s.prods[0][0],text:s.prods[0][0]+' on TeQx'});else note&&note('Sharing is not supported on this device')}catch(e){}};
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onStory}><i>{s.avatar?<img src={s.avatar} alt="" style={{width:"100%",height:"100%",borderRadius:"50%",objectFit:"cover"}}/>:s.icon}</i></button>
-   <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="tm">{s.custom?'Just now':(s.ago||si+2+'h ago')} · {s.tag}</div></div>
+   <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified/></div><div className="tm">{s.custom?'Just now':(s.ago||si+2+'h ago')} · {s.tag}</div></div>
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}{gone&&<div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
     {menu&&<><div className="kback" onClick={()=>setMenu(false)}/><div className="kmenu">
      <button onClick={()=>{onSave();setMenu(false)}}><Ic.Mark on={saved}/>{saved?'Remove from saved':'Save post'}</button>
@@ -786,14 +844,14 @@ function Post({cc,onComment,onStory,s,si,f,onFollow,liked,onLike,saved,onSave,on
   <div className="pm" onClick={tap}>{burst&&<div className="burst"><Ic.Heart on/></div>}
    <div className="pmi">
     <div className="ps" ref={psr} onScroll={e=>setN(Math.round(e.target.scrollLeft/e.target.clientWidth))}>
-     {cols.map((c,i)=><Slide key={i} src={(s.imgs&&s.imgs[i])||s.img} alt={s.prods[0][0]+' in '+c} icon={<Ic.Store s={44}/>}/>)}
+     {(s.imgs&&s.imgs.length?s.imgs:[s.img]).map((src,i)=><Slide key={i} src={src} alt={s.multi?s.multi[i][0]:s.prods[0][0]+' in '+(cols[i]||'')} icon={<Ic.Store s={44}/>}/>)}
     </div>
-    <span className="shopchip"><Ic.Store s={14}/> {s.name}</span><div className="seg">{cols.map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
+    <span className="shopchip"><Ic.Store s={14}/> {s.name}</span><div className="seg">{(s.imgs&&s.imgs.length?s.imgs:[s.img]).map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    </div>
    <div className="pfoot" onClick={e=>e.stopPropagation()}>
-    <div className="ptop"><div className="pinfo"><h3 className="pt">{s.prods[0][0]}</h3><div className="pmeta"><span className="pp">{ksh(s.prods[0][1])}</span><span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
+    <div className="ptop"><div className="pinfo"><h3 className="pt">{pc(s,n)[0]}</h3><div className="pmeta"><span className="pp">{ksh(pc(s,n)[1])}</span>{s.multi&&<span className="rt">{Math.min(n,s.multi.length-1)+1}/{s.multi.length} items</span>}<span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
      <div className="perks">{PERKS.map(([E,t])=><div key={t} className="perk" title={t}><i><E s={18}/></i></div>)}</div></div>
-    <div className="cta"><button className="o" onClick={()=>onChat(`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]}`)}><Ic.Msg/>Chat with Shop</button></div>
+    <div className="cta"><button className="o" onClick={()=>onChat(s.multi?`Hi, I'm interested in the ${pc(s,n)[0]}`:`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]||''}`)}><Ic.Msg/>Chat with Shop</button></div>
    </div>
   </div>
   <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(842+si*173+(liked?1:0)).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button onClick={onSave} style={saved?{color:'#ff8c1a'}:null}><Ic.Mark on={saved}/></button></div>
@@ -855,6 +913,7 @@ function App(){
  const mine=cm?(cmts[cm]||[]):[],tops=[...mine.filter(x=>!x.parent).reverse(),...SEED].map((c,i)=>({...c,_i:i})).sort((a,b)=>cSort==='top'?((b.likes||0)+(clk[b.id]?1:0))-((a.likes||0)+(clk[a.id]?1:0)):a._i-b._i);
  const cmItem=(c,isRep)=>{const kids=[...(c.replies||[]),...mine.filter(x=>x.parent===c.id)];return <div key={c.id} className={'czc'+(isRep?' rp':'')}><div className="czav" style={c.u==='you'&&me.avatar?{backgroundImage:`url("${me.avatar}")`,backgroundSize:'cover',backgroundPosition:'center'}:{background:gr(c.u)}}>{c.u==='you'&&me.avatar?null:(c.u==='you'?(me.name||'you'):c.u)[0].toUpperCase()}</div><div className="czb"><div className={'czbub'+(c.shop?' own':'')}><div className="czn"><b>{c.u}</b>{c.shop&&<span className="czsh">✓ Shop</span>}{c.u==='you'&&<span className="czyou">You</span>}</div><div className="czx">{c.t}</div></div><div className="czac"><span className="czag">{c.ts?tAgo(c.ts):c.ago}</span><button onClick={()=>{setRpl({id:c.parentId||c.id,u:c.u});setTimeout(()=>inRef.current&&inRef.current.focus(),60)}}>Reply</button>{c.u==='you'&&<button onClick={()=>delCm(c.id)}>Delete</button>}</div>{!isRep&&kids.length>0&&<button className="czvr" onClick={()=>setEx(m=>({...m,[c.id]:!m[c.id]}))}><i/>{ex[c.id]?'Hide replies':'View '+kids.length+(kids.length>1?' replies':' reply')}</button>}{!isRep&&ex[c.id]&&kids.map(k=>cmItem({...k,parentId:c.id},true))}</div><button className={'czlk'+(clk[c.id]?' on':'')} aria-label="Like comment" onClick={()=>flip(setClk,c.id)}><Ic.HeartM on={clk[c.id]}/><span>{(c.likes||0)+(clk[c.id]?1:0)||''}</span></button></div>};
  const flip=(set,id)=>set(m=>({...m,[id]:!m[id]}));
+ const [sp,setSp]=useState(null);
  const end=useRef(null),ordersRef=useRef(orders);ordersRef.current=orders;
 
  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';try{localStorage.setItem('teqx-theme',dark?'dark':'light')}catch(e){}},[dark]);
@@ -863,9 +922,9 @@ function App(){
  const chatIdRef=useRef(null);
  const push=(id,m)=>{setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));if(m.from!=='me'&&chatIdRef.current!==id)setUnread(u=>({...u,[id]:(u[id]||0)+1}))};
  const qref=useRef({}),pend=useRef({}),flowRef=useRef({});
- /* every shop reply lands after a 3s typing delay; replies to the same shop are queued in order */
+ /* every shop reply lands after a 3.4s typing delay; replies to the same shop are queued in order */
  const say=(id,msgs)=>{pend.current[id]=(pend.current[id]||0)+1;setTyping(t=>({...t,[id]:true}));
-  const run=async()=>{for(const m of msgs){await wait(m.delay!=null?m.delay:3000);const {delay,...mm}=m;push(id,{from:'bot',...mm})}pend.current[id]--;if(!pend.current[id])setTyping(t=>({...t,[id]:false}))};
+  const run=async()=>{for(const m of msgs){await wait(3400);const {delay,...mm}=m;push(id,{from:'bot',...mm})}pend.current[id]--;if(!pend.current[id])setTyping(t=>({...t,[id]:false}))};
   qref.current[id]=(qref.current[id]||Promise.resolve()).then(run);return qref.current[id]};
 
  const open=(s,m)=>{setSearch(false);setQ('');setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
@@ -880,13 +939,13 @@ function App(){
  const welcome=(s,pi)=>{const [n,pr]=s.prods[pi>=0?pi:0];return{text:`Hi 👋, how are you? Welcome to ${s.name}. The ${n} is available for shopping.\nHere we go 👇, please choose one for your choice`,catalog:true}};
  const addCart=(s,name,price,opt,qty)=>{const k=name+'|'+(opt||''),c=[...cartOf(s.id)],ex=c.find(x=>x.k===k),L=name+(opt?` (${opt})`:'')+(qty>1?` × ${qty}`:'');
   if(ex)ex.qty+=qty;else c.push({k,name,opt,price,qty});setC(s.id,c);
-  const t=ex?`I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Nice choice 👌, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
+  const t=ex?`Sawa sawa 👊 I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Kabisa 👊, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
  const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0),[simPin,setSimPin]=useState('');
  const finishPay=(s,f,tx)=>{const sc=sumCard(s),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
-  say(s.id,[{text:'M-Pesa payment confirmed ✅'},{delay:1500,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']],foot:'Please enjoy a nice day! 🤝😊'},qr:['Keep Shopping','Exit Shop']}])};
- const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),phase:SIM_PAY?'confirm':'phone',err:''});return{text:SIM_PAY?'Almost there 📲 Approve the M-Pesa prompt on your phone.':'Almost there 📲 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
+  say(s.id,[{text:'Kabisa 👊 M-Pesa payment confirmed ✅'},{delay:1500,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']]}},{delay:1500,text:`Thank you for shopping with ${s.name}, Enjoy a great day & see you soon 👊`,qr:['Keep Shopping','Exit Shop']}])};
+ const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),phase:SIM_PAY?'confirm':'phone',err:''});return{text:SIM_PAY?'Kabisa 👊 Approve the M-Pesa prompt on your phone.':'Kabisa 👊 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
  const startPay=async()=>{const d=payDlg;if(!d)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
   try{try{localStorage.setItem('teqx-phone',payPhone)}catch(e){}
    const r=await apiJ('/api/pay','POST',{device_id:DEV,phone:payPhone,amount:d.amount});
@@ -906,17 +965,17 @@ function App(){
    if(simPin==='0000'){setSimPin('');setPayDlg(x=>x?{...x,phase:'confirm',err:'Wrong M-PESA PIN. Please try again.'}:x);return}
    setSimPin('');payRun.current++;setPayDlg(null);finishPay(d.s,d.f,null)},2200)};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
-  if(q==='keep shopping'||q==='explore more products')return{text:"Sure thing 👇 Here's more you might like.",catalog:true};
-  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Excellent 👍, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
-  if(f.cs==='station'&&/pick up station x\d/.test(q)){f.cs='sum';f.station=text.trim();return{text:`Perfect 👍 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
-  if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Great 👍 So how would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
-  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Sure 👍 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'truck',steps:[['lock','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['box','Shop delivers','The shop delivers to your selected pick-up station.'],['refund','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
+  if(q==='keep shopping'||q==='explore more products')return{text:"Sawa sawa 👊 Here's more you might like 👇",catalog:true};
+  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Kabisa 👊, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
+  if(f.cs==='station'&&/pick up station x\d/.test(q)){f.cs='sum';f.station=text.trim();return{text:`Wazi 👌 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
+  if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Sawa sawa 👊 So how would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
+  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Wazi 👌 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'truck',steps:[['lock','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['box','Shop delivers','The shop delivers to your selected pick-up station.'],['refund','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
   if(q==='secure funds'&&f.cs==='pay'&&f.pod)return payNow(s,f);
   if(q==='pay before delivery'&&f.cs==='pay'){f.pod=0;return payNow(s,f)}
   if(q==='try again'&&c.length&&f.cs==='pay')return payNow(s,f);
-  if(q==='change order'&&c.length){f.cs=null;return{text:'No problem 😊 Add more items below, then tap Complete Order when you are ready.',catalog:true,qr:['Complete Order']}}
-  if((q==='cancel'||q==='cancel order')&&['addr','station','sum','pay'].includes(f.cs)){f.cs=null;return{text:"No worries 😊 I'm here whenever you're ready.",qr:c.length?['Keep Shopping','Complete Order']:undefined}}
-  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Thank you! 🙌 Here are the available pick-up stations in ${loc}. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['Pick-up Station X'+n,FEE])}}}
+  if(q==='change order'&&c.length){f.cs=null;return{text:'Wazi 👌 Add more items below, then tap Complete Order when you are ready.',catalog:true,qr:['Complete Order']}}
+  if((q==='cancel'||q==='cancel order')&&['addr','station','sum','pay'].includes(f.cs)){f.cs=null;return{text:"Sawa sawa 👊 I'm here whenever you're ready.",qr:c.length?['Keep Shopping','Complete Order']:undefined}}
+  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Wazi 👌 Thank you! Here are the available pick-up stations in ${loc}. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['Pick-up Station X'+n,FEE])}}}
   return null};
 
  
@@ -933,28 +992,28 @@ function App(){
   if(st==='done')return{text:'Anything else I can help with?',qr:QD};
   return{text:'What would you like to do?',qr:QB}};
  const place=(s,f)=>{const fee=feeOf(f),nm=f.item+(f.opt||f.col?` (${[f.opt,f.col].filter(Boolean).join(', ')})`:''),id=secure(s,nm,f.price,fee);f.st='done';track(id,s.id);
-  return{text:`Order ${id} confirmed 🎉\n${f.pay==='Cash on delivery'?'Please have the cash ready for the rider.':'Your payment is held securely until your order arrives.'} I’ll update you here at every step.`,placed:id,qr:['Track my order','Order something else','Talk to a person']}};
+  return [{text:`Kabisa 👊 Order ${id} confirmed 🎉\n${f.pay==='Cash on delivery'?'Please have the cash ready for the rider.':'Your payment is held securely until your order arrives.'} I’ll update you here at every step.`,placed:id},{delay:1500,text:`Thank you for shopping with ${s.name}, Enjoy a great day & see you soon 👊`,qr:['Track my order','Order something else','Talk to a person']}]};
  const eng=(s,text,first)=>{const f=fl(s.id),q=strip(text),T=q.split(' '),hi=first?`Karibu! 👋 Welcome to ${s.name}.\n`:'',W=o=>({...o,text:hi+o.text});
   const sr=scr(s,text,f,q);if(sr)return Array.isArray(sr)?sr:W(sr);
   const go=(st,pre)=>{f.st=st;const a=ask(s,f);return W({...a,text:(pre||'')+a.text})};
   const tail=a=>MID.includes(f.st)?['Continue my order',...a]:a;
   const CMD=/^(change|see other|browse|show|track|continue|order something|talk|delivery info|payment options|best seller|cancel|hi|hello|hey|sasa|thank)/,INFO=/price|how much|cost|discount|cheap|return|refund|warrant|human|person|agent|help|stock|available|catalog|mpesa|m pesa|card|cash|pay\b/;
-  if(/^(cancel|stop|start over|restart|never mind|nevermind)\b/.test(q)){flowRef.current[s.id]={st:'browse'};return W({text:'No problem, I’ve cleared that. Want to look at something else?',qr:QB})}
+  if(/^(cancel|stop|start over|restart|never mind|nevermind)\b/.test(q)){flowRef.current[s.id]={st:'browse'};return W({text:'Wazi 👌 I’ve cleared that. Want to look at something else?',qr:QB})}
   const pi=findProd(s,text),mm=text.match(/interested in the (.+?) in (.+)$/i);
   if(pi>=0){const o=SOPT[s.id];f.item=s.prods[pi][0];f.price=s.prods[pi][1];f.opt=f.col=f.loc=f.pay=f.zone=null;
-   if(mm){const c=mm[2].trim();if(o.c){f.opt=c;return go('delivery',`Great choice! The ${f.item} in ${c} is ${ksh(f.price)} and in stock. 🎉\n`)}f.col=c;return go('option',`Great choice — ${c} it is! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
-   return go('option',`Great choice! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+   if(mm){const c=mm[2].trim();if(o.c){f.opt=c;return go('delivery',`Kabisa 👊 Great choice! The ${f.item} in ${c} is ${ksh(f.price)} and in stock. 🎉\n`)}f.col=c;return go('option',`Kabisa 👊 Great choice — ${c} it is! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+   return go('option',`Kabisa 👊 Great choice! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
   if(/^change option/.test(q)&&f.item)return go('option');
   if(/^change delivery/.test(q)&&f.item)return go('delivery');
-  if(f.st==='option'){const o=SOPT[s.id],syn={small:'S',medium:'M',large:'L'},hit=o.o.find(x=>T.includes(x.toLowerCase()))||(s.id==='luxe'?T.map(t=>syn[t]).find(Boolean):null);if(hit){f.opt=hit;return go('delivery',`${hit} noted ✔️\n`)}}
-  if(f.st==='delivery'&&!CMD.test(q)&&!INFO.test(q)&&!/\?/.test(text)&&q.length>2){const z=/outside|other town|upcountry/.test(q)?'other':NBO.test(q)?'nairobi':'other';f.zone=z;f.loc=/^outside nairobi/.test(q)?'Outside Nairobi':/^nairobi ksh/.test(q)?'Nairobi':text.trim().replace(/^(deliver(y)?( it)? to|to|in|at)\s+/i,'').slice(0,40);return go('payment',`Delivery to ${f.loc} (${z==='nairobi'?'within 24 hours':'2–3 days'}) is ${ksh(feeOf(f))}.\n`)}
+  if(f.st==='option'){const o=SOPT[s.id],syn={small:'S',medium:'M',large:'L'},hit=o.o.find(x=>T.includes(x.toLowerCase()))||(s.id==='luxe'?T.map(t=>syn[t]).find(Boolean):null);if(hit){f.opt=hit;return go('delivery',`Wazi 👌 ${hit} noted.\n`)}}
+  if(f.st==='delivery'&&!CMD.test(q)&&!INFO.test(q)&&!/\?/.test(text)&&q.length>2){const z=/outside|other town|upcountry/.test(q)?'other':NBO.test(q)?'nairobi':'other';f.zone=z;f.loc=/^outside nairobi/.test(q)?'Outside Nairobi':/^nairobi ksh/.test(q)?'Nairobi':text.trim().replace(/^(deliver(y)?( it)? to|to|in|at)\s+/i,'').slice(0,40);return go('payment',`Sawa sawa 👊 Delivery to ${f.loc} (${z==='nairobi'?'within 24 hours':'2–3 days'}) is ${ksh(feeOf(f))}.\n`)}
   if(f.st==='payment'){const pay=/mpesa|m pesa/.test(q)?'M-Pesa':/card|visa|master/.test(q)?'Bank card':/cash|cod|on delivery/.test(q)?'Cash on delivery':null;if(pay){f.pay=pay;return go('confirm')}}
-  if(f.st==='confirm'&&/^(confirm|yes|yep|yeah|ok|okay|sure|proceed|place|go ahead|looks good|correct)\b/.test(q))return W(place(s,f));
+  if(f.st==='confirm'&&/^(confirm|yes|yep|yeah|ok|okay|sure|proceed|place|go ahead|looks good|correct)\b/.test(q))return place(s,f);
   if(/best seller|bestseller|popular|recommend/.test(q)){f.st='offer';return W({text:`Our best seller right now is the ${s.prods[0][0]} at ${ksh(s.prods[0][1])}. ⭐ Want me to reserve one for you?`,qr:['Yes, order it','Browse catalog','Delivery info']})}
-  if(f.st==='offer'&&/^(yes|yep|yeah|sure|ok|okay|order it|i want it|reserve)/.test(q)){f.item=s.prods[0][0];f.price=s.prods[0][1];f.opt=f.col=f.loc=f.pay=f.zone=null;return go('option',`Excellent pick! The ${f.item} is ${ksh(f.price)}.\n`)}
+  if(f.st==='offer'&&/^(yes|yep|yeah|sure|ok|okay|order it|i want it|reserve)/.test(q)){f.item=s.prods[0][0];f.price=s.prods[0][1];f.opt=f.col=f.loc=f.pay=f.zone=null;return go('option',`Kabisa 👊 Excellent pick! The ${f.item} is ${ksh(f.price)}.\n`)}
   if(/continue my order|^continue$/.test(q))return W(ask(s,f));
   if(/track|status|where is my|my order/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return W({text:o?`Your order ${o.id} · ${o.item} is currently ${o.status}.`:'You have no orders with us yet. Pick something you love and I’ll set it up in under a minute.',qr:o?QD.slice(1):QB})}
-  if(/catalog|catalogue|browse|show|menu|products?|what do you (have|sell)|other items|order something|see more/.test(q)){if(f.st==='done'||f.st==='offer')f.st='browse';return W({text:'Here are our top picks 👇 Tap “Order now” on anything you like and I’ll take it from there.',catalog:true,qr:tail(['🔥 Best seller','Delivery info','Payment options'])})}
+  if(/catalog|catalogue|browse|show|menu|products?|what do you (have|sell)|other items|order something|see more/.test(q)){if(f.st==='done'||f.st==='offer')f.st='browse';return W({text:'Wazi 👌 Here we go 👇, please choose one for your choice',catalog:true,qr:tail(['🔥 Best seller','Delivery info','Payment options'])})}
   if(/deliver|ship|how long|arrive|when will/.test(q))return W({text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.',qr:tail(['Browse catalog','Payment options'])});
   if(/price|how much|cost/.test(q)){if(f.item)return W({text:`The ${f.item} is ${ksh(f.price)}. Delivery starts at ${ksh(delFee(f.price))}.`,qr:tail(['Browse catalog','Payment options'])});return W({text:'Here are our current prices 👇',catalog:true,qr:QB})}
   if(/stock|available|availability/.test(q))return W({text:'Everything in our catalog is in stock and ready to dispatch. ✅',qr:tail(['Browse catalog','Delivery info'])});
@@ -962,7 +1021,7 @@ function App(){
   if(/discount|cheap|offer|bargain|negotiat|last price|reduce/.test(q))return W({text:'Our listed prices are fixed so every customer gets the same fair deal. You also get secure payment, fast delivery and easy returns. 💛',qr:tail(['Browse catalog','Delivery info'])});
   if(/return|refund|exchange|warrant/.test(q))return W({text:'Easy returns: if something isn’t what you ordered, tell us here and we’ll make it right. Your payment stays secured until delivery.',qr:tail(['Browse catalog','Delivery info'])});
   if(/person|human|agent|help|support|call/.test(q))return W({text:'Connecting you to a team member 👩🏾‍💼 They usually reply within 10 minutes. I can keep helping with your order meanwhile.',qr:tail(['Browse catalog','Delivery info'])});
-  if(/thank|asante|cheers/.test(q))return W({text:'Karibu sana! 💛 Let me know if you need anything else.',qr:f.st==='done'?QD:tail(QB)});
+  if(/thank|asante|cheers/.test(q))return W({text:'Sawa sawa 👊 Karibu sana! Let me know if you need anything else.',qr:f.st==='done'?QD:tail(QB)});
   if(/^(hi|hello|hey|sasa|mambo|niaje|hola|good (morning|afternoon|evening))\b/.test(q))return MID.includes(f.st)?go(f.st,'Hello again! 😊\n'):W({text:`Hello! 😊 How can I help you today at ${s.name}?`,qr:QB});
   if(MID.includes(f.st)){const a=ask(s,f);return W({...a,text:'Just so I get it right 🙂 '+a.text})}
   return W({text:'Thanks for your message! I can show you our catalog, check prices, delivery and payment, or place your order in a few taps. What would you like?',qr:QB})};
@@ -975,9 +1034,9 @@ function App(){
   ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured'},...m]);
   addN(s,'secured',`Order secured · ${id}. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
  const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>{apiPatchOrder(id,v,stn);setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x))},ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
-  await wait(8000);up('Shipped');ms('Shipped');ev('shipped',`Order shipped · ${id} is on its way to ${stn||'your pick-up station'}.`);
-  await wait(8000);up('Delivered');ms('Delivered');ev('delivered',`Order delivered at pickup station · ${id} is ready for collection at ${stn||'your pick-up station'}.`);
-  await wait(8000);up('Collected');ms('Paid out');setEarn(e=>e+(M.price||0));setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:M.price||0,r:'merchant'},...x]);ev('collected',`Order collected from pickup station · ${id} was collected at ${stn||'the pick-up station'}. Payment released to the shop.`)};
+  await wait(10000);up('Shipped');ms('Shipped');ev('shipped',`Order shipped · ${id} is on its way to ${stn||'your pick-up station'}.`);
+  await wait(10000);up('Delivered');ms('Delivered');ev('delivered',`Order delivered at pickup station · ${id} is ready for collection at ${stn||'your pick-up station'}.`);
+  await wait(10000);up('Collected');ms('Paid out');setEarn(e=>e+(M.price||0));setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:M.price||0,r:'merchant'},...x]);ev('collected',`Order collected from pickup station · ${id} was collected at ${stn||'the pick-up station'}. Payment released to the shop.`)};
  const buy=(s,item)=>send(`I'd like to order: ${item}`);
  const quick=async(s,item,price)=>{const id=secure(s,item,price);if(!id)return;note(`Order ${id} secured`);track(id)};
  const withdraw=r=>{const v=r==='merchant'?earn:earnD;if(!v)return note('Nothing to withdraw yet');setTxs(x=>[{id:'t'+Date.now(),k:'Withdrawal to M-Pesa',amt:-v,r},...x]);note(ksh(v)+' sent to M-Pesa');r==='merchant'?setEarn(0):setEarnD(0)};
@@ -994,7 +1053,7 @@ function App(){
  const resetF=()=>{setDfl({sort:'earn',min:0,price:'any',cat:'All',stock:false});setDsq('')};
  const fg=(t,opts,k)=><div className="fgrp"><div className="sect" style={{padding:0}}>{t}</div><div className="chips2">{opts.map(([v,l])=><button key={String(v)} className={dfl[k]===v?'on':''} onClick={()=>setDfl(f=>({...f,[k]:v}))}>{l}</button>)}</div></div>;
  /* real-time dropshipper orders: a new order is secured on one of the live posts, then ships and is delivered; commission is released only on delivery */
- useEffect(()=>{const live=myPosts.filter(p=>p.deal);if(!live.length)return;const iv=setInterval(()=>{const p=live[Math.floor(Math.random()*live.length)],comm=Math.round(p.price*(p.pct||10)/100),id='DR-'+Math.floor(1000+Math.random()*9000);setDsOrders(o=>[{id,t:Date.now(),item:p.name,amt:p.price,comm,status:'Secured'},...o]);note('New order secured via your post · expected '+ksh(comm));setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x)),30000);setTimeout(()=>{setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x));setEarnD(e=>e+comm);setTxs(x=>[{id:'t'+Date.now(),k:'Commission released · '+id,amt:comm,r:'dropshipper'},...x])},75000)},45000);return()=>clearInterval(iv)},[myPosts]);
+ useEffect(()=>{const live=myPosts.filter(p=>p.deal);if(!live.length)return;const iv=setInterval(()=>{const p=live[Math.floor(Math.random()*live.length)],comm=Math.round(p.price*(p.pct||10)/100),id='DR-'+Math.floor(1000+Math.random()*9000);setDsOrders(o=>[{id,t:Date.now(),item:p.name,amt:p.price,comm,status:'Secured'},...o]);note('New order secured via your post · expected '+ksh(comm));setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x)),10000);setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x)),20000);setTimeout(()=>{setEarnD(e=>e+comm);setTxs(x=>[{id:'t'+Date.now(),k:'Commission released · '+id,amt:comm,r:'dropshipper'},...x])},30000)},45000);return()=>clearInterval(iv)},[myPosts]);
  useEffect(()=>{const iv=setInterval(()=>setTick(t=>t+1),60000);return()=>clearInterval(iv)},[]);
  const startEdit=p=>{const dl=allDeals.find(d=>d.id===p.deal),list=[...p.imgs,...((dl&&dl.imgs)||[]).filter(x=>!p.imgs.includes(x))];setEdp({id:p.id,name:p.name,cap:p.cap||'',list,sel:p.imgs.map((_,i)=>i)})};
  const addEditPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;setEdp(v=>({...v,list:[...v.list,...out],sel:[...v.sel,...out.map((_,i)=>v.list.length+i)]}))};
@@ -1011,7 +1070,7 @@ function App(){
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
    {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')}>{chat.icon}</div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>Pick-up stations</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
-   {m.catalog&&<div className="hs cat">{chat.prods.map((_,i)=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div>}
+   {m.catalog&&<div className="catrow"><ShopAv s={chat}/><div className="hs cat">{chat.prods.map((_,i)=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div></div>}
   </div>};
  chatIdRef.current=chat?chat.id:null;
  const d=tab==='discover';
@@ -1144,11 +1203,11 @@ function App(){
      <div ref={end}/>
     </div>
     {qrs&&<div className="qrs">{qrs.map(c=><button key={c} className={'qr'+(['Confirm Order','Pay on Delivery','Secure Funds'].includes(c)?' pri':'')} onClick={()=>send(c)}>{c}</button>)}</div>}
-    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>{if(chat)say(chat.id,[].concat(eng(chat,'show catalog',false)))}}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
+    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>{if(chat)say(chat.id,[{text:'Wazi 👌 Here we go 👇, please choose one for your choice',catalog:true,qr:cnt(chat.id)>0?['Complete Order']:undefined}])}}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
-    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} onProfile={()=>note('This is your own shop')} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,multi:p.multi,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} onProfile={()=>setSp(st.id)} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
    {tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
@@ -1200,6 +1259,16 @@ function App(){
     </div>
    </div>}
   </main>
+  {sp&&(()=>{const x=STORES.find(z=>z.id===sp),f=!!fol[x.id],base=SPF[x.id]||[1200,120],posts=FEED.filter(p=>p.sid===x.id).map(p=>({k:p.pid,name:p.name,price:p.price,img:p.imgs[0],n:p.imgs.length,ago:p.ago,cap:p.cap})),have=posts.map(p=>p.name),older=x.prods.filter(pr=>!have.includes(pr[0])).map((pr,j)=>({k:x.id+'o'+j,name:pr[0],price:pr[1],img:(x.pimgs&&x.pimgs[x.prods.indexOf(pr)])||x.img,n:1,ago:(j+2)+'d ago',cap:''})),tiles=[...posts,...older];
+   return <div className="ov spo"><div className="spb"><button className="back" aria-label="Back" onClick={()=>setSp(null)}><Ic.Back/></button><b>{x.name}</b><span style={{width:36}}/></div>
+   <div className="ovb" style={{padding:'6px 0 24px'}}>
+    <div className="sph"><div className="spav"><ShopAv s={x} z={86}/></div>
+     <div className="spn"><span>{x.name}</span><Verified s={18}/></div><div className="spt">{x.tag} · {SCAT[x.id]}</div>
+     <div className="sps"><div><b>{fmt(base[0]+(f?1:0))}</b><span>Followers</span></div><div><b>{base[1].toLocaleString('en-KE')}</b><span>Orders delivered</span></div><div><b>{tiles.length}</b><span>Posts</span></div></div>
+     <div className="spa"><button className={'spf'+(f?' on':'')} onClick={()=>flip(setFol,x.id)}>{f?'Following ✓':'Follow'}</button><button className="spm" onClick={()=>{setSp(null);open(x)}}><Ic.Msg/>Message</button></div></div>
+    <div className="spg-h"><span>Posts</span></div>
+    <div className="spg">{tiles.map(t=><button key={t.k} className="spt2" onClick={()=>{setSp(null);open(x,t.name)}}><img src={t.img} alt={t.name} loading="lazy" onError={e=>{e.target.style.display='none'}}/>{t.n>1&&<i className="spm2">▣</i>}<span className="spc"><b>{t.name}</b><em>{ksh(t.price)}</em></span></button>)}</div>
+   </div></div>})()}
   {search&&<div className="ov"><div className="sbar"><Ic.Search/><input autoFocus placeholder="Search shops & products" value={q} onChange={e=>setQ(e.target.value)}/><button onClick={()=>{setSearch(false);setQ('')}}>Cancel</button></div>
    <div className="ovb">{q.trim()?(()=>{const R=STORES.filter(x=>(x.name+' '+x.tag+' '+x.prods.map(p=>p[0]).join(' ')).toLowerCase().includes(q.trim().toLowerCase()));return R.length?R.map(x=><button key={x.id} className="row" style={{padding:'12px 0'}} onClick={()=>{setRecent(r=>[q.trim(),...r.filter(y=>y!==q.trim())].slice(0,5));open(x)}}><div className="av">{x.icon}</div><div className="grow"><div className="nm"><span>{x.name}</span><Verified/></div><div className="pv">{x.prods.map(p=>p[0]).join(' · ')}</div></div></button>):<p className="bd">No shops or products found for “{q}”.</p>})():<>
     <div className="sect" style={{padding:'0 0 10px'}}>Recent</div><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{recent.map(r=><button key={r} className="chip" onClick={()=>setQ(r)}>{r}</button>)}</div>
@@ -1235,16 +1304,18 @@ function App(){
     <input className="fi" placeholder="Post title" value={edp.name} onChange={e=>setEdp(v=>({...v,name:e.target.value}))}/>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={edp.cap} onChange={e=>setEdp(v=>({...v,cap:e.target.value}))}/>
     <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
-  {payDlg&&<div style={{position:'fixed',inset:0,zIndex:9999,background:'rgba(0,0,0,.6)',display:'flex',alignItems:'flex-end',justifyContent:'center'}}>
-   <div style={{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
+  {payDlg&&<div style={{position:'fixed',inset:0,zIndex:9999,background:payDlg.phase==='confirm'?'rgba(0,0,0,.72)':'rgba(0,0,0,.6)',backdropFilter:payDlg.phase==='confirm'?'blur(3px)':'none',display:'flex',alignItems:payDlg.phase==='confirm'?'center':'flex-end',justifyContent:'center',padding:payDlg.phase==='confirm'?'0 0 6vh':0}}>
+   <div style={payDlg.phase==='confirm'?{width:'calc(100% - 56px)',maxWidth:330,background:'var(--surf)',color:'var(--text)',borderRadius:22,padding:0,overflow:'hidden',boxShadow:'0 28px 70px rgba(0,0,0,.6)',border:'1px solid var(--cardline)',animation:'pop .22s ease'}:{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
     {payDlg.phase!=='confirm'&&<><h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
     <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div></>}
     {payDlg.phase==='confirm'?<div style={{textAlign:'center'}}>
-     <div style={{fontWeight:700,letterSpacing:1,color:'#43b02a',fontSize:14}}>M-PESA</div>
-     <p style={{margin:'12px 0 14px',fontSize:15,lineHeight:1.4}}>Do you want to pay <b>{ksh(payDlg.amount)}</b> to <b>TeQx Market Ltd</b> for <b>{payDlg.item}</b>?</p>
-     <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="Enter M-PESA PIN" style={{textAlign:'center',letterSpacing:6}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
-     {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
-     <div style={{display:'flex',gap:10,marginTop:14}}><button className="lnk" style={{flex:1}} onClick={closePay}>Cancel</button><button className="btn" style={{flex:1}} disabled={simPin.length!==4} onClick={simOk}>OK</button></div>
+     <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 16px',background:'linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%)',color:'#fff',fontWeight:800,letterSpacing:3,fontSize:15}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>M-PESA</div>
+     <div style={{padding:'22px 22px 4px'}}>
+      <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{ksh(payDlg.amount)}</b> to <b>TeQx Market Ltd</b> for <b>{payDlg.item}</b>?</p>
+      <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="Enter M-PESA PIN" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
+      {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'10px 0 0'}}>{payDlg.err}</p>}
+     </div>
+     <div style={{display:'flex',marginTop:20,borderTop:'1px solid var(--line)'}}><button style={{flex:1,padding:'16px 0',fontWeight:700,fontSize:15,color:'var(--mut)'}} onClick={closePay}>Cancel</button><button style={{flex:1,padding:'16px 0',fontWeight:800,fontSize:15,color:'#12c062',borderLeft:'1px solid var(--line)',opacity:simPin.length===4?1:.4}} disabled={simPin.length!==4} onClick={simOk}>OK</button></div>
     </div>:payDlg.phase==='phone'?<>
      <input className="fi" inputMode="tel" placeholder="M-Pesa number e.g. 0712345678" value={payPhone} onChange={e=>setPayPhone(e.target.value)}/>
      {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
