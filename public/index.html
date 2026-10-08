@@ -902,13 +902,14 @@ function App(){
  const [typing,setTyping]=useState({});
  const [unread,setUnread]=useState(Object.fromEntries(STORES.map(s=>[s.id,0])));
  const [orders,setOrders]=useState(window.__ORD||[]);
+ useEffect(()=>{const f=()=>{setOrders(o=>o.length?o:(window.__ORD||[]));setTick(t=>t+1)};if(window.__DATA)f();window.addEventListener('teqx-data',f);return()=>window.removeEventListener('teqx-data',f)},[]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
  const [fol,setFol]=useState({}),[toast,setToast]=useState('');
- const [init]=useState(()=>{try{const j=JSON.parse(localStorage.getItem('tumiqa-shop'))||{};if(j.v!==3){delete j.txs;delete j.earn;delete j.earnD;delete j.dsOrders}return j}catch(e){return{}}});
+ const [init]=useState(()=>{try{const j=JSON.parse(localStorage.getItem('tumiqa-shop'))||{};if(j.v!==4){delete j.txs;delete j.earn;delete j.earnD;delete j.dsOrders}return j}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const goAcct=a=>{if(a==='client'){setAcct('client');return}if(!act[a]){setIntro(a);return}a==='merchant'?setPtab('dash'):setDtab('dash');setAcct(a)},mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
  const [bal,setBal]=useState(init.bal??25000),[txs,setTxs]=useState(init.txs||[]),[mprods,setMprods]=useState(init.mprods&&init.mprods.length?init.mprods:(window.__MYITEMS||[])),[earn,setEarn]=useState(init.earn??0),[earnD,setEarnD]=useState(init.earnD??0),[mp,setMp]=useState({name:'',price:'',comm:'',stock:'',moq:'',pids:[],attrs:[{k:'',v:''}]}),[mord,setMord]=useState([]),[dper,setDper]=useState('24h'),[dsOrders,setDsOrders]=useState(()=>init.dsOrders||[]),[dsq,setDsq]=useState(''),[dfl,setDfl]=useState({sort:'earn',min:0,price:'any',cat:'All',stock:false}),[fopen,setFopen]=useState(false),[edp,setEdp]=useState(null),[,setTick]=useState(0),[promo,setPromo]=useState(null),[pcap,setPcap]=useState(''),[psel,setPsel]=useState([]),[plist,setPlist]=useState([]);
- useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({v:3,shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders]);
+ useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({v:4,shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
  useEffect(()=>{SOUND_ON=me.notif!==false},[me.notif]);
@@ -920,8 +921,8 @@ function App(){
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
  const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
- useEffect(()=>{const t=setTimeout(()=>setLoading(false),900);return()=>clearTimeout(t)},[]);
- const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),900)};
+ useEffect(()=>{const t=setTimeout(()=>setLoading(false),150);return()=>clearTimeout(t)},[]);
+ const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),150)};
  const openStory=i=>{setSt(i);setSr('');setSeen(m=>({...m,[STORES[i].id]:true}))};
  const goStory=dx=>{const n=st+dx;if(n<0)return;if(n>=STORES.length)setSt(null);else openStory(n)};
  const [clk,setClk]=useState({}),[ex,setEx]=useState({}),[rpl,setRpl]=useState(null),[cSort,setCSort]=useState('top'),inRef=useRef(null);
@@ -1049,7 +1050,7 @@ function App(){
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({});
  const addN=(s,kind,text)=>{ping();return setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n])};
  const secure=(s,item,price,fe,tx)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
-  ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured',t:Date.now(),due:Date.now()+864e5,dp:DPS[Math.floor(Math.random()*DPS.length)]},...m]);
+  ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);if(s&&window.__MYSHOPID&&s.id===window.__MYSHOPID)setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured',t:Date.now(),due:Date.now()+864e5,dp:DPS[Math.floor(Math.random()*DPS.length)]},...m]);
   addN(s,'secured',`Order secured · ${id}. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
  const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>{apiPatchOrder(id,v,stn);setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x))},ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
   await wait(30000);up('Shipped');ms('Shipped');ev('shipped',`Order shipped · ${id} is on its way to ${stn||'your pick-up station'}.`);
@@ -1071,7 +1072,7 @@ function App(){
  const resetF=()=>{setDfl({sort:'earn',min:0,price:'any',cat:'All',stock:false});setDsq('')};
  const fg=(t,opts,k)=><div className="fgrp"><div className="sect" style={{padding:0}}>{t}</div><div className="chips2">{opts.map(([v,l])=><button key={String(v)} className={dfl[k]===v?'on':''} onClick={()=>setDfl(f=>({...f,[k]:v}))}>{l}</button>)}</div></div>;
  /* real-time dropshipper orders: a new order is secured on one of the live posts, then ships and is delivered; commission is released only on delivery */
- useEffect(()=>{const live=myPosts.filter(p=>p.deal);if(!live.length)return;const iv=setInterval(()=>{const p=live[Math.floor(Math.random()*live.length)],comm=Math.round(p.price*(p.pct||10)/100),id='DR-'+Math.floor(1000+Math.random()*9000);const Qd=Math.max(1,((mprods.find(x=>x.id===p.deal)||{}).moq)||1);setDsOrders(o=>[{id,t:Date.now(),item:p.name,amt:p.price*Qd,comm:comm*Qd,status:'Secured'},...o]);const mine=mprods.find(x=>x.id===p.deal),q=mine?Math.max(1,mine.moq||1):1;if(mine){const T=(f,d)=>setTimeout(()=>setMord(m=>m.map(x=>x.id===id?f(x):x)),d);setMord(m=>[{id,item:p.name,qty:q,amt:p.price*q,comm:comm*q,drop:shop.name||'Dropshipper',status:'Secured',t:Date.now(),due:Date.now()+864e5,dp:DPS[Math.floor(Math.random()*DPS.length)]},...m]);T(x=>({...x,status:'Shipped'}),30000);T(x=>({...x,status:'Delivered'}),60000);setTimeout(()=>{T(x=>({...x,status:'Paid out'}),0);setEarn(e=>e+(p.price-comm)*q);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:(p.price-comm)*q,r:'merchant'},...x])},90000)}note('New order secured via your post · expected '+ksh(comm*Qd));setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x)),30000);setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x)),60000);setTimeout(()=>{setEarnD(e=>e+comm*Qd);setTxs(x=>[{id:'t'+Date.now(),k:'Commission released · '+id,amt:comm*Qd,r:'dropshipper'},...x])},90000)},45000);return()=>clearInterval(iv)},[myPosts,mprods]);
+ useEffect(()=>{const live=myPosts.filter(p=>p.deal);if(!SIM_DS||!live.length)return;const iv=setInterval(()=>{const p=live[Math.floor(Math.random()*live.length)],comm=Math.round(p.price*(p.pct||10)/100),id='DR-'+Math.floor(1000+Math.random()*9000);const Qd=Math.max(1,((mprods.find(x=>x.id===p.deal)||{}).moq)||1);setDsOrders(o=>[{id,t:Date.now(),item:p.name,amt:p.price*Qd,comm:comm*Qd,status:'Secured'},...o]);const mine=mprods.find(x=>x.id===p.deal),q=mine?Math.max(1,mine.moq||1):1;if(mine){const T=(f,d)=>setTimeout(()=>setMord(m=>m.map(x=>x.id===id?f(x):x)),d);setMord(m=>[{id,item:p.name,qty:q,amt:p.price*q,comm:comm*q,drop:shop.name||'Dropshipper',status:'Secured',t:Date.now(),due:Date.now()+864e5,dp:DPS[Math.floor(Math.random()*DPS.length)]},...m]);T(x=>({...x,status:'Shipped'}),30000);T(x=>({...x,status:'Delivered'}),60000);setTimeout(()=>{T(x=>({...x,status:'Paid out'}),0);setEarn(e=>e+(p.price-comm)*q);setTxs(x=>[{id:'t'+Date.now(),k:'Payout for '+id,amt:(p.price-comm)*q,r:'merchant'},...x])},90000)}note('New order secured via your post · expected '+ksh(comm*Qd));setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Shipped'}:x)),30000);setTimeout(()=>setDsOrders(o=>o.map(x=>x.id===id?{...x,status:'Delivered'}:x)),60000);setTimeout(()=>{setEarnD(e=>e+comm*Qd);setTxs(x=>[{id:'t'+Date.now(),k:'Commission released · '+id,amt:comm*Qd,r:'dropshipper'},...x])},90000)},45000);return()=>clearInterval(iv)},[myPosts,mprods]);
  useEffect(()=>{const iv=setInterval(()=>setTick(t=>t+1),60000);return()=>clearInterval(iv)},[]);
  const startEdit=p=>{const dl=allDeals.find(d=>d.id===p.deal),list=[...p.imgs,...((dl&&dl.imgs)||[]).filter(x=>!p.imgs.includes(x))];setEdp({id:p.id,name:p.name,cap:p.cap||'',list,sel:p.imgs.map((_,i)=>i)})};
  const addEditPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;setEdp(v=>({...v,list:[...v.list,...out],sel:[...v.sel,...out.map((_,i)=>v.list.length+i)]}))};
@@ -1333,8 +1334,8 @@ function App(){
     {payDlg.phase==='confirm'?<div style={{textAlign:'center'}}>
      <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 16px',background:'linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%)',color:'#fff',fontWeight:800,letterSpacing:3,fontSize:15}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>M-PESA</div>
      <div style={{padding:'22px 22px 4px'}}>
-      <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{ksh(payDlg.amount)}</b> to <b>TeQx Market Ltd</b> for <b>{payDlg.item}</b>?</p>
-      <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="Enter M-PESA PIN" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
+      <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{'KSH '+payDlg.amount.toLocaleString('en-KE')}</b> to <b>POSTAPAY</b> for Account <b>TeQx Market Ltd</b>? Enter M-PESA PIN:</p>
+      <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="••••" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
       {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'10px 0 0'}}>{payDlg.err}</p>}
      </div>
      <div style={{display:'flex',marginTop:20,borderTop:'1px solid var(--line)'}}><button style={{flex:1,padding:'16px 0',fontWeight:700,fontSize:15,color:'var(--mut)'}} onClick={closePay}>Cancel</button><button style={{flex:1,padding:'16px 0',fontWeight:800,fontSize:15,color:'#12c062',borderLeft:'1px solid var(--line)',opacity:simPin.length===4?1:.4}} disabled={simPin.length!==4} onClick={simOk}>OK</button></div>
@@ -1360,6 +1361,7 @@ const DEV=(()=>{try{let d=localStorage.getItem('teqx-device');if(!d){d='d-'+Math
 const apiJ=(u,method,body)=>fetch(u,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(r=>r.json());
 const apiSaveOrder=o=>{try{apiJ('/api/orders','POST',{...o,device_id:DEV}).catch(()=>{})}catch(e){}};
 const apiPatchOrder=(id,status,station)=>{try{apiJ('/api/orders/'+id,'PATCH',{status,station:station||null,device_id:DEV}).catch(()=>{})}catch(e){}};
+const SIM_DS=false; // true = demo mode that fakes dropshipper orders every 45s. Keep false so metrics start at zero.
 const SIM_PAY=true; // true = simulated M-Pesa prompt (no real money, no Daraja). Set false to use the real /api/pay flow.
 const PHONE_RX=/^(?:\+?254|0)?[17]\d{8}$/;
 const IMGC=new Map();
@@ -1368,7 +1370,7 @@ const uploadImg=async src=>{if(!src||!String(src).startsWith('data:'))return nul
 const DEF_OPT={lbl:'Option',q:'Which option would you like?',o:['Standard','Other']};
 const root=ReactDOM.createRoot(document.getElementById('root'));
 const getJ=u=>fetch(u).then(r=>r.ok?r.json():Promise.reject());
-Promise.all([
+const BOOT=Promise.all([
  getJ('/api/stores?device='+encodeURIComponent(DEV)).then(rows=>{
   rows.forEach(r=>{
    if(r.mine){window.__MYSHOPID=r.id;window.__MYITEMS=(r.items||[]).map(it=>({id:'db'+it.id,dbId:it.id,name:it.name,price:it.price,pct:it.pct,stock:it.stock,imgs:it.imgs,attrs:it.attrs||[]}));return}
@@ -1381,8 +1383,10 @@ Promise.all([
   });
   RX=mkRX();
  }).catch(()=>{}),
- getJ('/api/orders?device='+encodeURIComponent(DEV)).then(rows=>{window.__ORD=rows.map(r=>({id:r.id,store:STORES.find(x=>x.id===r.store_id)||STORES[0],item:r.item,price:r.price,fee:r.fee,status:r.status,station:r.station||undefined}))}).catch(()=>{})
-]).then(()=>root.render(<App/>));
+ getJ('/api/orders?device='+encodeURIComponent(DEV)).then(rows=>{let hid=[];try{hid=JSON.parse(localStorage.getItem('teqx-ord-hide')||'null')}catch(e){}if(!hid){hid=rows.map(r=>r.id);try{localStorage.setItem('teqx-ord-hide',JSON.stringify(hid))}catch(e){}}window.__ORD=rows.filter(r=>!hid.includes(r.id)).map(r=>({id:r.id,store:STORES.find(x=>x.id===r.store_id)||STORES[0],item:r.item,price:r.price,fee:r.fee,status:r.status,station:r.station||undefined}))}).catch(()=>{})
+]);
+BOOT.then(()=>{window.__DATA=1;window.dispatchEvent(new Event('teqx-data'))}).catch(()=>{});
+Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App/>));
 </script>
 </body>
 </html>
