@@ -814,6 +814,7 @@ const _unlock=()=>{const a=_getSnd();if(!a||a._ok)return;a._ok=true;a.muted=true
 ['pointerdown','touchend','keydown','click'].forEach(ev=>window.addEventListener(ev,_unlock,{passive:true}));
 function ping(){
  const t0=Date.now();if(!SOUND_ON||t0-_lastPing<500)return;_lastPing=t0;
+ try{if(navigator.vibrate)navigator.vibrate([140,80,140])}catch(e){}
  try{const a=_getSnd();if(!a)return;a.currentTime=0;const r=a.play();r&&r.catch&&r.catch(()=>{})}catch(e){}
 }
 function Product({store,i,onBuy}){
