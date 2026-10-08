@@ -618,6 +618,7 @@ h1{font-size:24px;margin-bottom:6px}
 .prod .pr{font-size:16px;font-weight:700;letter-spacing:.02em;margin:8px 0 16px}
 .prod .btn{border-radius:99px;padding:13px 10px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
 
+.prod .tag.latest{display:flex;align-items:center;gap:6px;max-width:calc(100% - 28px);white-space:nowrap}.prod .tag.latest svg{flex-shrink:0}
 /* ===== v7 tweaks ===== */
 /* post image container: moderate e-commerce type + catalog green price */
 .pm .pt{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-style:normal;font-weight:700;font-size:17px;line-height:1.3;letter-spacing:-.01em;margin:0 0 6px}
@@ -805,6 +806,16 @@ const Rcpt=({r})=><div className="rcpt"><h4>Order summary</h4><div className="rr
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const STYLE=[{scale:1,pos:'center'},{scale:1.35,pos:'20% 30%'},{scale:1.6,pos:'85% 70%'}];
 
+/* ===== notification sound (shared by chat replies + alerts) ===== */
+let SOUND_ON=true,_lastPing=0,_snd=null;
+const _getSnd=()=>{if(!_snd){try{_snd=new Audio('teqx.mp3');_snd.preload='auto'}catch(e){}}return _snd};
+/* phones block audio until a first touch: prime the file silently on the first gesture */
+const _unlock=()=>{const a=_getSnd();if(!a||a._ok)return;a._ok=true;a.muted=true;const r=a.play();const done=()=>{a.pause();a.currentTime=0;a.muted=false};r&&r.then?r.then(done).catch(()=>{a._ok=false}):done()};
+['pointerdown','touchend','keydown','click'].forEach(ev=>window.addEventListener(ev,_unlock,{passive:true}));
+function ping(){
+ const t0=Date.now();if(!SOUND_ON||t0-_lastPing<500)return;_lastPing=t0;
+ try{const a=_getSnd();if(!a)return;a.currentTime=0;const r=a.play();r&&r.catch&&r.catch(()=>{})}catch(e){}
+}
 function Product({store,i,onBuy}){
  const [p,price]=store.prods[i],[bad,setBad]=useState(false),A=(store.attrs&&store.attrs[i])||[],pim=store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
@@ -816,7 +827,7 @@ function Product({store,i,onBuy}){
 function Card({store,i,onAdd}){
  const [p,price]=store.prods[i],A=(store.attrs&&store.attrs[i])||[],o=store.dyn?[]:((SOPT[store.id]||{}).o||[]),[bad,setBad]=useState(false),[sz,setSz]=useState(null),[pick,setPick]=useState({}),[q,setQ]=useState('1'),n=Math.max(1,parseInt(q,10)||1),need=A.filter(a=>a.v.length>1),done=need.every(a=>pick[a.k]),opt=need.length?need.map(a=>a.k+': '+pick[a.k]).join(', '):sz,pim=store.pimgs&&store.pimgs[i],ST=pim?{scale:1,pos:'center'}:(STYLE[i]||STYLE[0]);
  return <div className="prod">
-  <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}</div>
+  <div className="pimg">{bad?store.icon:<img src={pim||store.img} alt={p} loading="lazy" onError={()=>setBad(true)} style={{transform:`scale(${ST.scale})`,objectPosition:ST.pos}}/>}<span className="tag latest"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg> Latest</span></div>
   <div className="pbody"><div className="pn">{p}</div><div className="pr amt">{ksh(price)}</div>
    {A.length>0&&<div className="attrs">{A.map(a=>a.v.length>1?<div key={a.k} style={{marginTop:6}}><small style={{color:'var(--mut)'}}>{a.k}</small><div className="vchips">{a.v.map(x=><button key={x} className={'vchip'+(pick[a.k]===x?' on':'')} onClick={()=>setPick(m=>({...m,[a.k]:x}))}>{x}</button>)}</div></div>:<div key={a.k} style={{marginTop:6,fontSize:12,color:'var(--mut)'}}>{a.k}: <b style={{color:'var(--text)'}}>{a.v[0]}</b></div>)}</div>}
    {o.length>0&&<div className="vchips">{o.map(x=><button key={x} className={'vchip'+(sz===x?' on':'')} onClick={()=>setSz(x)}>{x}</button>)}</div>}
@@ -899,6 +910,7 @@ function App(){
  useEffect(()=>{try{localStorage.setItem('tumiqa-shop',JSON.stringify({v:3,shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders}))}catch(e){}},[shop,photos,myPosts,bal,txs,mprods,earn,earnD,dsOrders]);
  const [me,setMe]=useState(()=>{const d={name:'',user:'you',loc:'Nairobi, Kenya',notif:true};try{return {...d,...JSON.parse(localStorage.getItem('teqx-me')||'{}')}}catch(e){return d}});
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
+ useEffect(()=>{SOUND_ON=me.notif!==false},[me.notif]);
  const [ptab,setPtab]=useState('dash'),[sw,setSw]=useState(false),[pfo,setPfo]=useState(false),[intro,setIntro]=useState(null),[act,setAct]=useState(()=>{try{return JSON.parse(localStorage.getItem('teqx-act')||'{}')}catch(e){return {}}}),[dtab,setDtab]=useState('dash'),[edShop,setEdShop]=useState(false),[edMe,setEdMe]=useState(false);
  const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
@@ -925,7 +937,7 @@ function App(){
  useEffect(()=>{end.current&&end.current.scrollIntoView({behavior:'smooth',block:'end'})},[chats,typing,chat]);
 
  const chatIdRef=useRef(null);
- const push=(id,m)=>{setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));if(m.from!=='me'&&chatIdRef.current!==id)setUnread(u=>({...u,[id]:(u[id]||0)+1}))};
+ const push=(id,m)=>{if(m.from==='bot')ping();setChats(c=>({...c,[id]:[...(c[id]||[]),{k:Math.random(),ts:Date.now(),...m}]}));if(m.from!=='me'&&chatIdRef.current!==id)setUnread(u=>({...u,[id]:(u[id]||0)+1}))};
  const qref=useRef({}),pend=useRef({}),flowRef=useRef({});
  /* every shop reply lands after a 3.4s typing delay; replies to the same shop are queued in order */
  const say=(id,msgs)=>{pend.current[id]=(pend.current[id]||0)+1;setTyping(t=>({...t,[id]:true}));
@@ -1034,7 +1046,7 @@ function App(){
  const send=t=>{t=(t||'').trim();if(!t||!chat)return;if(/^exit shop$/i.test(t)){setChat(null);setTab('discover');return}if(/^track( my)? order$/i.test(t)){setChat(null);setTab('orders');return}push(chat.id,{from:'me',text:t});setText('');say(chat.id,[].concat(eng(chat,t,false)))};
 
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({});
- const addN=(s,kind,text)=>setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n]);
+ const addN=(s,kind,text)=>{ping();return setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n])};
  const secure=(s,item,price,fe,tx)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
   ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);setMord(m=>[{id,item,qty:1,amt:price,comm:0,drop:'Direct',status:'Secured',t:Date.now(),due:Date.now()+864e5,dp:DPS[Math.floor(Math.random()*DPS.length)]},...m]);
   addN(s,'secured',`Order secured · ${id}. ${ksh(price+fee)} is held under TeQx Buyer Protection.`);return id};
