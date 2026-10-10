@@ -505,7 +505,8 @@ h1{font-size:24px;margin-bottom:6px}
 .ptabs{gap:4px}.ptabs button{font-size:12px;padding:9px 2px}
 .pfoot .perk{color:var(--text)}
 [data-theme=light] .pfoot .perk{color:#111}
-.dsb{display:flex;gap:10px;position:sticky;top:0;z-index:7;margin:-18px -20px 12px;padding:12px 20px;background:var(--bg)}
+.dsb{display:flex;gap:10px;position:sticky;top:0;z-index:7;margin:-20px -20px 12px;padding:0 20px 10px;background:var(--bg)}
+.hdr:has(~ .page .dsb){padding-bottom:0}
 .sbar{display:flex;align-items:center;justify-content:space-between;margin:0 -20px 14px;padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--line)}.sbar b{font-size:15px;font-weight:800;letter-spacing:-.01em}
 .pseg{display:flex;padding:3px;border-radius:99px;background:var(--surf2)}.pseg button{padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;color:var(--mut)}.pseg button.on{background:var(--grad);color:#fff;box-shadow:var(--glow)}
 .dsb .sbx{flex:1;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:99px;background:var(--surf);border:1px solid var(--line);color:var(--mut)}
@@ -773,6 +774,7 @@ const STAT=[[4812,293,94],[2310,148,51],[3920,201,76],[1570,87,33],[6240,412,128
 const CAP={aura:'Long-lasting scents in elegant bottles.',brew:'Single-origin roasts and brew gear for a better morning.',pixel:'Genuine devices with warranty and same-day dispatch.',glam:'Everyday jewellery that catches the light.',leaf:'Healthy houseplants to green up any space.',chef:'Kitchen tools built to last, from prep to plate.',page:'Stories and stationery for slow evenings.',lens:'Cameras and kit for creators.',apex:'Studio-grade sound with all-day battery. Drop 01 is live.',luxe:'Fresh streetwear, cut for the city. Limited pieces only.',nova:'Glow-first skincare made for everyday routines.',fresh:'Farm-fresh crates delivered to your door, same day.',sole:'Retro silhouettes are back. Grab your size before they go.',zuri:'Make every room feel like home.',peak:'Train harder at home with gym-grade gear.',sav:'Handcrafted leather, made to carry your day.'};
 const COL={aura:[['Oud','#3b2a1f'],['Rose','#e8a0a8'],['Citrus','#f5c542']],brew:[['Roast','#4a2c1a'],['Cream','#eee'],['Green','#3a7']],pixel:[['Black','#111'],['Silver','#c9ccd1'],['Blue','#36c']],glam:[['Gold','#d4af37'],['Silver','#c0c0c0'],['Rose','#e8a0a8']],leaf:[['Green','#3aa856'],['Terracotta','#c1693c'],['White','#eee']],chef:[['Steel','#aaa'],['Wood','#a67c52'],['Black','#111']],page:[['Cream','#f3ead8'],['Tan','#b5835a'],['Brass','#c9a227']],lens:[['Black','#111'],['Silver','#c9ccd1'],['Brown','#5a3a22']],apex:[['Black','#1a1a1a'],['Silver','#c9ccd1'],['Navy','#1f3a8a']],luxe:[['Black','#111'],['Sand','#d9c3a0'],['Olive','#5b6b3a']],nova:[['Rose','#e8a0a8'],['Coral','#ff7a59'],['Nude','#d9b49b']],fresh:[['Green','#3aa856'],['Orange','#ff9a1f'],['Red','#d93a3a']],sole:[['White','#f2f2f2'],['Red','#d62828'],['Black','#161616']],zuri:[['Grey','#888'],['Cream','#eee'],['Green','#3a7']],peak:[['Black','#111'],['Grey','#777'],['Blue','#36c']],sav:[['Tan','#b5835a'],['Black','#111'],['Brown','#5a3a22']]};
 
+const HIDE_FEED=['luxe','zuri','chapakazi'];
 const F=(pid,sid,name,price,cap,ago,ids,cols)=>({pid,sid,name,price,cap,ago,imgs:ids.map(U),cols});
 const FEED=[
  F('apex1','apex','AcousticMax Headphones',18500,'Studio-grade sound with all-day battery. Drop 01 is live.','2h ago',['photo-1505740420928-5e560c06d30e','photo-1484704849700-f032a568e944','photo-1583394838336-acd977736f90'],['Black','Silver','Blue']),
@@ -857,8 +859,8 @@ const DEMO_MORD=[{id:'DS-2041',item:'Pulse Wireless Earbuds',qty:2,amt:15800,com
 const FILT=['none','hue-rotate(50deg) saturate(1.1)','hue-rotate(190deg)'];
 const fmt=n=>n>=1000?(n/1000).toFixed(1)+'k':n;
 const Amt=({t})=>t.split(/(KSh [\d,]+)/).map((x,i)=>/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:x);
-const mkRX=()=>new RegExp('(KSh [\\d,]+|TQ-\\d+|'+[...new Set([...STORES.flatMap(x=>x.prods.map(q=>q[0])),...STORES.map(x=>x.name)])].sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');let RX=mkRX();
-const Rich=({t})=>t.split(RX).map((x,i)=>i%2===0?x:/^KSh /.test(x)?<span key={i} className="amt">{x}</span>:<b key={i} className="bw">{x}</b>);
+const mkRX=()=>new RegExp('(KSh [\\d,]+|TQ-\\d+|TeQx Buyer Protection Policy|'+[...new Set([...STORES.flatMap(x=>x.prods.map(q=>q[0])),...STORES.map(x=>x.name)])].sort((a,b)=>b.length-a.length).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');let RX=mkRX();
+const Rich=({t})=>t.split(/(\*\*[^*]+\*\*)/).map((g,j)=>/^\*\*[^*]+\*\*$/.test(g)?<b key={'g'+j} className="bw">{g.slice(2,-2)}</b>:g.split(RX).map((x,i)=>i%2===0?x:/^KSh /.test(x)?<span key={j+'-'+i} className="amt">{x}</span>:<b key={j+'-'+i} className="bw">{x}</b>));
 const Ticks=()=><svg className="tk" width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="url(#tkg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Delivered"><path className="t1" pathLength="1" d="M1 6.5 4.5 10 11 2.5"/><path className="t2" pathLength="1" d="M6.5 6.5 10 10 16.5 2.5"/></svg>;
 const BagI=()=><I s={21}><path d="M5.5 8h13l1 12.5h-15z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></I>;
 const CI={
@@ -907,8 +909,28 @@ function Card({store,i,onAdd}){
  </div>;
 }
 
-function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.av;return <span className="cav" style={{width:z,height:z}}>{bad||!src?<em>{s.icon}</em>:<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
-function SAv({s}){const [bad,setBad]=useState(false),src=s.avatar||s.av;useEffect(()=>{setBad(false)},[src]);return (bad||!src)?<>{s.icon}</>:<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
+
+const LOGO={
+ apex:['#2563eb','#7c3aed',<path d="M13 3 5 13.500h6L10 21l9-11.500h-6z"/>],
+ luxe:['#111827','#b45309',<path d="M12 5.500a2 2 0 1 1 2 2c-1 .5-2 1-2 2v1M12 11 3.500 17h17z"/>],
+ nova:['#ec4899','#f97316',<><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></>],
+ fresh:['#16a34a','#84cc16',<><path d="M12 8c-3-3-8-1-7 5 .8 5 4 8 7 6 3 2 6.200-1 7-6 1-6-4-8-7-5z"/><path d="M12 8c0-2 1-4 3-5"/></>],
+ sole:['#ef4444','#f59e0b',<path d="M3 16c0-3 2-4 4-4l3-4 3 3h3c2 0 4 2 4 5v1H3z"/>],
+ zuri:['#0d9488','#06b6d4',<path d="M5 11V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v3M3 12a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v5H3zM6 19v1.500M18 19v1.500"/>],
+ peak:['#4f46e5','#06b6d4',<path d="M2.500 19 9 7l4 7 2.500-4L21.500 19zM9 7l1.500 3"/>],
+ sav:['#92400e','#d97706',<><path d="M5 8h14l1 12H4z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></>],
+ aura:['#db2777','#9333ea',<path d="M12 3c3 4.500 6 7 6 11a6 6 0 0 1-12 0c0-4 3-6.500 6-11z"/>],
+ brew:['#78350f','#b45309',<><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 10h2a2.500 2.500 0 0 1 0 5h-2"/><path d="M8 3v3M12 3v3"/></>],
+ pixel:['#0ea5e9','#6366f1',<><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></>],
+ glam:['#a21caf','#ec4899',<path d="M6 4h12l3.500 5L12 21 2.500 9zM2.500 9h19M9 4l-2 5 5 12 5-12-2-5"/>],
+ leaf:['#15803d','#22c55e',<path d="M5 19C5 9 11 4 20 4c0 9-5 15-15 15zM5 19l8-8"/>],
+ chef:['#dc2626','#f97316',<><path d="M7 14a4 4 0 1 1 1.500-7.700A4 4 0 0 1 16 6.300 4 4 0 1 1 17 14z"/><path d="M7 14v6h10v-6"/></>],
+ page:['#1d4ed8','#7c3aed',<path d="M12 6c-2-1.500-5-2-8-2v14c3 0 6 .5 8 2 2-1.500 5-2 8-2V4c-3 0-6 .5-8 2zM12 6v14"/>],
+ lens:['#0f172a','#475569',<><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.500"/><path d="M12 3l3 5.500M20 8.500h-6.500M19 17l-3.500-5M12 21l-3-5.500M4 15.500h6.500M5 7l3.500 5"/></>]
+};
+function Logo({id}){const l=LOGO[id];if(!l)return null;return <svg viewBox="0 0 24 24" style={{width:'100%',height:'100%',display:'block'}} aria-hidden="true"><defs><linearGradient id={'lg'+id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={l[0]}/><stop offset="1" stopColor={l[1]}/></linearGradient></defs><rect width="24" height="24" fill={'url(#lg'+id+')'}/><circle cx="19" cy="5" r="7" fill="#fff" opacity=".12"/><g transform="translate(4.800 4.800) scale(.6)" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{l[2]}</g></svg>}
+function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.av;return <span className="cav" style={{width:z,height:z}}>{bad||!src?(LOGO[s.id]?<Logo id={s.id}/>:<em>{s.icon}</em>):<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
+function SAv({s}){const [bad,setBad]=useState(false),src=s.avatar||s.av;useEffect(()=>{setBad(false)},[src]);return (bad||!src)?(LOGO[s.id]?<Logo id={s.id}/>:<>{s.icon}</>):<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
 function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
 const agoT=t=>{if(!t)return 'Earlier';const m=Math.floor((Date.now()-t)/6e4);if(m<1)return 'Just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';const d=Math.floor(h/24);return d<7?d+'d ago':new Date(t).toLocaleDateString([],{day:'numeric',month:'short'})};
@@ -939,7 +961,7 @@ function Post({cc,onComment,onProfile,s,si,f,onFollow,liked,onLike,saved,onSave,
     <span className="shopchip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg> Latest</span><div className="seg">{(s.imgs&&s.imgs.length?s.imgs:[s.img]).map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
    </div>
    <div className="pfoot" onClick={e=>e.stopPropagation()}>
-    <div className="ptop"><div className="pinfo"><h3 className="pt">{pc(s,n)[0]}</h3><div className="pmeta"><span className="pp">{ksh(pc(s,n)[1])}</span>{s.multi&&<span className="rt">{Math.min(n,s.multi.length-1)+1}/{s.multi.length} items</span>}{s.ctag&&cols[n]&&<span className="rt">{cols[n]}</span>}<span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
+    <div className="ptop"><div className="pinfo"><h3 className="pt">{pc(s,n)[0]}</h3><div className="pmeta"><span className="pp">{ksh(pc(s,n)[1])}</span><span className="rt"><b>★</b> {(4.5+(si%5)/10).toFixed(1)} ({128+si*37})</span></div></div>
      <div className="perks">{PERKS.map(([E,t])=><div key={t} className="perk" title={t}><i><E s={18}/></i></div>)}</div></div>
     <div className="cta"><button className="o" onClick={()=>onChat(s.multi?`Hi, I'm interested in the ${pc(s,n)[0]}`:`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]||''}`)}><Ic.Msg/>Chat with Shop</button></div>
    </div>
@@ -1043,17 +1065,17 @@ function App(){
  const cartRef=useRef({}),[cart,setCart]=useState({});
  const cartOf=id=>cartRef.current[id]||[],setC=(id,v)=>{cartRef.current={...cartRef.current,[id]:v};setCart(cartRef.current)},cnt=id=>cartOf(id).reduce((a,x)=>a+x.qty,0);
  const FEE=300,lbl=x=>x.name+(x.opt?` (${x.opt})`:'');
- const welcome=(s,pi,pc)=>{const [n,pr]=s.prods[pi>=0?pi:0];return{text:`Hi 👋, how are you? Welcome to ${s.name}. The ${n} is available for shopping.\nHere we go 👇, please choose one for your choice`,catalog:true,...(pc?{pcat:pc}:{})}};
+ const welcome=(s,pi,pc)=>{const [n,pr]=s.prods[pi>=0?pi:0];return{text:`Hi ${(me.name||'').trim()||'Teqx shopper'} 😎, how are you? Welcome to ${s.name}. Feel free to shop with us!`,catalog:true,...(pc?{pcat:pc}:{})}};
  const addCart=(s,name,price,opt,qty)=>{const k=name+'|'+(opt||''),c=[...cartOf(s.id)],ex=c.find(x=>x.k===k),L=name+(opt?` (${opt})`:'')+(qty>1?` × ${qty}`:'');
   if(ex)ex.qty+=qty;else c.push({k,name,opt,price,qty});setC(s.id,c);
-  const t=ex?`Sawa sawa 👊 I've bumped the ${name}${opt?` (${opt})`:''} up to ${ex.qty} for you 👍 Anything else?`:`Kabisa 👊, The ${L} is in your shopping cart. Would you like to look at a few more things or complete your order?`;
+  const t=ex?`Happy to help! 😊 I've bumped the ${name}${opt?` (${opt})`:''} up to **${ex.qty}** for you 👍 Anything else?`:`Lovely choice! 😊 The **${L}** is now in your cart. Would you like to browse a few more things, or are you ready to complete your order?`;
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
  const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0),[simPin,setSimPin]=useState('');
  const finishPay=(s,f,tx)=>{const sc=sumCard(s),lines=cartOf(s.id).map(x=>({name:x.name,opt:x.opt||'',qty:x.qty,price:x.price})),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx,lines);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
-  say(s.id,[{text:'Kabisa 👊 M-Pesa payment confirmed ✅'},{delay:1500,text:`${f.pod?'Payment secured':'Payment received'} ✅ Your funds are now held safely under TeQx Buyer Protection, and your order is ready for shipping.`,info:{title:'Payment secured',icon:'shield',steps:[['bell','Stay notified',"You'll be notified as soon as it's on its way."],['route','Track anytime','Follow your order status in the Orders tab.']]}},{delay:1500,text:`Thank you for shopping with ${s.name}, Enjoy a great day & see you soon 👊`,qr:['Keep Shopping','Track Order']}])};
- const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),phase:SIM_PAY?'confirm':'phone',err:''});return{text:SIM_PAY?'Kabisa 👊 Approve the M-Pesa prompt on your phone.':'Kabisa 👊 Enter your M-Pesa number and I will send the payment prompt to your phone.',qr:['Try again','Cancel Order']}};
- const startPay=async()=>{const d=payDlg;if(!d)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
+  say(s.id,[{text:'Confirmed, **payment secured** ✅ Your funds are now held safely under TeQx Buyer Protection Policy, and your order is ready for shipping.\nFor order status, feel free to track your order anytime on the **Orders tab**.'},{text:`Thank you so much for shopping with ${s.name}! 😊 Enjoy your day, and we can’t wait to see you again 💛`,qr:['Keep Shopping','Track Order']}])};
+ const payNow=(s,f)=>{const sc=sumCard(s);setPayDlg({s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),phase:'phone',err:''});return{text:'Almost there! 😊 Please enter your **M-Pesa number** to proceed with the transaction.',qr:['Try again','Cancel Order']}};
+ const startPay=async()=>{const d=payDlg;if(!d)return;if(SIM_PAY){try{localStorage.setItem('teqx-phone',payPhone)}catch(e){}const run0=++payRun.current;setPayDlg(null);say(d.s.id,[{text:'Incoming **M-Pesa payment prompt**…'}]);setTimeout(()=>{if(payRun.current===run0)setPayDlg({...d,phase:'confirm',err:''})},6400);return}const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
   try{try{localStorage.setItem('teqx-phone',payPhone)}catch(e){}
    const r=await apiJ('/api/pay','POST',{device_id:DEV,phone:payPhone,amount:d.amount});
    if(!r||!r.ok)throw new Error((r&&r.error)||'Could not start the payment');
@@ -1072,17 +1094,17 @@ function App(){
    if(simPin==='0000'){setSimPin('');setPayDlg(x=>x?{...x,phase:'confirm',err:'Wrong M-PESA PIN. Please try again.'}:x);return}
    setSimPin('');payRun.current++;setPayDlg(null);finishPay(d.s,d.f,null)},2200)};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
-  if(q==='keep shopping'||q==='explore more products')return{text:"Sawa sawa 👊 Here's more you might like 👇",catalog:true};
-  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Kabisa 👊, now where should we send your order? Please enter your address for delivery e.g Nairobi'}}
-  if(f.cs==='station'&&/ems pickup point [a-z]\b/.test(q)){f.cs='sum';f.station=text.trim();return{text:`Wazi 👌 Your parcel will wait for you at ${text.trim()}. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
-  if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Sawa sawa 👊 So how would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
-  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Wazi 👌 With Pay on Delivery, this is how it goes:",info:{title:'Pay on Delivery',icon:'truck',steps:[['lock','Secure your funds','Your money is held safely under TeQx Buyer Protection.'],['box','Shop delivers','The shop delivers to your selected EMS pickup point.'],['refund','Full refund guarantee','If the parcel is not delivered within the agreed duration, your funds are refunded fully.']]},qr:['Secure Funds','Cancel Order']}}
+  if(q==='keep shopping'||q==='explore more products')return{text:"Of course! 😊 Here are a few more things we think you’ll love 👇",catalog:true};
+  if(q==='complete order'&&c.length){f.cs='addr';return{text:'Wonderful! 😊 Where should we send your order? Please type your **delivery address or town**, e.g. Nairobi.'}}
+  if(f.cs==='station'&&/ems pickup point [a-z]\b/.test(q)){f.cs='sum';f.station=text.trim();return{text:`Perfect! 😊 Your parcel will wait for you at **${text.trim()}**. Here is your order summary 👇`,osum:sumCard(s),qr:['Confirm Order','Change Order','Cancel']}}
+  if(q==='confirm order'&&f.cs==='sum'){f.cs='pay';return{text:'Thank you! 😊 How would you like to pay?',qr:['Pay on Delivery','Pay before Delivery']}}
+  if(q==='pay on delivery'&&f.cs==='pay'){f.pod=1;return{text:"Great choice! 😊 Here’s how **Pay on Delivery** works, step by step:",info:{title:'Pay on Delivery',icon:'truck',steps:[['lock','1. You secure the funds','You pay through M-Pesa now, but the shop does not receive the money yet. TeQx keeps it safe until your parcel reaches you.'],['box','2. The shop sends your parcel','Once your funds are secured, the shop packs your order and hands it to EMS Posta Kenya, who deliver it to the EMS pickup point you chose.'],['bell','3. You collect it','We will notify you as soon as it arrives. Collect it from the pickup point and check that everything is right.'],['refund','4. Full refund if it does not arrive','If your parcel is not delivered within the agreed time, you get your money back in full. The shop is only paid after you collect your order.']],foot:'You only pay once, and you are protected from start to finish.'},qr:['Secure Funds','Cancel Order']}}
   if(q==='secure funds'&&f.cs==='pay'&&f.pod)return payNow(s,f);
   if(q==='pay before delivery'&&f.cs==='pay'){f.pod=0;return payNow(s,f)}
   if(q==='try again'&&c.length&&f.cs==='pay')return payNow(s,f);
-  if(q==='change order'&&c.length){f.cs=null;return{text:'Wazi 👌 Add more items below, then tap Complete Order when you are ready.',catalog:true,qr:['Complete Order']}}
-  if((q==='cancel'||q==='cancel order')&&['addr','station','sum','pay'].includes(f.cs)){f.cs=null;return{text:"Sawa sawa 👊 I'm here whenever you're ready.",qr:c.length?['Keep Shopping','Complete Order']:undefined}}
-  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Wazi 👌 Thank you! Here are the available EMS pickup points in ${loc}. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['EMS Pickup Point '+'ABC'[n-1],FEE])}}}
+  if(q==='change order'&&c.length){f.cs=null;return{text:'No problem at all! 😊 Add more items below, then tap **Complete Order** whenever you’re ready.',catalog:true,qr:['Complete Order']}}
+  if((q==='cancel'||q==='cancel order')&&['addr','station','sum','pay'].includes(f.cs)){f.cs=null;return{text:"No worries at all 😊 I’m right here whenever you’re ready.",qr:c.length?['Keep Shopping','Complete Order']:undefined}}
+  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Thank you! 😊 Our parcel delivery is handled by **EMS Posta Kenya**. Here are the available **EMS pickup points** in **${loc}**. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['EMS Pickup Point '+'ABC'[n-1],FEE])}}}
   return null};
 
  
@@ -1099,41 +1121,41 @@ function App(){
   if(st==='done')return{text:'Anything else I can help with?',qr:QD};
   return{text:'What would you like to do?',qr:QB}};
  const place=(s,f)=>{const fee=feeOf(f),nm=f.item+(f.opt||f.col?` (${[f.opt,f.col].filter(Boolean).join(', ')})`:''),id=secure(s,nm,f.price,fee);f.st='done';track(id,s.id);
-  return [{text:`Kabisa 👊 Order ${id} confirmed 🎉\n${f.pay==='Cash on delivery'?'Please have the cash ready for the rider.':'Your payment is held securely until your order arrives.'} I’ll update you here at every step.`,placed:id},{delay:1500,text:`Thank you for shopping with ${s.name}, Enjoy a great day & see you soon 👊`,qr:['Track my order','Order something else','Talk to a person']}]};
- const eng=(s,text,first)=>{const f=fl(s.id),q=strip(text),T=q.split(' '),hi=first?`Karibu! 👋 Welcome to ${s.name}.\n`:'',W=o=>({...o,text:hi+o.text});
+  return [{text:`Thank you, your order ${id} is confirmed! 🎉\n${f.pay==='Cash on delivery'?'Please have the **cash ready** for the rider.':'Your payment is held **securely** until your order arrives.'} I’ll update you here at every step.`,placed:id},{delay:1500,text:`Thank you so much for shopping with ${s.name}! 😊 Enjoy your day, and we can’t wait to see you again 💛`}]};
+ const eng=(s,text,first)=>{const f=fl(s.id),q=strip(text),T=q.split(' '),hi=first?`Hi there 😊 Welcome to ${s.name}.\n`:'',W=o=>({...o,text:hi+o.text});
   const sr=scr(s,text,f,q);if(sr)return Array.isArray(sr)?sr:W(sr);
   const go=(st,pre)=>{f.st=st;const a=ask(s,f);return W({...a,text:(pre||'')+a.text})};
   const tail=a=>MID.includes(f.st)?['Continue my order',...a]:a;
   const CMD=/^(change|see other|browse|show|track|continue|order something|talk|delivery info|payment options|best seller|cancel|hi|hello|hey|sasa|thank)/,INFO=/price|how much|cost|discount|cheap|return|refund|warrant|human|person|agent|help|stock|available|catalog|mpesa|m pesa|card|cash|pay\b/;
-  if(/^(cancel|stop|start over|restart|never mind|nevermind)\b/.test(q)){flowRef.current[s.id]={st:'browse'};return W({text:'Wazi 👌 I’ve cleared that. Want to look at something else?',qr:QB})}
+  if(/^(cancel|stop|start over|restart|never mind|nevermind)\b/.test(q)){flowRef.current[s.id]={st:'browse'};return W({text:'No problem, I’ve cleared that 😊 Would you like to look at something else?',qr:QB})}
   const pi=findProd(s,text),mm=text.match(/interested in the (.+?) in (.+)$/i);
   if(pi>=0){const o=SOPT[s.id];f.item=s.prods[pi][0];f.price=s.prods[pi][1];f.opt=f.col=f.loc=f.pay=f.zone=null;
-   if(mm){const c=mm[2].trim();if(o.c){f.opt=c;return go('delivery',`Kabisa 👊 Great choice! The ${f.item} in ${c} is ${ksh(f.price)} and in stock. 🎉\n`)}f.col=c;return go('option',`Kabisa 👊 Great choice — ${c} it is! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
-   return go('option',`Kabisa 👊 Great choice! The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+   if(mm){const c=mm[2].trim();if(o.c){f.opt=c;return go('delivery',`Great choice! 😊 The ${f.item} in ${c} is ${ksh(f.price)} and in stock. 🎉\n`)}f.col=c;return go('option',`Great choice, ${c} it is! 😊 The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
+   return go('option',`Great choice! 😊 The ${f.item} is ${ksh(f.price)} and in stock.\n`)}
   if(/^change option/.test(q)&&f.item)return go('option');
   if(/^change delivery/.test(q)&&f.item)return go('delivery');
-  if(f.st==='option'){const o=SOPT[s.id],syn={small:'S',medium:'M',large:'L'},hit=o.o.find(x=>T.includes(x.toLowerCase()))||(s.id==='luxe'?T.map(t=>syn[t]).find(Boolean):null);if(hit){f.opt=hit;return go('delivery',`Wazi 👌 ${hit} noted.\n`)}}
-  if(f.st==='delivery'&&!CMD.test(q)&&!INFO.test(q)&&!/\?/.test(text)&&q.length>2){const z=/outside|other town|upcountry/.test(q)?'other':NBO.test(q)?'nairobi':'other';f.zone=z;f.loc=/^outside nairobi/.test(q)?'Outside Nairobi':/^nairobi ksh/.test(q)?'Nairobi':text.trim().replace(/^(deliver(y)?( it)? to|to|in|at)\s+/i,'').slice(0,40);return go('payment',`Sawa sawa 👊 Delivery to ${f.loc} (${z==='nairobi'?'within 24 hours':'2–3 days'}) is ${ksh(feeOf(f))}.\n`)}
+  if(f.st==='option'){const o=SOPT[s.id],syn={small:'S',medium:'M',large:'L'},hit=o.o.find(x=>T.includes(x.toLowerCase()))||(s.id==='luxe'?T.map(t=>syn[t]).find(Boolean):null);if(hit){f.opt=hit;return go('delivery',`Lovely, ${hit} noted! 😊\n`)}}
+  if(f.st==='delivery'&&!CMD.test(q)&&!INFO.test(q)&&!/\?/.test(text)&&q.length>2){const z=/outside|other town|upcountry/.test(q)?'other':NBO.test(q)?'nairobi':'other';f.zone=z;f.loc=/^outside nairobi/.test(q)?'Outside Nairobi':/^nairobi ksh/.test(q)?'Nairobi':text.trim().replace(/^(deliver(y)?( it)? to|to|in|at)\s+/i,'').slice(0,40);return go('payment',`Thank you! 😊 Delivery to ${f.loc} (**${z==='nairobi'?'within 24 hours':'2–3 days'}**) is ${ksh(feeOf(f))}.\n`)}
   if(f.st==='payment'){const pay=/mpesa|m pesa/.test(q)?'M-Pesa':/card|visa|master/.test(q)?'Bank card':/cash|cod|on delivery/.test(q)?'Cash on delivery':null;if(pay){f.pay=pay;return go('confirm')}}
   if(f.st==='confirm'&&/^(confirm|yes|yep|yeah|ok|okay|sure|proceed|place|go ahead|looks good|correct)\b/.test(q))return place(s,f);
   if(/best seller|bestseller|popular|recommend/.test(q)){f.st='offer';return W({text:`Our best seller right now is the ${s.prods[0][0]} at ${ksh(s.prods[0][1])}. ⭐ Want me to reserve one for you?`,qr:['Yes, order it','Browse catalog','Delivery info']})}
-  if(f.st==='offer'&&/^(yes|yep|yeah|sure|ok|okay|order it|i want it|reserve)/.test(q)){f.item=s.prods[0][0];f.price=s.prods[0][1];f.opt=f.col=f.loc=f.pay=f.zone=null;return go('option',`Kabisa 👊 Excellent pick! The ${f.item} is ${ksh(f.price)}.\n`)}
+  if(f.st==='offer'&&/^(yes|yep|yeah|sure|ok|okay|order it|i want it|reserve)/.test(q)){f.item=s.prods[0][0];f.price=s.prods[0][1];f.opt=f.col=f.loc=f.pay=f.zone=null;return go('option',`Excellent pick! 😊 The ${f.item} is ${ksh(f.price)}.\n`)}
   if(/continue my order|^continue$/.test(q))return W(ask(s,f));
-  if(/track|status|where is my|my order/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return W({text:o?`Your order ${o.id} · ${o.item} is currently ${o.status}.`:'You have no orders with us yet. Pick something you love and I’ll set it up in under a minute.',qr:o?QD.slice(1):QB})}
-  if(/catalog|catalogue|browse|show|menu|products?|what do you (have|sell)|other items|order something|see more/.test(q)){if(f.st==='done'||f.st==='offer')f.st='browse';return W({text:'Wazi 👌 Here we go 👇, please choose one for your choice',catalog:true,qr:tail(['🔥 Best seller','Delivery info','Payment options'])})}
-  if(/deliver|ship|how long|arrive|when will/.test(q))return W({text:'We deliver within Nairobi in 24 hours and countrywide in 2–3 days. Delivery starts at KSh 250.',qr:tail(['Browse catalog','Payment options'])});
+  if(/track|status|where is my|my order/.test(q)){const o=ordersRef.current.find(o=>o.store.id===s.id);return W({text:o?`Your order ${o.id} · ${o.item} is currently **${o.status}**.`:'You have no orders with us yet. Pick something you love and I’ll set it up in under a minute.',qr:o?QD.slice(1):QB})}
+  if(/catalog|catalogue|browse|show|menu|products?|what do you (have|sell)|other items|order something|see more/.test(q)){if(f.st==='done'||f.st==='offer')f.st='browse';return W({text:'Here’s what we have for you 👇 Take your time and pick whatever catches your eye! 😊',catalog:true,qr:tail(['🔥 Best seller','Delivery info','Payment options'])})}
+  if(/deliver|ship|how long|arrive|when will/.test(q))return W({text:'Our parcel delivery is handled by **EMS Posta Kenya**. We deliver within Nairobi in **24 hours** and countrywide in **2–3 days**. Delivery starts at KSh 250.',qr:tail(['Browse catalog','Payment options'])});
   if(/price|how much|cost/.test(q)){if(f.item)return W({text:`The ${f.item} is ${ksh(f.price)}. Delivery starts at ${ksh(delFee(f.price))}.`,qr:tail(['Browse catalog','Payment options'])});return W({text:'Here are our current prices 👇',catalog:true,qr:QB})}
-  if(/stock|available|availability/.test(q))return W({text:'Everything in our catalog is in stock and ready to dispatch. ✅',qr:tail(['Browse catalog','Delivery info'])});
-  if(/pay|mpesa|m pesa|card|cash|wallet/.test(q))return W({text:'We accept M-Pesa, bank cards and cash on delivery. Your payment is held securely until your order is delivered.',qr:tail(['Browse catalog','Delivery info'])});
-  if(/discount|cheap|offer|bargain|negotiat|last price|reduce/.test(q))return W({text:'Our listed prices are fixed so every customer gets the same fair deal. You also get secure payment, fast delivery and easy returns. 💛',qr:tail(['Browse catalog','Delivery info'])});
-  if(/return|refund|exchange|warrant/.test(q))return W({text:'Easy returns: if something isn’t what you ordered, tell us here and we’ll make it right. Your payment stays secured until delivery.',qr:tail(['Browse catalog','Delivery info'])});
-  if(/person|human|agent|help|support|call/.test(q))return W({text:'Connecting you to a team member 👩🏾‍💼 They usually reply within 10 minutes. I can keep helping with your order meanwhile.',qr:tail(['Browse catalog','Delivery info'])});
-  if(/thank|asante|cheers/.test(q))return W({text:'Sawa sawa 👊 Karibu sana! Let me know if you need anything else.',qr:f.st==='done'?QD:tail(QB)});
+  if(/stock|available|availability/.test(q))return W({text:'Everything in our catalog is **in stock** and ready to dispatch. ✅',qr:tail(['Browse catalog','Delivery info'])});
+  if(/pay|mpesa|m pesa|card|cash|wallet/.test(q))return W({text:'We accept **M-Pesa**, **bank cards** and **cash on delivery**. Your payment is held **securely** until your order is delivered.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/discount|cheap|offer|bargain|negotiat|last price|reduce/.test(q))return W({text:'Our listed prices are **fixed** so every customer gets the same fair deal. You also get **secure payment**, **fast delivery** and **easy returns**. 💛',qr:tail(['Browse catalog','Delivery info'])});
+  if(/return|refund|exchange|warrant/.test(q))return W({text:'**Easy returns:** if something isn’t what you ordered, tell us here and we’ll make it right. Your payment stays secured until delivery.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/person|human|agent|help|support|call/.test(q))return W({text:'Connecting you to a **team member** 👩🏾‍💼 They usually reply within **10 minutes**. I can keep helping with your order meanwhile.',qr:tail(['Browse catalog','Delivery info'])});
+  if(/thank|asante|cheers/.test(q))return W({text:'You’re so welcome! 😊 Let me know if you need anything else.',qr:f.st==='done'?QD:tail(QB)});
   if(/^(hi|hello|hey|sasa|mambo|niaje|hola|good (morning|afternoon|evening))\b/.test(q))return MID.includes(f.st)?go(f.st,'Hello again! 😊\n'):W({text:`Hello! 😊 How can I help you today at ${s.name}?`,qr:QB});
   if(MID.includes(f.st)){const a=ask(s,f);return W({...a,text:'Just so I get it right 🙂 '+a.text})}
   return W({text:'Thanks for your message! I can show you our catalog, check prices, delivery and payment, or place your order in a few taps. What would you like?',qr:QB})};
 
- const send=t=>{t=(t||'').trim();if(!t||!chat)return;if(/^exit shop$/i.test(t)){setChat(null);setTab('discover');return}if(/^track( my)? order$/i.test(t)){setChat(null);setTab('orders');return}push(chat.id,{from:'me',text:t});setText('');say(chat.id,[].concat(eng(chat,t,false)))};
+ const send=t=>{t=(t||'').trim();if(!t||!chat)return;if(/^exit shop$/i.test(t)){setChat(null);setTab('discover');return}if(/^track( my)? order$/i.test(t)){setChat(null);setTab('orders');return}if(/^keep shopping$/i.test(t)&&fl(chat.id).cs==='done'){setChat(null);setTab('discover');return}push(chat.id,{from:'me',text:t});setText('');say(chat.id,[].concat(eng(chat,t,false)))};
 
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({}),attribRef=useRef({});
  const addN=(s,kind,text)=>{ping();return setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n])};
@@ -1194,7 +1216,7 @@ function App(){
   if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
-   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')} style={{overflow:'hidden'}}><SAv s={chat}/></div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>EMS pickup points</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')} style={{overflow:'hidden'}}><SAv s={chat}/></div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>EMS pickup points</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection Policy</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
    {m.catalog&&<div className="catrow"><ShopAv s={chat}/><div className="hs cat">{(()=>{const ps=m.pcat?{...chat,prods:m.pcat.map(x=>[x.n,x.p]),attrs:m.pcat.map(x=>x.a),vars:m.pcat.map(x=>x.v),cimgs:m.pcat.map(()=>({})),pimgs:m.pcat.map(x=>x.i)}:chat;return ps.prods.map((_,i)=><Card key={i} store={ps} i={i} onAdd={addCart}/>)})()}</div></div>}
   </div>};
  chatIdRef.current=chat?chat.id:null;
@@ -1365,7 +1387,7 @@ function App(){
     <div className="page" style={{padding:'4px 0 24px'}}>
     {(()=>{const L=STORES.filter(s=>chats[s.id]).sort((x,y)=>((chats[y.id].slice(-1)[0]||{}).ts||Date.now())-((chats[x.id].slice(-1)[0]||{}).ts||Date.now()));return L.length?L.map(s=>{const A=chats[s.id],m=[...A].reverse().find(x=>x.text),l=A[A.length-1];return <button key={s.id} className="row" onClick={()=>open(s)}>
      <div className="av">{s.icon}</div>
-     <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{typing[s.id]?'typing…':m?m.text:'Say hello'}</div></div>
+     <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{typing[s.id]?'typing…':m?m.text.replace(/\*\*/g,''):'Say hello'}</div></div>
      <div className="meta"><span className="tm">{l?fmtT(l.ts):'Now'}</span>{unread[s.id]>0&&<span className="pill">{unread[s.id]}</span>}</div>
     </button>}):<p className="bd" style={{padding:'24px 20px',textAlign:'center'}}>No conversations yet. Tap a shop above to start chatting.</p>})()}
    </div></>}
@@ -1383,11 +1405,11 @@ function App(){
      <div ref={end}/>
     </div>
     {qrs&&<div className="qrs">{qrs.map(c=><button key={c} className={'qr'+(['Confirm Order','Pay on Delivery','Secure Funds','Complete Order','Track Order','Track my order'].includes(c)?' pri':'')} onClick={()=>send(c)}>{c}</button>)}</div>}
-    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>{if(chat)say(chat.id,[{text:'Wazi 👌 Here we go 👇, please choose one for your choice',catalog:true,qr:cnt(chat.id)>0?['Complete Order']:undefined}])}}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
+    <div className="bar"><button className="bagb" aria-label="Browse catalog" onClick={()=>{if(chat)say(chat.id,[{text:'Here’s what we have for you 👇 Take your time and pick whatever catches your eye! 😊',catalog:true,qr:cnt(chat.id)>0?['Complete Order']:undefined}])}}><BagI/></button><input placeholder="Message this shop…" value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send(text)}/><button className={'send'+(text.trim()?'':' off')} aria-label="Send" onClick={()=>send(text)}><Ic.Send/></button></div>
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
-    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],ts:p.t||(/^my\d+$/.test(String(p.id))?+String(p.id).slice(2):0),custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onProfile={()=>note('This is your own shop')} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>{if(p.dbId)fetch('/api/posts/'+p.dbId+'?device='+encodeURIComponent(DEV),{method:'DELETE'}).catch(()=>{});setMyPosts(m=>m.filter(x=>x.id!==p.id))}}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,ctag:p.ctag,multi:p.multi,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onProfile={()=>setSp(st.id)} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m,mkPCat(st,p),p.dp)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],ts:p.t||(/^my\d+$/.test(String(p.id))?+String(p.id).slice(2):0),custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onProfile={()=>note('This is your own shop')} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>{if(p.dbId)fetch('/api/posts/'+p.dbId+'?device='+encodeURIComponent(DEV),{method:'DELETE'}).catch(()=>{});setMyPosts(m=>m.filter(x=>x.id!==p.id))}}/>})}{FEED.filter(p=>!HIDE_FEED.includes(p.sid)).map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,ctag:p.ctag,multi:p.multi,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onProfile={()=>setSp(st.id)} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m,mkPCat(st,p),p.dp)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
    {isCl&&tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
@@ -1479,29 +1501,29 @@ function App(){
     <input className="fi" placeholder="Post title" value={edp.name} onChange={e=>setEdp(v=>({...v,name:e.target.value}))}/>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={edp.cap} onChange={e=>setEdp(v=>({...v,cap:e.target.value}))}/>
     <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
-  {payDlg&&<div style={{position:'fixed',inset:0,zIndex:9999,background:payDlg.phase==='confirm'?'rgba(0,0,0,.72)':'rgba(0,0,0,.6)',backdropFilter:payDlg.phase==='confirm'?'blur(3px)':'none',display:'flex',alignItems:payDlg.phase==='confirm'?'center':'flex-end',justifyContent:'center',padding:payDlg.phase==='confirm'?'0 0 6vh':0}}>
-   <div style={payDlg.phase==='confirm'?{width:'calc(100% - 56px)',maxWidth:330,background:'var(--surf)',color:'var(--text)',borderRadius:22,padding:0,overflow:'hidden',boxShadow:'0 28px 70px rgba(0,0,0,.6)',border:'1px solid var(--cardline)',animation:'pop .22s ease'}:{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
-    {payDlg.phase!=='confirm'&&<><h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
+  {payDlg&&(()=>{const stk=payDlg.phase==='confirm'||(SIM_PAY&&payDlg.phase==='wait');return <div style={{position:'fixed',inset:0,zIndex:9999,background:stk?'rgba(0,0,0,.72)':'rgba(0,0,0,.6)',display:'flex',alignItems:stk?'flex-start':'flex-end',justifyContent:'center',padding:stk?'calc(env(safe-area-inset-top,0px) + 14vh) 0 0':0,overscrollBehavior:'contain',touchAction:'none'}}>
+   <div style={stk?{width:'calc(100% - 56px)',maxWidth:330,background:'var(--surf)',color:'var(--text)',borderRadius:22,padding:0,overflow:'hidden',boxShadow:'0 28px 70px rgba(0,0,0,.6)',border:'1px solid var(--cardline)',animation:'pop .22s ease'}:{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
+    {!stk&&<><h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
     <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div></>}
     {payDlg.phase==='confirm'?<div style={{textAlign:'center'}}>
      <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 16px',background:'linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%)',color:'#fff',fontWeight:800,letterSpacing:3,fontSize:15}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>M-PESA</div>
      <div style={{padding:'22px 22px 4px'}}>
       <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{'KSH '+payDlg.amount.toLocaleString('en-KE')}</b> to <b>POSTAPAY</b> for Account <b>TeQx Market Ltd</b>? Enter M-PESA PIN:</p>
-      <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="••••" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
-      {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'10px 0 0'}}>{payDlg.err}</p>}
+      <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="••••" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700,fontSize:16}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
+      <p style={{color:'#e5484d',fontSize:13,margin:'10px 0 0',minHeight:18,lineHeight:'18px'}}>{payDlg.err||''}</p>
      </div>
      <div style={{display:'flex',marginTop:20,borderTop:'1px solid var(--line)'}}><button style={{flex:1,padding:'16px 0',fontWeight:700,fontSize:15,color:'var(--mut)'}} onClick={closePay}>Cancel</button><button style={{flex:1,padding:'16px 0',fontWeight:800,fontSize:15,color:'#12c062',borderLeft:'1px solid var(--line)',opacity:simPin.length===4?1:.4}} disabled={simPin.length!==4} onClick={simOk}>OK</button></div>
     </div>:payDlg.phase==='phone'?<>
-     <input className="fi" inputMode="tel" placeholder="M-Pesa number e.g. 0712345678" value={payPhone} onChange={e=>setPayPhone(e.target.value)}/>
-     {payDlg.err&&<p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0'}}>{payDlg.err}</p>}
+     <input className="fi" inputMode="tel" placeholder="M-Pesa number e.g. 0712345678" style={{fontSize:16}} value={payPhone} onChange={e=>setPayPhone(e.target.value)}/>
+     <p style={{color:'#e5484d',fontSize:13,margin:'8px 0 0',minHeight:18,lineHeight:'18px'}}>{payDlg.err||''}</p>
      <button className="btn" style={{width:'100%',marginTop:14}} disabled={!PHONE_RX.test(payPhone.replace(/\s/g,''))} onClick={startPay}>Send M-Pesa prompt</button>
      <button className="lnk" style={{width:'100%',marginTop:8}} onClick={closePay}>Cancel</button>
-    </>:<div style={{textAlign:'center',padding:'10px 0'}}>
+    </>:<div style={{textAlign:'center',padding:stk?'34px 22px':'10px 0'}}>
      <div style={{fontSize:34}}>📲</div>
      <p style={{margin:'8px 0 4px',fontWeight:600}}>{SIM_PAY?'Processing…':'Check your phone'}</p>
      <p style={{color:'var(--mut)',fontSize:13,margin:0}}>{SIM_PAY?'Confirming your M-Pesa payment.':`Enter your M-Pesa PIN to approve ${ksh(payDlg.amount)}. Please do not close this screen.`}</p>
     </div>}
-   </div></div>}
+   </div></div>})()}
   {toast&&<div className="toast">{toast}</div>}
 
   {(!chat||!isCl)&&<div className="navw"><nav className={'nav'+(isCl?'':' biz')}>
