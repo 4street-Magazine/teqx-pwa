@@ -115,6 +115,11 @@ const ensureCols = async (db) => {
   const oc = new Set(((await db.prepare("PRAGMA table_info(orders)").all()).results || []).map((c) => c.name));
   for (const [c, t] of [["ds_device", "TEXT"], ["post_id", "INTEGER"], ["comm", "INTEGER"], ["qty", "INTEGER"]])
     if (!oc.has(c)) await db.prepare("ALTER TABLE orders ADD COLUMN " + c + " " + t).run();
+  try {
+    const ic = new Set(((await db.prepare("PRAGMA table_info(images)").all()).results || []).map((c) => c.name));
+    if (!ic.has("hash")) await db.prepare("ALTER TABLE images ADD COLUMN hash TEXT").run();
+    await db.prepare("CREATE INDEX IF NOT EXISTS idx_images_dev_hash ON images(owner_device, hash)").run();
+  } catch (e) {}
   colsOk = true;
 };
 
@@ -277,7 +282,11 @@ export default {
       const b = await body();
       if (!b.device_id || !b.name) return J({ error: "name and device_id required" }, 400);
       const ex = await db.prepare("SELECT id FROM stores WHERE owner_device = ?").bind(b.device_id).first();
-      if (ex) return J({ ok: true, id: ex.id, existing: true });
+      if (ex) {
+        await db.prepare("UPDATE stores SET category=COALESCE(?,category), img=COALESCE(NULLIF(?, ''),img) WHERE id=?")
+          .bind(b.category ? String(b.category).slice(0, 40) : null, b.img_id ? "/api/images/" + Number(b.img_id) : "", ex.id).run();
+        return J({ ok: true, id: ex.id, existing: true });
+      }
       const id = "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
       const img = b.img_id ? "/api/images/" + Number(b.img_id) : "";
       await db.prepare(
@@ -292,14 +301,16 @@ export default {
     if (path.startsWith("/api/stores/") && m === "PATCH") {
       const id = path.split("/").pop();
       const b = await body();
-      const img = b.img_id ? "/api/images/" + Number(b.img_id) : null;
+      const img = b.img_id ? "/api/images/" + Number(b.img_id) : b.clear_img ? "" : null;
       await db.prepare(
-        "UPDATE stores SET name=COALESCE(?,name), icon=COALESCE(?,icon), img=COALESCE(?,img), open=COALESCE(?,open) WHERE id=? AND owner_device=?"
+        "UPDATE stores SET name=COALESCE(?,name), icon=COALESCE(?,icon), img=COALESCE(?,img), open=COALESCE(?,open), category=COALESCE(?,category), tag=COALESCE(?,tag) WHERE id=? AND owner_device=?"
       ).bind(
         b.name ? String(b.name).slice(0, 40) : null,
         b.icon ? String(b.icon).slice(0, 8) : null,
         img,
         b.open === undefined ? null : (b.open ? 1 : 0),
+        b.category ? String(b.category).slice(0, 40) : null,
+        b.tag ? String(b.tag).slice(0, 30) : null,
         id, b.device_id || ""
       ).run();
       return J({ ok: true });
@@ -356,13 +367,19 @@ export default {
 
     // ---------- IMAGES ----------
     if (path === "/api/images" && m === "POST") {
+      await ensureCols(db);
       const b = await body();
       if (!b.device_id || typeof b.data !== "string" || !b.data.startsWith("data:image/"))
         return J({ error: "bad image" }, 400);
       if (b.data.length > 400000) return J({ error: "image too large" }, 413);
+      // Same picture from the same phone = reuse it, so re-syncing never eats the image quota.
+      const dig = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(b.data));
+      const hash = Array.from(new Uint8Array(dig)).map((x) => x.toString(16).padStart(2, "0")).join("");
+      const dup = await db.prepare("SELECT id FROM images WHERE owner_device = ? AND hash = ?").bind(b.device_id, hash).first();
+      if (dup) return J({ ok: true, id: dup.id, reused: true });
       const c = await db.prepare("SELECT COUNT(*) AS n FROM images WHERE owner_device = ?").bind(b.device_id).first();
-      if (c && c.n >= 100) return J({ error: "image limit reached" }, 429);
-      const r = await db.prepare("INSERT INTO images (owner_device,data) VALUES (?,?)").bind(b.device_id, b.data).run();
+      if (c && c.n >= 400) return J({ error: "image limit reached" }, 429);
+      const r = await db.prepare("INSERT INTO images (owner_device,data,hash) VALUES (?,?,?)").bind(b.device_id, b.data, hash).run();
       return J({ ok: true, id: r.meta.last_row_id });
     }
 
@@ -507,6 +524,13 @@ export default {
       return J({ ok: true });
     }
 
-    return env.ASSETS.fetch(request);
+    const res = await env.ASSETS.fetch(request);
+    // Pages must always be re-checked so phones pick up new code straight away.
+    if (/\.(html|json)$/.test(path) || path === "/" || !path.includes(".")) {
+      const r2 = new Response(res.body, res);
+      r2.headers.set("Cache-Control", "no-cache, must-revalidate");
+      return r2;
+    }
+    return res;
   },
 };
