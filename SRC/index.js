@@ -9,6 +9,16 @@ const cleanAttrs = (a) =>
     .filter((x) => x.k && x.v.length)
     .slice(0, 6);
 
+// Detail fields from the category catalog: { Brand: "Samsung", Condition: "New" }
+const cleanSpecs = (s) => {
+  const o = {};
+  Object.entries(s && typeof s === "object" && !Array.isArray(s) ? s : {}).slice(0, 12).forEach(([k, v]) => {
+    const kk = String(k).trim().slice(0, 30), vv = String(v == null ? "" : v).trim().slice(0, 60);
+    if (kk && vv) o[kk] = vv;
+  });
+  return o;
+};
+
 const normPhone = (p) => {
   let d = String(p || "").replace(/\D/g, "");
   if (d.startsWith("0")) d = "254" + d.slice(1);
@@ -71,6 +81,87 @@ const readAttrs = (t) => {
   try { return JSON.parse(t || "[]"); } catch (e) { return []; }
 };
 
+const readJ = (t, d) => {
+  try {
+    const v = JSON.parse(t || "");
+    return v === null || v === undefined ? d : v;
+  } catch (e) { return d; }
+};
+
+// The products table needs a few extra columns for variants. Add them once, automatically, if missing.
+let colsOk = false;
+const ensureCols = async (db) => {
+  if (colsOk) return;
+  const have = new Set(((await db.prepare("PRAGMA table_info(products)").all()).results || []).map((c) => c.name));
+  for (const [c, t] of [["variants", "TEXT"], ["category", "TEXT"], ["description", "TEXT"], ["moq", "INTEGER"], ["cimg", "TEXT"], ["specs", "TEXT"]])
+    if (!have.has(c)) await db.prepare("ALTER TABLE products ADD COLUMN " + c + " " + t).run();
+  colsOk = true;
+};
+
+// Each variant: { key: "M / Black", opts: { Size: "M", Color: "Black" }, price, stock, off }
+const cleanVariants = (a, base) =>
+  (Array.isArray(a) ? a : [])
+    .slice(0, 150)
+    .map((x) => {
+      const opts = {};
+      Object.entries((x && x.opts) || {}).slice(0, 3).forEach(([k, v]) => {
+        opts[String(k).slice(0, 20)] = String(v).slice(0, 20);
+      });
+      const p = parseInt(x && x.price, 10);
+      return {
+        key: String((x && x.key) || Object.values(opts).join(" / ")).slice(0, 80),
+        opts,
+        price: p > 0 ? p : base,
+        stock: Math.max(0, parseInt(x && x.stock, 10) || 0),
+        off: !!(x && x.off),
+      };
+    })
+    .filter((x) => x.key && Object.keys(x.opts).length);
+
+// Photo for each colour: { Black: 12 } (image ids) -> { Black: "/api/images/12" }
+const cleanCimg = (c) => {
+  const o = {};
+  Object.entries(c && typeof c === "object" ? c : {}).slice(0, 12).forEach(([k, v]) => {
+    const n = Number(v);
+    if (n > 0) o[String(k).slice(0, 20)] = "/api/images/" + n;
+  });
+  return o;
+};
+
+// Product price = lowest active variant price, stock = total of active variants.
+const totals = (vars, price, stock) => {
+  const on = vars.filter((v) => !v.off && v.price > 0);
+  return on.length
+    ? { price: Math.min(...on.map((v) => v.price)), stock: on.reduce((a, v) => a + v.stock, 0) }
+    : { price, stock };
+};
+
+// Take bought quantities off stock. lines = [{ name, opt: "Size: M, Color: Black", qty }]
+const takeStock = async (db, storeId, lines) => {
+  for (const ln of lines.slice(0, 30)) {
+    const qty = Math.min(99, Math.max(1, parseInt(ln && ln.qty, 10) || 1));
+    const p = await db.prepare("SELECT * FROM products WHERE store_id = ? AND name = ?")
+      .bind(storeId, String((ln && ln.name) || "")).first();
+    if (!p) continue;
+    const vars = readJ(p.variants, []);
+    if (vars.length) {
+      const want = {};
+      String((ln && ln.opt) || "").split(", ").forEach((part) => {
+        const i = part.indexOf(": ");
+        if (i > 0) want[part.slice(0, i)] = part.slice(i + 2);
+      });
+      const v = vars.find((x) => !x.off && Object.entries(want).every(([k, val]) => x.opts[k] === val));
+      if (!v) continue;
+      v.stock = Math.max(0, v.stock - qty);
+      const t = totals(vars, p.price, p.stock || 0);
+      await db.prepare("UPDATE products SET price = ?, stock = ?, variants = ? WHERE id = ?")
+        .bind(t.price, t.stock, JSON.stringify(vars), p.id).run();
+    } else {
+      await db.prepare("UPDATE products SET stock = MAX(0, COALESCE(stock, 0) - ?) WHERE id = ?").bind(qty, p.id).run();
+    }
+  }
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -85,6 +176,7 @@ export default {
 
     // ---------- STORES ----------
     if (path === "/api/stores" && m === "GET") {
+      await ensureCols(db);
       const device = url.searchParams.get("device") || "";
       const stores = (await db.prepare("SELECT * FROM stores").all()).results;
       const prods = (await db.prepare("SELECT * FROM products ORDER BY id").all()).results;
@@ -97,6 +189,7 @@ export default {
           prods: mine.map((p) => [p.name, p.price]),
           items: mine.map((p) => ({
             id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0, attrs: readAttrs(p.attrs),
+            variants: readJ(p.variants, []), cimg: readJ(p.cimg, {}), specs: readJ(p.specs, {}), category: p.category || "", description: p.description || "", moq: p.moq || 0,
             imgs: (p.img_ids || "").split(",").filter(Boolean).map((i) => "/api/images/" + i),
           })),
         };
@@ -137,21 +230,42 @@ export default {
 
     // ---------- PRODUCTS ----------
     if (path === "/api/products" && m === "POST") {
+      await ensureCols(db);
       const b = await body();
       const st = await db.prepare("SELECT owner_device FROM stores WHERE id = ?").bind(b.store_id || "").first();
       if (!st || !b.device_id || st.owner_device !== b.device_id) return J({ error: "not your shop" }, 403);
       const price = parseInt(b.price, 10);
       if (!b.name || !(price > 0)) return J({ error: "name and price required" }, 400);
-      const attrs = cleanAttrs(b.attrs);
-      if (!attrs.length) return J({ error: "at least one attribute required" }, 400);
+      const attrs = cleanAttrs(b.attrs); // options like Size / Color (none for single-item products)
+      const vars = cleanVariants(b.variants, price);
+      const t = totals(vars, price, Math.max(0, parseInt(b.stock, 10) || 0));
       const ids = (b.img_ids || []).map(Number).filter(Boolean).slice(0, 5).join(",");
       const r = await db.prepare(
-        "INSERT INTO products (store_id,name,price,pct,stock,img_ids,attrs) VALUES (?,?,?,?,?,?,?)"
+        "INSERT INTO products (store_id,name,price,pct,stock,img_ids,attrs,variants,category,description,moq,cimg,specs) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
       ).bind(
-        b.store_id, String(b.name).slice(0, 80), price,
-        parseInt(b.pct, 10) || 0, parseInt(b.stock, 10) || 0, ids, JSON.stringify(attrs)
+        b.store_id, String(b.name).slice(0, 80), t.price,
+        parseInt(b.pct, 10) || 0, t.stock, ids, JSON.stringify(attrs),
+        JSON.stringify(vars), String(b.category || "").slice(0, 40), String(b.description || "").slice(0, 500),
+        Math.max(0, parseInt(b.moq, 10) || 0), JSON.stringify(cleanCimg(b.cimg)), JSON.stringify(cleanSpecs(b.specs))
       ).run();
       return J({ ok: true, id: r.meta.last_row_id });
+    }
+
+    // Update stock / variants of one of your own products (used by quick restock)
+    if (path.startsWith("/api/products/") && m === "PATCH") {
+      await ensureCols(db);
+      const id = Number(path.split("/").pop());
+      const b = await body();
+      const row = await db.prepare(
+        "SELECT p.* FROM products p JOIN stores s ON s.id = p.store_id WHERE p.id = ? AND s.owner_device = ?"
+      ).bind(id, b.device_id || "").first();
+      if (!row) return J({ error: "not your product" }, 403);
+      let vars = readJ(row.variants, []);
+      if (Array.isArray(b.variants)) vars = cleanVariants(b.variants, row.price);
+      const t = totals(vars, row.price, b.stock !== undefined ? Math.max(0, parseInt(b.stock, 10) || 0) : row.stock || 0);
+      await db.prepare("UPDATE products SET price = ?, stock = ?, variants = ? WHERE id = ?")
+        .bind(t.price, t.stock, JSON.stringify(vars), id).run();
+      return J({ ok: true, price: t.price, stock: t.stock });
     }
 
     if (path.startsWith("/api/products/") && m === "DELETE") {
@@ -267,9 +381,13 @@ export default {
         if (!u.meta.changes) return J({ error: "payment not valid" }, 402);
         paid = 1;
       }
-      await db.prepare(
+      const ins = await db.prepare(
         "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station, tx_ref, paid) VALUES (?,?,?,?,?,?,?,?,?,?)"
       ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null, o.tx_ref || null, paid).run();
+      // Reduce stock only for a new order with a verified payment (set DEMO_MODE in wrangler.toml [vars] to test without payments)
+      if (ins.meta && ins.meta.changes && (paid || env.DEMO_MODE) && o.store_id && Array.isArray(o.lines)) {
+        try { await ensureCols(db); await takeStock(db, o.store_id, o.lines); } catch (e) {}
+      }
       return J({ ok: true });
     }
 
@@ -285,4 +403,3 @@ export default {
     return env.ASSETS.fetch(request);
   },
 };
-                                                                      
