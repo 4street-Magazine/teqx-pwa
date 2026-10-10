@@ -906,8 +906,8 @@ function Card({store,i,onAdd}){
  </div>;
 }
 
-function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.img;return <span className="cav" style={{width:z,height:z}}>{bad||!src?<em>{s.icon}</em>:<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
-function SAv({s}){const [bad,setBad]=useState(false),src=s.avatar||s.img;useEffect(()=>{setBad(false)},[src]);return (bad||!src)?<>{s.icon}</>:<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
+function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.av;return <span className="cav" style={{width:z,height:z}}>{bad||!src?<em>{s.icon}</em>:<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
+function SAv({s}){const [bad,setBad]=useState(false),src=s.avatar||s.av;useEffect(()=>{setBad(false)},[src]);return (bad||!src)?<>{s.icon}</>:<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
 function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
 const agoT=t=>{if(!t)return 'Earlier';const m=Math.floor((Date.now()-t)/6e4);if(m<1)return 'Just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';const d=Math.floor(h/24);return d<7?d+'d ago':new Date(t).toLocaleDateString([],{day:'numeric',month:'short'})};
@@ -1537,9 +1537,9 @@ const loadFeed=()=>getJ('/api/stores?device='+encodeURIComponent(DEV)).then(rows
   rows.forEach(r=>{
    (r.items||[]).forEach(it=>{ITEMS['db'+it.id]=it});if(r.mine){window.__MYSHOPID=r.id;window.__MYITEMS=(r.items||[]).map(it=>({id:'db'+it.id,dbId:it.id,name:it.name,price:it.price,pct:it.pct,stock:it.stock,imgs:it.imgs,attrs:it.attrs||[],variants:it.variants||[],cat:it.category||'',desc:it.description||'',moq:it.moq||0,cimg:it.cimg||{},specs:it.specs||{}}));return}
    const s=STORES.find(x=>x.id===r.id);
-   if(s){Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,prods:r.prods});if(s.dyn){s.attrs=(r.items||[]).map(it=>it.attrs||[]);s.vars=(r.items||[]).map(it=>it.variants||[]);s.cimgs=(r.items||[]).map(it=>it.cimg||{});s.pimgs=(r.items||[]).map(it=>it.imgs[0]||'');SCAT[r.id]=r.category||SCAT[r.id]||'General';COL[r.id]=r.prods.map(()=>['',''])}if(r.open===false){const k=STORES.indexOf(s);if(s.dyn&&k>=0)STORES.splice(k,1);return}addFeed(r);return}
+   if(s){Object.assign(s,{name:r.name,tag:r.tag,icon:r.icon,img:r.img,av:r.img||'',prods:r.prods});if(s.dyn){s.attrs=(r.items||[]).map(it=>it.attrs||[]);s.vars=(r.items||[]).map(it=>it.variants||[]);s.cimgs=(r.items||[]).map(it=>it.cimg||{});s.pimgs=(r.items||[]).map(it=>it.imgs[0]||'');SCAT[r.id]=r.category||SCAT[r.id]||'General';COL[r.id]=r.prods.map(()=>['',''])}if(r.open===false){const k=STORES.indexOf(s);if(s.dyn&&k>=0)STORES.splice(k,1);return}addFeed(r);return}
    if(r.open===false||!r.prods.length)return;
-   STORES.push({id:r.id,name:r.name,tag:r.tag||('#'+r.name.replace(/\s/g,'')),icon:r.icon||'🏪',msg:'Say hello',time:'',unread:0,img:r.img||'',prods:r.prods,dyn:true,attrs:(r.items||[]).map(it=>it.attrs||[]),vars:(r.items||[]).map(it=>it.variants||[]),cimgs:(r.items||[]).map(it=>it.cimg||{}),pimgs:(r.items||[]).map(it=>it.imgs[0]||'')});
+   STORES.push({id:r.id,name:r.name,tag:r.tag||('#'+r.name.replace(/\s/g,'')),icon:r.icon||'🏪',msg:'Say hello',time:'',unread:0,img:r.img||'',av:r.img||'',prods:r.prods,dyn:true,attrs:(r.items||[]).map(it=>it.attrs||[]),vars:(r.items||[]).map(it=>it.variants||[]),cimgs:(r.items||[]).map(it=>it.cimg||{}),pimgs:(r.items||[]).map(it=>it.imgs[0]||'')});
    SCAT[r.id]=r.category||'General';SOPT[r.id]=SOPT[r.id]||DEF_OPT;CAP[r.id]=CAP[r.id]||'New in the store.';COL[r.id]=r.prods.map(()=>['','']);
     addFeed(r)
   });
