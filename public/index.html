@@ -279,6 +279,8 @@ h1{font-size:24px;margin-bottom:6px}
 .nav button.act svg{fill:currentColor;filter:drop-shadow(0 3px 8px rgba(255,92,10,.45))}
 .nav button.act svg .nf{fill:none}
 .nav button.act svg .dt{fill:var(--nav);stroke:var(--nav)}
+.nav button.act.nofill svg{fill:none;stroke-width:2.6}
+.nav.biz{padding:8px 4px}.nav.biz button{font-size:11px}
 
 .pav{border:0;cursor:pointer}
 .burst{position:absolute;z-index:5;left:50%;top:44%;font-size:96px;line-height:1;pointer-events:none;animation:bur .8s ease-out forwards;filter:drop-shadow(0 6px 20px rgba(0,0,0,.4))}
@@ -457,7 +459,9 @@ h1{font-size:24px;margin-bottom:6px}
 .bars{display:flex;align-items:flex-end;gap:8px;height:110px}.bc{flex:1;height:100%;display:flex;align-items:flex-end}.bc i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:var(--grad);min-height:4px}
 .hb{display:flex;flex-direction:column;gap:12px}.hl{display:flex;justify-content:space-between;gap:10px;font-size:13px}.hl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ht{height:8px;border-radius:99px;background:var(--surf2);margin-top:6px;overflow:hidden}.ht i{display:block;height:100%;border-radius:99px;background:var(--grad)}
-.dl{font-style:normal;color:#0fb85b;font-weight:700;margin-left:6px}
+.dl{font-style:normal;color:#0fb85b;font-weight:700;margin-left:6px}.dl.dn{color:#e5484d}.wh .dd{display:inline-block;margin-top:-8px;margin-bottom:14px;font-size:12px;font-weight:700;background:rgba(0,0,0,.2);border-radius:99px;padding:3px 10px}
+.tt{font-size:12px;color:var(--mut);margin:0 0 6px;min-height:18px}.tt b{color:var(--text)}
+.stk{height:6px;border-radius:99px;background:var(--surf2);overflow:hidden;margin-top:6px}.stk i{display:block;height:100%;border-radius:99px;background:var(--green)}.stk.lo i{background:var(--grad)}
 /* deals + role switch */
 .deal{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.deal:first-child{border-top:0}
 .deal img{width:64px;height:64px;border-radius:14px;object-fit:cover;flex-shrink:0;background:var(--surf2)}
@@ -774,7 +778,7 @@ FEED.forEach((p,i)=>{p.ago=(i+1)+'h ago'})}
 const pc=(s,n)=>s.multi?s.multi[Math.min(n,s.multi.length-1)]:s.prods[0];
 const SPF={aura:[7420,640],brew:[5380,902],pixel:[18300,2210],glam:[6240,715],leaf:[3980,611],chef:[4760,380],page:[2890,340],lens:[8120,925],apex:[12480,1284],luxe:[8320,932],nova:[15700,1675],fresh:[5140,2410],sole:[21900,3120],zuri:[6870,478],peak:[9460,821],sav:[4310,389]};
 const PCT=[12,15,10,18,12,10,14,16,12,15,10,18,12,10,14,12,15];
-const DEALS=FEED.map((p,i)=>{const s=STORES.find(x=>x.id===p.sid);return {id:p.pid,name:p.name,price:p.price,pct:PCT[i%PCT.length],imgs:p.imgs,stock:12+(i*7)%40,cat:s.tag,by:s.name,cap:p.cap}});
+const DEALS=FEED.map((p,i)=>{const s=STORES.find(x=>x.id===p.sid);return {id:p.pid,name:p.name,price:p.price,pct:PCT[i%PCT.length],imgs:p.imgs,stock:12+(i*7)%40,cat:s.tag,by:s.name,cap:p.cap,ago:p.ago}});
 const cmm=d=>Math.round(d.price*d.pct/100);
 const delFee=p=>p>=15000?400:p>=5000?300:250;
 const seedDs=()=>{const n=Date.now(),H=36e5;return [[2,'Pulse Wireless Earbuds',7900,790,'Secured'],[5,'Premium Cotton Hoodie',6200,620,'Secured'],[9,'Leather Tote Bag',4680,2340,'Shipped'],[20,'Smart Watch Series X',12900,6450,'Shipped'],[30,'Air Max Retro Horizon',11200,5600,'Delivered'],[60,'Premium Cotton Hoodie',6200,620,'Delivered'],[100,'Pulse Wireless Earbuds',15800,1580,'Delivered'],[150,'Leather Tote Bag',4680,2340,'Delivered'],[300,'Smart Watch Series X',12900,6450,'Delivered'],[480,'Air Max Retro Horizon',11200,5600,'Delivered'],[620,'Premium Cotton Hoodie',9300,930,'Delivered'],[1500,'Pulse Wireless Earbuds',7900,790,'Delivered'],[3000,'Smart Watch Series X',25800,12900,'Delivered'],[6000,'Leather Tote Bag',9360,4680,'Delivered']].map(([h,item,amt,comm,status],i)=>({id:'DR-'+(900+i),t:n-h*H,item,amt,comm,status}))};
@@ -840,6 +844,8 @@ function Card({store,i,onAdd}){
 function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.img;return <span className="cav" style={{width:z,height:z}}>{bad||!src?<em>{s.icon}</em>:<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
 function Slide({src,alt,icon}){const [bad,setBad]=useState(false);return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
+const agoT=t=>{if(!t)return 'Earlier';const m=Math.floor((Date.now()-t)/6e4);if(m<1)return 'Just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';const d=Math.floor(h/24);return d<7?d+'d ago':new Date(t).toLocaleDateString([],{day:'numeric',month:'short'})};
+const dAgo=d=>d.t?agoT(d.t):(d.ago?(d.ago==='New'?'New':d.ago+' ago'):'');
 function Post({cc,onComment,onStory,onProfile,s,si,f,onFollow,liked,onLike,saved,onSave,onChat,onBuy,note,onDelete}){
  const cols=s.cols||COL[s.id].map(c=>c[0]),[menu,setMenu]=useState(false);
  const last=useRef(0),[burst,setBurst]=useState(false),psr=useRef(null),[n,setN]=useState(0),[gone,setGone]=useState(!!f||!!s.custom),[spark,setSpark]=useState(false);
@@ -849,7 +855,7 @@ function Post({cc,onComment,onStory,onProfile,s,si,f,onFollow,liked,onLike,saved
  const share=async()=>{try{if(navigator.share)await navigator.share({title:s.prods[0][0],text:s.prods[0][0]+' on TeQx'});else note&&note('Sharing is not supported on this device')}catch(e){}};
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onStory}><i>{s.avatar?<img src={s.avatar} alt="" style={{width:"100%",height:"100%",borderRadius:"50%",objectFit:"cover"}}/>:s.icon}</i></button>
-   <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified/></div><div className="tm">{s.custom?'Just now':(s.ago||si+2+'h ago')} · {s.tag}</div></div>
+   <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified/></div><div className="tm">{s.custom?agoT(s.ts):(s.ago||si+2+'h ago')} · {s.tag}</div></div>
    {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}{gone&&<div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
     {menu&&<><div className="kback" onClick={()=>setMenu(false)}/><div className="kmenu">
      <button onClick={()=>{onSave();setMenu(false)}}><Ic.Mark on={saved}/>{saved?'Remove from saved':'Save post'}</button>
@@ -878,8 +884,21 @@ function Post({cc,onComment,onStory,onProfile,s,si,f,onFollow,liked,onLike,saved
 const readImg=(f,mx=900)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.82))};im.onerror=()=>res(null);im.src=r.result};r.onerror=()=>res(null);r.readAsDataURL(f)});
 function Spark({d,lab,gid}){const w=300,h=110,p=8,mx=Math.max(...d),x=i=>p+i*(w-2*p)/(d.length-1),y=v=>h-p-(v/(mx||1))*(h-2*p-8),pts=d.map((v,i)=>[x(i),y(v)]),line=pts.map((q,i)=>(i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)).join(''),area=line+`L${x(d.length-1)} ${h-p}L${x(0)} ${h-p}Z`;return <div className="chart"><svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="Growth chart"><defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff5c0a" stopOpacity=".35"/><stop offset="1" stopColor="#ff5c0a" stopOpacity="0"/></linearGradient></defs><path d={area} fill={`url(#${gid})`}/><path d={line} fill="none" stroke="#ff5c0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx={pts[pts.length-1][0]} cy={pts[pts.length-1][1]} r="4" fill="#ff5c0a"/></svg><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
 function Bars({d,lab}){const mx=Math.max(...d)||1;return <div className="chart"><div className="bars">{d.map((v,i)=><div key={i} className="bc"><i style={{height:(v/mx*100)+'%'}}/></div>)}</div><div className="cl2">{lab.map(l=><span key={l}>{l}</span>)}</div></div>}
+const K=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(v>=1e4?0:1).replace('.0','')+'k':String(Math.round(v)),PAL=['#ff5c0a','#12c062','#ff8f1c','#34e68a','#f03a0e','#079244'];
+function Trend({s,lab,f=v=>v,bar,gid}){const [t,setT]=useState(null),w=320,h=150,pl=36,pr=6,pt=10,pb=8,mx=Math.max(1,...s.flatMap(x=>x.d)),n=lab.length,iw=(w-pl-pr)/n,X=i=>bar?pl+(i+.5)*iw:pl+i*(w-pl-pr)/Math.max(1,n-1),Y=v=>h-pb-v/mx*(h-pb-pt);
+ return <div className="chart"><div className="tt">{t==null?'Tap a point for details':<><b>{lab[t]}</b> · {s.map(x=>x.name+' '+f(x.d[t])).join(' · ')}</>}</div>
+ <svg viewBox={`0 0 ${w} ${h}`} width="100%" role="img" aria-label="Chart"><defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={s[0].color} stopOpacity={bar?1:.35}/><stop offset="1" stopColor={s[0].color} stopOpacity={bar?.55:0}/></linearGradient></defs>
+ {[0,.5,1].map(k=><g key={k}><line x1={pl} x2={w-pr} y1={Y(mx*k)} y2={Y(mx*k)} stroke="var(--line)" strokeDasharray="3 4"/><text x={pl-5} y={Y(mx*k)+3} textAnchor="end" fontSize="8.5" fill="var(--mut)">{K(mx*k)}</text></g>)}
+ {bar?s[0].d.map((v,i)=><rect key={i} x={X(i)-iw*.3} y={Y(v)} width={iw*.6} height={Math.max(0,h-pb-Y(v))} rx="3" fill={`url(#${gid})`} opacity={t==null||t===i?1:.4}/>):s.map((x,k)=>{const L=x.d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('');return <g key={k}>{k===0&&<path d={L+`L${X(n-1)} ${h-pb}L${X(0)} ${h-pb}Z`} fill={`url(#${gid})`}/>}<path d={L} fill="none" stroke={x.color} strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round"/>{t!=null&&<circle cx={X(t)} cy={Y(x.d[t])} r="4" fill={x.color}/>}</g>})}
+ {t!=null&&!bar&&<line x1={X(t)} x2={X(t)} y1={pt} y2={h-pb} stroke="var(--line)"/>}
+ {lab.map((_,i)=><rect key={i} x={X(i)-iw/2} y="0" width={iw} height={h} fill="transparent" onClick={()=>setT(i)}/>)}</svg>
+ <div className="cl2">{lab.map((l,i)=><span key={i} style={{visibility:n>8&&i%2?'hidden':'visible'}}>{l}</span>)}</div>
+ {s.length>1&&<div style={{display:'flex',gap:14,marginTop:8,fontSize:12,color:'var(--mut)'}}>{s.map(x=><span key={x.name}><i style={{display:'inline-block',width:8,height:8,borderRadius:99,background:x.color,marginRight:5}}/>{x.name}</span>)}</div>}</div>}
+function Donut({rows,f=v=>v,c}){const tot=rows.reduce((a,r)=>a+r[1],0),R=46,C=2*Math.PI*R;let o=0;return <div style={{display:'flex',alignItems:'center',gap:16}}><svg viewBox="0 0 120 120" width="120" height="120" style={{flexShrink:0}} role="img" aria-label="Breakdown"><circle cx="60" cy="60" r={R} fill="none" stroke="var(--surf2)" strokeWidth="16"/>{tot>0&&rows.map(([l,v,col])=>{const d=v/tot*C,e=<circle key={l} cx="60" cy="60" r={R} fill="none" stroke={col} strokeWidth="16" strokeDasharray={`${d} ${C-d}`} strokeDashoffset={-o} transform="rotate(-90 60 60)"/>;o+=d;return e})}<text x="60" y="58" textAnchor="middle" fontSize="15" fontWeight="800" fill="var(--text)">{c[0]}</text><text x="60" y="72" textAnchor="middle" fontSize="9" fill="var(--mut)">{c[1]}</text></svg>
+ <div style={{flex:1,minWidth:0,display:'grid',gap:8}}>{rows.map(([l,v,col])=><div key={l} style={{display:'flex',alignItems:'center',gap:8,fontSize:12.5}}><i style={{width:10,height:10,borderRadius:3,background:col,flexShrink:0}}/><span style={{flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{l}</span><b>{f(v)}</b><span style={{color:'var(--mut)',minWidth:34,textAlign:'right'}}>{tot?Math.round(v/tot*100):0}%</span></div>)}</div></div>}
+function Funnel({rows}){const mx=Math.max(1,rows[0][1]);return <div style={{display:'grid',gap:10}}>{rows.map(([l,v],i)=>{const pv=i&&rows[i-1][1]?Math.round(v/rows[i-1][1]*100):null;return <div key={l}><div className="hl"><span>{l}</span><b>{v}{pv!=null&&<em className="dl" style={{color:'var(--mut)'}}>{pv}% of previous</em>}</b></div><div style={{width:Math.max(6,v/mx*100)+'%',margin:'4px auto 0',height:16,borderRadius:8,background:'var(--grad)',opacity:1-i*.15}}/></div>})}</div>}
 function Hbar({rows,f=v=>v}){const mx=Math.max(1,...rows.map(r=>r[1]));return <div className="hb">{rows.map(([l,v])=><div key={l}><div className="hl"><span>{l}</span><b>{f(v)}</b></div><div className="ht"><i style={{width:(v/mx*100)+'%'}}/></div></div>)}</div>}
-const Kp=({i,l,v,dl})=><div className="kpi"><span className="ke">{i}</span><b>{v}</b><span>{l}{dl&&<em className="dl">{dl}</em>}</span></div>;
+const Kp=({i,l,v,dl})=><div className="kpi"><span className="ke">{i}</span><b>{v}</b><span>{l}{dl&&<em className={'dl '+(dl[0]==='▲'?'up':'dn')}>{dl}</em>}</span></div>;
 const Ava=({src,icon,onPick,label})=><label className="pbig ava" aria-label={label}><i>{src?<img src={src} alt=""/>:icon}</i><span className="plus"><Ic.Camera s={12}/></span><input type="file" accept="image/*" hidden onChange={onPick}/></label>;
 const Toggle=({label,sub,on,onClick})=><button className="row" style={{padding:'11px 0'}} onClick={onClick}><div className="grow"><div className="nm">{label}</div>{sub&&<div className="pv">{sub}</div>}</div><span className={'sw'+(on?' on':'')}/></button>;
 function Fields({rows,val,set,edit}){return <div className="frm">{rows.map(([k,l,ph,t])=><div key={k} className="fr"><label>{l}</label>{edit?(t==='area'?<textarea className="fi" rows={3} placeholder={ph} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>:<input className="fi" placeholder={ph} inputMode={t==='tel'?'tel':undefined} type={t==='email'?'email':'text'} value={val[k]||''} onChange={e=>set(k,e.target.value)}/>):<div className={'fv'+(val[k]?'':' em')}>{val[k]||'Not added yet'}</div>}</div>)}</div>}
@@ -914,12 +933,16 @@ function App(){
  useEffect(()=>{try{localStorage.setItem('teqx-me',JSON.stringify(me))}catch(e){}},[me]);
  useEffect(()=>{SOUND_ON=me.notif!==false},[me.notif]);
  const [ptab,setPtab]=useState('dash'),[sw,setSw]=useState(false),[pfo,setPfo]=useState(false),[intro,setIntro]=useState(null),[act,setAct]=useState(()=>{try{return JSON.parse(localStorage.getItem('teqx-act')||'{}')}catch(e){return {}}}),[dtab,setDtab]=useState('dash'),[edShop,setEdShop]=useState(false),[edMe,setEdMe]=useState(false);
+ const [bread,setBread]=useState(()=>{try{return JSON.parse(localStorage.getItem('teqx-bread')||'{}')}catch(e){return {}}});
+ const [mper,setMper]=useState('30d'),[dseen,setDseen]=useState(()=>{try{return JSON.parse(localStorage.getItem('teqx-dseen')||'{}')}catch(e){return {}}});
+ useEffect(()=>{try{localStorage.setItem('teqx-dseen',JSON.stringify(dseen))}catch(e){}},[dseen]);
+ useEffect(()=>{try{localStorage.setItem('teqx-bread',JSON.stringify(bread))}catch(e){}},[bread]);
  const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
  const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
  const delPhoto=id=>{setPhotos(p=>p.filter(x=>x.id!==id));setSel(v=>v.filter(x=>x!==id))};
- const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
+ const publish=()=>{const price=parseInt(String(pf.price).replace(/\D/g,''),10),imgs=sel.map(id=>photos.find(p=>p.id===id)).filter(Boolean).map(p=>p.src);if(!imgs.length)return note('Tap a photo above to include it');if(!pf.name.trim())return note('Enter a product name');if(!price)return note('Enter a valid price');setMyPosts(m=>[{id:'my'+Date.now(),t:Date.now(),name:pf.name.trim(),price,cap:pf.cap.trim(),imgs},...m]);setPf({name:'',price:'',cap:''});setSel([]);note('Post published 🎉');setTab('discover')};
  const [search,setSearch]=useState(false),[q,setQ]=useState(''),[cm,setCm]=useState(null),[cmts,setCmts]=useState({}),[ct,setCt]=useState(''),[st,setSt]=useState(null),[sr,setSr]=useState(''),[seen,setSeen]=useState({}),[readA,setReadA]=useState({}),[loading,setLoading]=useState(true),[recent,setRecent]=useState(['Hoodie','Sneakers','Serum']),pull=useRef(null);
  useEffect(()=>{const t=setTimeout(()=>setLoading(false),150);return()=>clearTimeout(t)},[]);
  const refresh=()=>{setLoading(true);setTimeout(()=>setLoading(false),150)};
@@ -1065,10 +1088,10 @@ function App(){
  const syncProd=async(lid,ph,name,price,pct,stock,attrs)=>{try{const sid=await ensureShop();if(!sid)throw 0;const ids=[];for(const x of ph){const i=await uploadImg(x.src);if(i)ids.push(i)}const r=await apiJ('/api/products','POST',{device_id:DEV,store_id:sid,name,price,pct,stock,attrs,img_ids:ids});if(!r||!r.ok)throw 0;setMprods(m=>m.map(x=>x.id===lid?{...x,dbId:r.id}:x));note('Saved online. Customers can now see it')}catch(e){note('Saved on this phone only')}};
  useEffect(()=>{const t=setTimeout(async()=>{const id=window.__MYSHOPID;if(!id)return;const img_id=shop.avatar?await uploadImg(shop.avatar):undefined;apiJ('/api/stores/'+id,'PATCH',{device_id:DEV,name:shop.name,icon:shop.icon,open:shop.open,img_id}).catch(()=>{})},1200);return()=>clearTimeout(t)},[shop.name,shop.icon,shop.open,shop.avatar]);
  const addProd=()=>{const at=(mp.attrs||[]).map(a=>({k:a.k.trim().slice(0,20),v:a.v.split(',').map(x=>x.trim().slice(0,20)).filter(Boolean).slice(0,12)})).filter(a=>a.k&&a.v.length).slice(0,6);const ph=mp.pids.map(id=>photos.find(p=>p.id===id)).filter(Boolean);if(!ph.length)return note('Pick at least one product photo');if(!mp.name.trim())return note('Enter a product name');if(!mpr)return note('Enter a valid price');if(!at.length)return note('Add at least one attribute, e.g. Weight: 500g, 1kg, 2kg');if(!mpc)return note('Set a commission for dropshippers');const moq=parseInt(mp.moq,10)||0;if(!moq)return note('Set a minimum order quantity');if((parseInt(mp.stock,10)||0)<moq)return note('Bulk stock must be at least the minimum order quantity');const lid='mp'+Date.now();setMprods(m=>[{id:lid,name:mp.name.trim(),price:mpr,pct:mpc,stock:parseInt(mp.stock,10)||0,moq,imgs:ph.map(x=>x.src),attrs:at},...m]);setMp({name:'',price:'',comm:'',stock:'',moq:'',pids:[],attrs:[{k:'',v:''}]});note('Product uploaded');syncProd(lid,ph,mp.name.trim(),mpr,mpc,parseInt(mp.stock,10)||0,at)};
- const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,moq:p.moq,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
+ const allDeals=[...mprods.map(p=>({id:p.id,name:p.name,price:p.price,pct:p.pct,imgs:p.imgs||[p.img],stock:p.stock,moq:p.moq,t:/^mp\d+$/.test(String(p.id))?+String(p.id).slice(2):0,cat:'#'+shop.name.replace(/\s/g,''),by:shop.name,cap:''})),...DEALS];
  const cats=['All',...new Set(allDeals.map(d=>d.cat))];
  const nf=(dfl.sort!=='earn'?1:0)+(dfl.min?1:0)+(dfl.price!=='any'?1:0)+(dfl.cat!=='All'?1:0)+(dfl.stock?1:0),ql=dsq.trim().toLowerCase();
- const dealList=allDeals.filter(d=>(dfl.cat==='All'||d.cat===dfl.cat)&&d.pct>=dfl.min&&d.price>=PRR[dfl.price][0]&&d.price<PRR[dfl.price][1]&&(!dfl.stock||d.stock>0)&&(!ql||(d.name+' '+d.by+' '+d.cat).toLowerCase().includes(ql))).sort(DSORT[dfl.sort]);
+ const isN=d=>(d.t||0)>0&&!dseen[d.id],dealList=allDeals.filter(d=>(dfl.cat==='All'||d.cat===dfl.cat)&&d.pct>=dfl.min&&d.price>=PRR[dfl.price][0]&&d.price<PRR[dfl.price][1]&&(!dfl.stock||d.stock>0)&&(!ql||(d.name+' '+d.by+' '+d.cat).toLowerCase().includes(ql))).sort((x,y)=>isN(y)-isN(x)||(isN(x)?y.t-x.t:DSORT[dfl.sort](x,y)));
  const resetF=()=>{setDfl({sort:'earn',min:0,price:'any',cat:'All',stock:false});setDsq('')};
  const fg=(t,opts,k)=><div className="fgrp"><div className="sect" style={{padding:0}}>{t}</div><div className="chips2">{opts.map(([v,l])=><button key={String(v)} className={dfl[k]===v?'on':''} onClick={()=>setDfl(f=>({...f,[k]:v}))}>{l}</button>)}</div></div>;
  /* real-time dropshipper orders: a new order is secured on one of the live posts, then ships and is delivered; commission is released only on delivery */
@@ -1079,7 +1102,7 @@ function App(){
  const saveEdit=()=>{if(!edp.sel.length)return note('Pick at least one photo');if(!edp.name.trim())return note('Enter a title');setMyPosts(m=>m.map(x=>x.id===edp.id?{...x,name:edp.name.trim(),cap:edp.cap.trim(),imgs:edp.sel.map(i=>edp.list[i])}:x));setEdp(null);note('Post updated')};
  const addPromoPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push(d)}if(!out.length)return;const n=plist.length;setPlist(l=>[...l,...out]);setPsel(s=>[...s,...out.map((_,i)=>n+i)])};
  const startPromo=d=>{setPromo(d);setPlist(d.imgs);setPsel(d.imgs.map((_,i)=>i));setPcap(d.cap||`${d.name} is available now. Chat with the shop to order.`)};
- const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
+ const publishDeal=()=>{if(!promo)return;if(!psel.length)return note('Pick at least one photo');setMyPosts(m=>[{id:'my'+Date.now(),t:Date.now(),name:promo.name,price:promo.price,cap:pcap.trim(),imgs:psel.map(i=>plist[i]),deal:promo.id,pct:promo.pct},...m]);setPromo(null);note('Post published');setTab('discover')};
  const secured=orders.filter(o=>o.status!=='Collected'),totSec=secured.reduce((a,o)=>a+o.price+(o.fee||delFee(o.price)),0);
  const cmsgs=chat?(chats[chat.id]||[]):[],lm=[...cmsgs].reverse().find(m=>m.from!=='sys'),isTyp=!!(chat&&typing[chat.id]),qrs=lm&&lm.from==='bot'&&!isTyp?lm.qr:null;
  const fmtT=ts=>new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
@@ -1092,10 +1115,18 @@ function App(){
    {m.catalog&&<div className="catrow"><ShopAv s={chat}/><div className="hs cat">{chat.prods.map((_,i)=><Card key={i} store={chat} i={i} onAdd={addCart}/>)}</div></div>}
   </div>};
  chatIdRef.current=chat?chat.id:null;
- const d=tab==='discover';
+ const isCl=mode==='client',d=isCl&&tab==='discover';
  const toggle=<button className="ico" aria-label="Toggle light or dark mode" onClick={()=>setDark(!dark)}>{dark?<Ic.Sun/>:<Ic.Moon/>}</button>;
  const brand=<div className="brandw"><svg className="qmark" viewBox="0 0 33 32" role="img" aria-label="TeQx AI shopping"><defs><linearGradient id="qg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="34" y2="32"><stop offset="0" stopColor="#ff8f1c"/><stop offset=".48" stopColor="#ff5c0a"/><stop offset="1" stopColor="#f03a0e"/></linearGradient></defs><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="url(#qg)" strokeWidth="2.6" strokeLinecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="none" stroke="url(#qg)" strokeWidth="2.4" strokeLinejoin="round"/><path className="qstar" d="M28.5 -.2C29.02 2.95 30.2 4.99 34.2 5.5C30.2 6.01 29.02 8.05 28.5 11.2C27.98 8.05 26.8 6.01 22.8 5.5C26.8 4.99 27.98 2.95 28.5 -.2z" fill="url(#qg)"/></g></svg><div className="brand">Te<b>Q</b>x</div></div>;
  const nav=[['discover','Home',Ic.Home],['inbox','Inbox',Ic.Inbox],['orders','Orders',Ic.Bag],['alerts','Alerts',Ic.Bell],['profile','Profile',Ic.User]];
+
+ const bnav=role==='merchant'?[['dash','Home',Ic.Home],['ords','Orders',Ic.Bag],['store','Products',Ic.Tag,1],['wal','Wallet',Ic.Wallet,1],['alerts','Alerts',Ic.Bell],['prof','Profile',Ic.User]]:[['dash','Home',Ic.Home],['deals','Deals',Ic.Tag,1],['posts','Posts',Ic.Pen,1],['wal','Wallet',Ic.Wallet,1],['alerts','Alerts',Ic.Bell],['prof','Profile',Ic.User]];
+ const btab=role==='merchant'?ptab:dtab,setBtab=role==='merchant'?setPtab:setDtab;
+ const BTAG={merchant:{dash:'Your store at a glance',ords:'Orders placed through dropshippers',store:'Upload and manage your products',wal:'Payouts and withdrawals',alerts:'Orders and payouts as they happen'},dropshipper:{dash:'Your earnings at a glance',deals:'Merchant products you can promote',posts:'Posts you are promoting',wal:'Commissions and withdrawals',alerts:'Sales and commissions as they happen'}};
+ const stK=st=>st==='Paid out'?'collected':st==='Delivered'?'delivered':st==='Shipped'?'shipped':'secured';
+ const bEx=role==='merchant'?mprods.filter(p=>p.stock!=null&&(p.stock||0)<=5).map(p=>{const z=(p.stock||0)<=0;return {key:(z?'out:':'low:')+p.id+':'+(p.stock||0),ts:0,kind:z?'out':'low',pri:z?2:1,go:'store',text:z?`${p.name} is out of stock. Restock so dropshippers can keep selling it.`:`${p.name} is low on stock with ${p.stock} left. Restock soon.`}}):myPosts.filter(p=>p.deal).map(p=>({p,d:allDeals.find(x=>x.id===p.deal)})).filter(x=>x.d&&x.d.stock!=null&&(x.d.stock||0)<=0).map(({p})=>({key:'out:'+p.id,ts:0,kind:'out',pri:2,go:'posts',text:`${p.name} is out of stock. Your post is promoting an unavailable product, so pause or replace it.`}));
+ const bAl=(role==='merchant'?mord.map(o=>{const nw=Date.now(),L=o.status==='Secured'&&o.due?(o.due<nw?'late':o.due-nw<216e5?'soon':''):'';return {key:(L?L+':':'')+o.id+':'+o.status,ts:L==='late'?o.due:L==='soon'?o.due-216e5:(o.t||0),kind:L||stK(o.status),pri:L==='late'?2:L?1:0,go:'ords',text:L==='late'?`Order ${o.id} is overdue. Take ${o.item} to ${o.dp||'the drop-off point'} now, the buyer is waiting.`:L==='soon'?`Order ${o.id} must be dropped off by ${fmtT(o.due)}. Less than 6 hrs left.`:o.status==='Secured'?`New order ${o.id} · ${o.item} × ${o.qty}${o.drop&&o.drop!=='Direct'?' via '+o.drop:''}. Take it to ${o.dp||'the drop-off point'} within 24 hrs.`:o.status==='Shipped'?`Order ${o.id} is on its way to the pickup station.`:o.status==='Delivered'?`Order ${o.id} was delivered at the pickup station and is awaiting collection.`:`Order ${o.id} was collected. ${ksh(o.amt-o.comm)} has been paid out to you.`}}):dsOrders.map(o=>({key:o.id+':'+o.status,ts:o.t||0,kind:stK(o.status),text:o.status==='Secured'?`New sale through your post · ${o.id} (${o.item}). Expected commission ${ksh(o.comm)}.`:o.status==='Shipped'?`Order ${o.id} has shipped. Your ${ksh(o.comm)} commission is held until collection.`:`Order ${o.id} was delivered. Your ${ksh(o.comm)} commission is released after collection.`}))).concat(bEx).sort((a,b)=>(b.pri||0)-(a.pri||0)||b.ts-a.ts);
+ const bUn=bAl.filter(a=>!bread[a.key]).length;
 
  const dash={likes:myPosts.reduce((a,p)=>a+(liked[p.id]?1:0),0),cm:myPosts.reduce((a,p)=>a+(cmts[p.id]||[]).length,0),val:myPosts.reduce((a,p)=>a+p.price,0)};
  const checks=[['Add a shop photo',!!shop.avatar,'info'],['Write a short bio',!!shop.bio,'info'],['Choose a category',!!shop.cat,'info'],['Add a contact number',!!shop.phone,'info'],['Add your location',!!shop.loc,'info'],['Set opening hours',!!shop.hours,'info'],['Upload product photos',photos.length>0,'store'],['Publish your first post',myPosts.length>0,'store']];
@@ -1116,20 +1147,48 @@ function App(){
  const wkb=Array.from({length:7},(_,i)=>mord.filter(o=>o.t&&Math.floor((Date.now()-o.t)/864e5)===6-i)),wkl=Array.from({length:7},(_,i)=>new Date(Date.now()-(6-i)*864e5).toLocaleDateString([],{weekday:'short'})),topP=Object.entries(mord.reduce((m,o)=>(m[o.item]=(m[o.item]||0)+(o.qty||1),m),{})).sort((a,b)=>b[1]-a[1]).slice(0,5),topD=Object.entries(mord.filter(o=>o.drop!=='Direct').reduce((m,o)=>(m[o.drop]=(m[o.drop]||0)+o.amt,m),{})).sort((a,b)=>b[1]-a[1]).slice(0,5);
  const swBtn=<span style={{position:'relative',display:'inline-flex',marginLeft:'auto'}}><button className="ico" style={{width:34,height:34}} aria-label="Switch account" onClick={()=>setSw(v=>!v)}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg></button>{sw&&<><div style={{position:'fixed',inset:0,zIndex:49}} onClick={()=>setSw(false)}/><div style={{position:'absolute',top:'calc(100% + 6px)',right:0,zIndex:50,minWidth:190,background:'var(--surf)',border:'1px solid var(--line)',borderRadius:14,boxShadow:'var(--shadow)',padding:6}}>{[['client','Personal account'],['merchant','Merchant account'],['dropshipper','Dropshipper account']].map(([k,l])=><button key={k} onClick={()=>{setSw(false);goAcct(k)}} style={{display:'block',width:'100%',textAlign:'left',padding:'10px 12px',borderRadius:10,fontWeight:700,fontSize:13.5,color:acct===k?'var(--accent)':'var(--text)',background:acct===k?'var(--surf2)':'none'}}>{l}{acct===k?' ✓':''}</button>)}</div></>}</span>;
  const biz=(role,ptab,setPtab)=><>
-     <div className="ptabs">{(role==='merchant'?[['dash','Dashboard'],['ords','Orders'],['store','Products'],['wal','Wallet']]:[['dash','Dashboard'],['deals','Deals'],['posts','My posts'],['wal','Wallet']]).map(([k,l])=><button key={k} className={ptab===k?'on':''} onClick={()=>setPtab(k)}>{l}{k==='ords'&&mord.length>0?' ('+mord.length+')':''}</button>)}</div>
+     
 
-     {role==='merchant'&&ptab==='dash'&&<>
-      <div className="kpis"><Kp i={<Ic.Wallet s={20}/>} l="Gross sales" v={ksh(0+mord.filter(o=>o.drop==='Direct').reduce((a,o)=>a+o.amt,0))}/><Kp i={<Ic.Pkg s={20}/>} l="Orders to ship" v={mord.filter(o=>o.status==='Secured').length}/><Kp i={<Ic.Up s={20}/>} l="Net payout" v={ksh(0+mord.filter(o=>o.drop==='Direct'&&o.status==='Paid out').reduce((a,o)=>a+o.amt,0))}/><Kp i={<Ic.Users s={20}/>} l="Commissions paid" v={ksh(0)}/><Kp i={<Ic.Pkg s={20}/>} l="Bulk stock (units)" v={mprods.reduce((a,p)=>a+(p.stock||0),0)}/><Kp i={<Ic.Tag s={20}/>} l="Products live as deals" v={mprods.length}/></div>
-      <div className="qa" style={{gridTemplateColumns:'repeat(3,1fr)'}}><button onClick={()=>setPtab('store')}><span><Ic.Tag s={20}/></span>Add product</button><button onClick={()=>setPtab('ords')}><span><Ic.Pkg s={20}/></span>Orders</button><button onClick={()=>setPtab('wal')}><span><Ic.Wallet s={20}/></span>Payouts</button></div>
-      <Acc icon={<Ic.Up s={18}/>} title="Sales growth" badge={<span className="pc">{ksh(mord.reduce((a,o)=>a+o.amt,0))}</span>}><Spark gid="gm" d={wkb.map(x=>x.reduce((a,o)=>a+o.amt,0))} lab={wkl}/><p className="bd" style={{margin:'8px 0 0'}}>Gross sales per day, last 7 days</p></Acc>
-      <Acc icon={<Ic.Chart s={18}/>} title="Orders per day" badge={<span className="pc">{mord.length}</span>}><Bars d={wkb.map(x=>x.length)} lab={wkl}/></Acc>
-      <Acc icon={<Ic.Tag s={18}/>} title="Top products">{topP.length?<Hbar f={v=>v+' sold'} rows={topP}/>:<p className="bd" style={{margin:0}}>No sales yet.</p>}</Acc>
-      <Acc icon={<Ic.Users s={18}/>} title="Top dropshippers">{topD.length?<Hbar f={v=>ksh(v)} rows={topD}/>:<p className="bd" style={{margin:0}}>No dropshipper sales yet.</p>}</Acc>
-      <Acc icon={<Ic.Pkg s={18}/>} title="Order pipeline"><Hbar rows={[['Secured',mord.filter(o=>o.status==='Secured').length],['Shipped',mord.filter(o=>o.status==='Shipped').length],['Delivered',mord.filter(o=>o.status==='Delivered').length],['Paid out',mord.filter(o=>o.status==='Paid out').length]]}/><div className="kpis" style={{margin:'14px 0 0'}}><Kp i={<Ic.Truck s={20}/>} l="Avg. fulfilment" v="—"/><Kp i={<Ic.Undo s={20}/>} l="Return rate" v="0%"/></div></Acc>
-      <Acc icon={<Ic.Store s={18}/>} title="Store setup" badge={<span className="pc">{pct}%</span>}><div className="prog"><i style={{width:pct+'%'}}/></div>
-       {pct<100?<><p className="bd" style={{margin:'10px 0 10px'}}>Complete your profile to build trust with customers.</p><div className="hs" style={{gap:8,flexWrap:'wrap'}}>{checks.filter(c=>!c[1]).slice(0,4).map(c=><button key={c[0]} className="chip" onClick={()=>c[2]==='store'?setPtab('store'):note('Open Shop information below to edit')}>{c[0]}</button>)}</div></>:<p className="bd okc" style={{margin:'10px 0 0'}}><Ic.Check s={16}/>Your store profile is complete</p>}</Acc>
-      {details}
+     {ptab==='alerts'&&<>
+      {bUn>0&&<div style={{display:'flex',justifyContent:'flex-end',margin:'0 0 10px'}}><button className="lnk" onClick={()=>setBread(r=>{const n={...r};bAl.forEach(a=>{n[a.key]=1});return n})}>Mark all as read</button></div>}
+      {bAl.map(a=><div key={a.key} className={'card tapc nt'+(bread[a.key]?'':' un')} onClick={()=>{setBread(r=>({...r,[a.key]:1}));setPtab(a.go||(role==='merchant'?'ords':'dash'))}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span className="nti">{CI[{secured:'lock',shipped:'truck',delivered:'pin',collected:'check',late:'bell',soon:'bell',low:'box',out:'box'}[a.kind]]()}</span><span>{{late:'Shipping overdue',soon:'Ship soon',low:'Low stock',out:role==='merchant'?'Out of stock':'Promoted product unavailable',secured:role==='merchant'?'New order':'New sale',shipped:'Order shipped',delivered:'Order delivered',collected:role==='merchant'?'Payment released':'Order collected'}[a.kind]}</span></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!bread[a.key]&&<span className="udot"/>}<span className="st mu">{a.ts?fmtT(a.ts):''}</span></span></div><p className="bd">{a.text}</p></div>)}
+      {!bAl.length&&<p className="bd" style={{textAlign:'center',padding:'28px 12px'}}>No alerts yet. {role==='merchant'?'New orders and payouts':'Sales and commissions'} will appear here as they happen.</p>}
      </>}
+
+     {ptab==='prof'&&<>
+      {details}
+      <Acc icon={<Ic.Users s={18}/>} title="Switch account">{[['client','Personal account','Shop, chat and track your orders',Ic.Person],['merchant','Merchant account','Upload products and fulfil orders',Ic.Pkg],['dropshipper','Dropshipper account','Promote deals and earn commission',Ic.Tag]].filter(x=>x[0]!==acct).map(([k,l,sb,Icn])=><button key={k} className="row" style={{padding:'11px 0'}} onClick={()=>goAcct(k)}><span className="acci"><Icn s={18}/></span><div className="grow"><div className="nm">{l}</div><div className="pv">{sb}</div></div><span className="mu"><Ic.Chev s={16}/></span></button>)}</Acc>
+     </>}
+
+     {role==='merchant'&&ptab==='dash'&&(()=>{const W={'7d':7,'30d':30,all:0}[mper],now=Date.now(),sum=(l,f)=>l.reduce((t,o)=>t+f(o),0),cur=mord.filter(o=>!W||now-(o.t||0)<W*864e5),prv=W?mord.filter(o=>{const x=now-(o.t||0);return x>=W*864e5&&x<2*W*864e5}):[],
+       dl=(c,q)=>q?(c>=q?'▲ ':'▼ ')+Math.abs(Math.round((c-q)/q*100))+'%':undefined,
+       gross=sum(cur,o=>o.amt),comm=sum(cur,o=>o.comm),net=gross-comm,n=cur.length,aov=n?Math.round(gross/n):0,
+       held=sum(cur.filter(o=>o.status==='Secured'||o.status==='Shipped'),o=>o.amt-o.comm),paid=sum(cur.filter(o=>o.status==='Paid out'),o=>o.amt-o.comm),
+       ship=mord.filter(o=>o.status==='Secured'),late=ship.filter(o=>o.due&&o.due<now).length,done=cur.filter(o=>o.status==='Delivered'||o.status==='Paid out').length,
+       viaD=cur.filter(o=>o.drop!=='Direct').length,low=mprods.filter(p=>(p.stock||0)<=5),maxS=Math.max(1,...mprods.map(p=>p.stock||0)),
+       tp=Object.entries(cur.reduce((m,o)=>(m[o.item]=(m[o.item]||0)+(o.qty||1),m),{})).sort((x,y)=>y[1]-x[1]).slice(0,5),
+       td=Object.entries(cur.filter(o=>o.drop!=='Direct').reduce((m,o)=>(m[o.drop]=(m[o.drop]||0)+o.amt,m),{})).sort((x,y)=>y[1]-x[1]).slice(0,5),
+       Cd=(t,bd,c)=><div className="card"><div className="chd"><b>{t}</b>{bd!=null&&<span className="pc">{bd}</span>}</div>{c}</div>,
+       At=(ic,t,sb,go)=><button className="row" style={{padding:'11px 0'}} onClick={()=>setPtab(go)}><span className="acci">{ic}</span><div className="grow"><div className="nm">{t}</div><div className="pv">{sb}</div></div><span className="mu"><Ic.Chev s={16}/></span></button>,
+       nb=W===7?7:W===30?10:8,span=W?W*864e5:Math.max(7*864e5,now-Math.min(now,...mord.map(o=>o.t||now))),size=span/nb,bk=Array.from({length:nb},(_,i)=>cur.filter(o=>Math.min(nb-1,Math.floor((now-(o.t||0))/size))===nb-1-i)),lb=bk.map((_,i)=>new Date(now-(nb-i-.5)*size).toLocaleDateString([],W===7?{weekday:'short'}:{day:'numeric',month:'short'})),wd=[1,2,3,4,5,6,0].map(d=>cur.filter(o=>new Date(o.t||0).getDay()===d).length),shp=cur.filter(o=>['Shipped','Delivered','Paid out'].includes(o.status)).length,dlv=cur.filter(o=>o.status==='Delivered'||o.status==='Paid out').length,pd=cur.filter(o=>o.status==='Paid out').length,dir=sum(cur.filter(o=>o.drop==='Direct'),o=>o.amt),cnt=st=>cur.filter(o=>o.status===st).length,
+       items=[ship.length>0&&At(<Ic.Pkg s={18}/>,ship.length+(ship.length>1?' orders':' order')+' to ship',late?late+' overdue · ship within 24 hrs of the order':'Drop at the assigned TeQx point on time','ords'),low.length>0&&At(<Ic.Tag s={18}/>,low.length+(low.length>1?' products':' product')+' low on stock',low.slice(0,2).map(x=>x.name).join(', ')+' · restock to keep selling','store'),pct<100&&At(<Ic.Store s={18}/>,'Store profile '+pct+'% complete','Complete it to build buyer trust','prof')].filter(Boolean);
+       return <>
+      <div className="per" style={{marginBottom:14}}>{[['7d','7 days'],['30d','30 days'],['all','All time']].map(([k,l])=><button key={k} className={mper===k?'on':''} onClick={()=>setMper(k)}>{l}</button>)}</div>
+      <div className="wh"><small>Net revenue · after commissions</small><b className="big">{ksh(net)}</b>{dl(gross,sum(prv,o=>o.amt))&&<span className="dd">{dl(gross,sum(prv,o=>o.amt))} sales vs previous {W} days</span>}
+       <div className="wrow"><div><small>Held until delivery</small><b>{ksh(held)}</b></div><div><small>Paid out</small><b>{ksh(paid)}</b></div></div></div>
+      {Cd('Needs attention',items.length||null,items.length?items:<p className="bd okc" style={{margin:0}}><Ic.Check s={16}/>All caught up. Nothing needs your attention.</p>)}
+      <div className="kpis"><Kp i={<Ic.Wallet s={20}/>} l="Gross sales" v={ksh(gross)} dl={dl(gross,sum(prv,o=>o.amt))}/><Kp i={<Ic.Pkg s={20}/>} l="Orders" v={n} dl={dl(n,prv.length)}/><Kp i={<Ic.Chart s={20}/>} l="Avg. order value" v={ksh(aov)} dl={dl(aov,prv.length?Math.round(sum(prv,o=>o.amt)/prv.length):0)}/><Kp i={<Ic.Users s={20}/>} l="Commissions paid" v={ksh(comm)}/><Kp i={<Ic.Truck s={20}/>} l="Fulfilment rate" v={(n?Math.round(done/n*100):0)+'%'}/><Kp i={<Ic.Link s={20}/>} l="Via dropshippers" v={(n?Math.round(viaD/n*100):0)+'%'}/><Kp i={<Ic.Tag s={20}/>} l="Products live" v={mprods.length}/><Kp i={<Ic.Pkg s={20}/>} l="Units in stock" v={mprods.reduce((a,p)=>a+(p.stock||0),0).toLocaleString()}/></div>
+      {Cd('Revenue trend',ksh(gross),<Trend gid="gm" s={[{name:'Gross',color:'#ff5c0a',d:bk.map(x=>sum(x,o=>o.amt))},{name:'Net',color:'#12c062',d:bk.map(x=>sum(x,o=>o.amt-o.comm))}]} lab={lb} f={ksh}/>)}
+      {Cd('Orders over time',n,<Trend bar gid="go" s={[{name:'Orders',color:'#ff5c0a',d:bk.map(x=>x.length)}]} lab={lb}/>)}
+      {Cd('Sales channels',null,<Donut rows={[['Direct',dir,'#ff5c0a'],['Dropshippers',gross-dir,'#12c062']]} f={K} c={[K(gross),'gross sales']}/>)}
+      {Cd('Where each KSh goes',null,<Donut rows={[['Your net',net,'#12c062'],['Commissions',comm,'#ff8f1c']]} f={K} c={[K(net),'net']}/>)}
+      {Cd('Order status',n,<Donut rows={[['Secured',cnt('Secured'),'#ff8f1c'],['Shipped',cnt('Shipped'),'#ff5c0a'],['Delivered',cnt('Delivered'),'#34e68a'],['Paid out',cnt('Paid out'),'#079244']]} c={[n,'orders']}/>)}
+      {Cd('Fulfilment funnel',null,<Funnel rows={[['Placed',n],['Shipped',shp],['Delivered',dlv],['Paid out',pd]]}/>)}
+      {Cd('Busiest days',null,<Trend bar gid="gw" s={[{name:'Orders',color:'#ff8f1c',d:wd}]} lab={['Mon','Tue','Wed','Thu','Fri','Sat','Sun']}/>)}
+      {Cd('Top products',null,tp.length?<Hbar f={v=>v+' sold'} rows={tp}/>:<p className="bd" style={{margin:0}}>No sales in this period yet.</p>)}
+      {Cd('Top dropshippers',null,td.length?<Hbar f={v=>ksh(v)} rows={td}/>:<p className="bd" style={{margin:0}}>No dropshipper sales in this period yet.</p>)}
+      {Cd('Inventory health',low.length?low.length+' low':'Healthy',mprods.length?mprods.slice().sort((x,y)=>(x.stock||0)-(y.stock||0)).slice(0,6).map(x=><div key={x.id} style={{padding:'8px 0'}}><div style={{display:'flex',justifyContent:'space-between',fontSize:13.5,fontWeight:700}}><span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',paddingRight:10}}>{x.name}</span><span style={{color:(x.stock||0)<=5?'#f03a0e':'var(--mut)'}}>{x.stock||0} left</span></div><div className={'stk'+((x.stock||0)<=5?' lo':'')}><i style={{width:Math.max(4,(x.stock||0)/maxS*100)+'%'}}/></div></div>):<p className="bd" style={{margin:0}}>Upload a product to track stock here.</p>)}
+     </>})()}
 
      {role==='merchant'&&ptab==='store'&&<>
       <Acc icon={<Ic.Camera s={18}/>} title="Product photos" badge={<span className="pc">{photos.length}</span>}>
@@ -1150,7 +1209,7 @@ function App(){
        {mpr>0&&mpc>0&&<p className="bd" style={{margin:'12px 0 0'}}>Dropshipper earns {ksh(Math.round(mpr*mpc/100))} per sale. You receive {ksh(mpr-Math.round(mpr*mpc/100))}.</p>}
        <button className="btn" style={{marginTop:16}} onClick={addProd}>Upload product</button></Acc>
       <Acc icon={<Ic.Pkg s={18}/>} title="Your products" badge={<span className="pc">{mprods.length}</span>}>
-       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.imgs?p.imgs[0]:p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.moq?'MOQ '+p.moq+' · ':''}{p.stock} in bulk stock · {(p.imgs||[p.img]).length} photo{(p.imgs||[p.img]).length>1?'s':''}</small>{(p.attrs||[]).length>0&&<small style={{display:'block'}}>{p.attrs.map(a=>a.k+': '+a.v.join('/')).join(' · ')}</small>}<div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>{if(p.dbId)fetch('/api/products/'+p.dbId+'?device='+encodeURIComponent(DEV),{method:'DELETE'}).catch(()=>{});setMprods(m=>m.filter(x=>x.id!==p.id))}}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
+       {mprods.length?mprods.map(p=><div key={p.id} className="deal"><img src={p.imgs?p.imgs[0]:p.img} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.moq?'MOQ '+p.moq+' · ':''}{/^mp\d+$/.test(String(p.id))?'Added '+agoT(+String(p.id).slice(2))+' · ':''}{p.stock} in bulk stock · {(p.imgs||[p.img]).length} photo{(p.imgs||[p.img]).length>1?'s':''}</small>{(p.attrs||[]).length>0&&<small style={{display:'block'}}>{p.attrs.map(a=>a.k+': '+a.v.join('/')).join(' · ')}</small>}<div className="cm">Commission {ksh(Math.round(p.price*p.pct/100))} ({p.pct}%)</div></div><button className="lnk" onClick={()=>{if(p.dbId)fetch('/api/products/'+p.dbId+'?device='+encodeURIComponent(DEV),{method:'DELETE'}).catch(()=>{});setMprods(m=>m.filter(x=>x.id!==p.id))}}>Delete</button></div>):<p className="bd" style={{margin:0}}>No products yet. Upload one above.</p>}</Acc>
      </>}
 
      {role==='merchant'&&ptab==='ords'&&<>
@@ -1176,32 +1235,38 @@ function App(){
        lab=bk.map((_,i)=>fm(now-(nb-i-.5)*size)),top={};inP.forEach(o=>{top[o.item]=(top[o.item]||0)+o.comm});const tr=Object.entries(top).sort((x,y)=>y[1]-x[1]).slice(0,4);
        return <>
       <div style={{display:'flex',alignItems:'center',gap:10,margin:'0 0 12px'}}><button className={'fbtn'+(pfo?' on':'')} aria-label="Filter period" onClick={()=>setPfo(v=>!v)}><Ic.Filter/></button><span className="bd" style={{margin:0}}>Showing {PERL.find(x=>x[0]===dper)[1]}</span></div>{pfo&&<div className="per">{PERL.map(([k,l])=><button key={k} className={dper===k?'on':''} onClick={()=>{setDper(k);setPfo(false)}}>{l}</button>)}</div>}
+      <div className="wh"><small>Expected commission · {PERL.find(x=>x[0]===dper)[1]}</small><b className="big">{ksh(sum(exp,'comm'))}</b><div className="wrow"><div><small>Released</small><b>{ksh(sum(rel,'comm'))}</b></div><div><small>Paid to bank</small><b>{ksh(earnD)}</b></div></div></div>
+      <div className="card"><div className="chd"><b>Needs attention</b></div>{[!myPosts.length&&['Tag','No live posts yet','Pick a deal and promote it to start earning','deals'],allDeals.length>0&&['Pen',allDeals.length+' deals available','Promote more products to grow your commission','deals'],exp.length>0&&['Wallet',exp.length+(exp.length>1?' orders':' order')+' in progress','Commission releases after each order is collected','wal']].filter(Boolean).map(([ic,t,sb,go])=>{const Icn=Ic[ic];return <button key={t} className="row" style={{padding:'11px 0'}} onClick={()=>setPtab(go)}><span className="acci"><Icn s={18}/></span><div className="grow"><div className="nm">{t}</div><div className="pv">{sb}</div></div><span className="mu"><Ic.Chev s={16}/></span></button>})}{myPosts.length>0&&!exp.length&&allDeals.length===0&&<p className="bd okc" style={{margin:0}}><Ic.Check s={16}/>All caught up.</p>}</div>
       <p className="live"><i/>Live · updates as orders are placed through your posts</p>
-      <div className="kpis"><Kp i={<Ic.Up s={20}/>} l="Expected commission" v={ksh(sum(exp,'comm'))}/><Kp i={<Ic.Wallet s={20}/>} l="Sales secured" v={ksh(sum(inP,'amt'))}/><Kp i={<Ic.Pkg s={20}/>} l="Orders placed" v={inP.length}/><Kp i={<Ic.Users s={20}/>} l="Released after delivery" v={ksh(sum(rel,'comm'))}/></div>
+      <div className="kpis"><Kp i={<Ic.Up s={20}/>} l="Expected commission" v={ksh(sum(exp,'comm'))}/><Kp i={<Ic.Wallet s={20}/>} l="Sales secured" v={ksh(sum(inP,'amt'))}/><Kp i={<Ic.Pkg s={20}/>} l="Orders placed" v={inP.length}/><Kp i={<Ic.Users s={20}/>} l="Released after delivery" v={ksh(sum(rel,'comm'))}/><Kp i={<Ic.Chart s={20}/>} l="Avg. commission / order" v={ksh(inP.length?Math.round(sum(inP,'comm')/inP.length):0)}/><Kp i={<Ic.Wallet s={20}/>} l="Avg. order value" v={ksh(inP.length?Math.round(sum(inP,'amt')/inP.length):0)}/></div>
       <p className="bd" style={{margin:'-4px 0 14px'}}>Buyers have already secured their money for these orders, so your commission is expected, not earned yet. It is settled straight to your bank account once each order is collected.</p>
       <div className="qa" style={{gridTemplateColumns:'repeat(3,1fr)'}}><button onClick={()=>setPtab('deals')}><span><Ic.Tag s={20}/></span>Browse deals</button><button onClick={()=>setPtab('posts')}><span><Ic.Pen s={20}/></span>My posts</button><button onClick={shareShop}><span><Ic.Link s={20}/></span>Share page</button></div>
-      <Acc icon={<Ic.Up s={18}/>} title="Sales secured" badge={<span className="pc">{ksh(sum(inP,'amt'))}</span>}><Spark gid="gd" d={bk.map(x=>sum(x,'amt'))} lab={lab}/></Acc>
-      <Acc icon={<Ic.Wallet s={18}/>} title="Expected commission" badge={<span className="pc">{ksh(sum(inP,'comm'))}</span>}><Bars d={bk.map(x=>sum(x,'comm'))} lab={lab}/><p className="bd" style={{margin:'8px 0 0'}}>Commission on all orders placed in this period, including those already delivered.</p></Acc>
+      <div className="card"><div className="chd"><b>Sales trend</b><span className="pc">{ksh(sum(inP,'amt'))}</span></div><Trend gid="gd" s={[{name:'Sales',color:'#ff5c0a',d:bk.map(x=>sum(x,'amt'))}]} lab={lab} f={ksh}/></div>
+      <div className="card"><div className="chd"><b>Commission over time</b><span className="pc">{ksh(sum(inP,'comm'))}</span></div><Trend bar gid="gc" s={[{name:'Commission',color:'#12c062',d:bk.map(x=>sum(x,'comm'))}]} lab={lab} f={ksh}/><p className="bd" style={{margin:'8px 0 0'}}>Commission on all orders placed in this period. It is released once each order is collected.</p></div>
+      <div className="card"><div className="chd"><b>Commission status</b></div><Donut rows={[['Expected',sum(exp,'comm'),'#ff8f1c'],['Released',sum(rel,'comm'),'#12c062']]} f={K} c={[K(sum(inP,'comm')),'total']}/></div>
+      <div className="card"><div className="chd"><b>Order funnel</b><span className="pc">{inP.length}</span></div><Funnel rows={[['Placed',inP.length],['Shipped',inP.filter(o=>o.status!=='Secured').length],['Delivered',rel.length]]}/></div>
+      {tr.length>0&&<div className="card"><div className="chd"><b>Commission by deal</b></div><Donut rows={tr.map(([l,v],q)=>[l,v,PAL[q%6]])} f={K} c={[K(sum(inP,'comm')),'earned']}/></div>}
       <Acc icon={<Ic.Tag s={18}/>} title="Top deals by commission">{tr.length?<Hbar f={v=>ksh(v)} rows={tr}/>:<p className="bd" style={{margin:0}}>No orders in this period yet.</p>}</Acc>
       <Acc icon={<Ic.Pen s={18}/>} title="Post performance" badge={<span className="pc">{myPosts.length}</span>}><div className="kpis" style={{marginBottom:0}}><Kp i={<Ic.Pen s={20}/>} l="Live posts" v={myPosts.length}/><Kp i={<Ic.HeartS s={20}/>} l="Likes" v={dash.likes.toLocaleString()}/><Kp i={<Ic.MsgS s={20}/>} l="Comments" v={dash.cm}/><Kp i={<Ic.Users s={20}/>} l="Followers" v="0"/></div></Acc>
-      {details}
      </>})()}
 
      {role==='dropshipper'&&ptab==='deals'&&<>
       <p className="bd" style={{margin:'0 0 12px'}}>Merchant products you can promote. You earn the commission on every sale from your posts.</p>
       <div className="dsb"><div className="sbx"><Ic.Search/><input placeholder="Search deals or shops" value={dsq} onChange={e=>setDsq(e.target.value)}/>{dsq&&<button className="lnk" onClick={()=>setDsq('')}>Clear</button>}</div><button className={'fbtn'+(nf?' on':'')} aria-label="Filter deals" onClick={()=>setFopen(true)}><Ic.Filter/>{nf>0&&<em>{nf}</em>}</button></div>
-      <div className="card" style={{padding:'4px 16px'}}>{dealList.map(d=><div key={d.id} className="deal"><img src={d.imgs[0]} alt="" loading="lazy"/><div className="grow"><div className="pn2">{d.name}</div><small>{d.by} · {d.moq?'MOQ '+d.moq+' · ':''}{d.stock} in stock</small><div className="amt" style={{fontSize:14,marginTop:3}}>{ksh(d.price)}</div><div className="cm">Earn {ksh(cmm(d))} ({d.pct}%)</div></div><button className="btn" onClick={()=>startPromo(d)}>Promote</button></div>)}{!dealList.length&&<div style={{padding:'16px 0'}}><p className="bd" style={{margin:'0 0 12px'}}>No deals match your search or filters.</p><button className="btn" onClick={resetF}>Reset filters</button></div>}</div>
+      <div className="card" style={{padding:'4px 16px'}}>{dealList.map(d=><div key={d.id} className="deal" onClick={()=>isN(d)&&setDseen(v=>({...v,[d.id]:1}))}><img src={d.imgs[0]} alt="" loading="lazy"/><div className="grow"><div className="pn2">{d.name}{isN(d)&&<em className="dl">New</em>}</div><small>{d.by} · {d.moq?'MOQ '+d.moq+' · ':''}{d.stock} in stock{dAgo(d)?' · '+dAgo(d):''}</small><div className="amt" style={{fontSize:14,marginTop:3}}>{ksh(d.price)}</div><div className="cm">Earn {ksh(cmm(d))} ({d.pct}%)</div></div><button className="btn" onClick={()=>startPromo(d)}>Promote</button></div>)}{!dealList.length&&<div style={{padding:'16px 0'}}><p className="bd" style={{margin:'0 0 12px'}}>No deals match your search or filters.</p><button className="btn" onClick={resetF}>Reset filters</button></div>}</div>
      </>}
 
      {role==='dropshipper'&&ptab==='posts'&&<>
-      {myPosts.length?myPosts.map(p=><div key={p.id} className="card" style={{padding:'12px 16px'}}><div className="deal" style={{padding:0,border:0}}><img src={p.imgs[0]} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}</small>{p.pct&&<div className="cm">Commission {p.pct}%</div>}</div><div style={{display:'flex',flexDirection:'column',gap:10,alignItems:'flex-end'}}><button className="lnk" onClick={()=>startEdit(p)}>Edit</button><button className="lnk" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div></div></div>):<div className="card"><p className="bd" style={{margin:'0 0 12px'}}>No posts yet. Pick a deal and tap Promote to create your first post.</p><button className="btn" onClick={()=>setPtab('deals')}>Browse deals</button></div>}
+      {myPosts.length?myPosts.map(p=><div key={p.id} className="card" style={{padding:'12px 16px'}}><div className="deal" style={{padding:0,border:0}}><img src={p.imgs[0]} alt=""/><div className="grow"><div className="pn2">{p.name}</div><small>{ksh(p.price)} · {p.imgs.length} photo{p.imgs.length>1?'s':''}{(p.t||/^my\d+$/.test(String(p.id)))?' · '+agoT(p.t||+String(p.id).slice(2)):''}</small>{p.pct&&<div className="cm">Commission {p.pct}%</div>}</div><div style={{display:'flex',flexDirection:'column',gap:10,alignItems:'flex-end'}}><button className="lnk" onClick={()=>startEdit(p)}>Edit</button><button className="lnk" onClick={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}>Delete</button></div></div></div>):<div className="card"><p className="bd" style={{margin:'0 0 12px'}}>No posts yet. Pick a deal and tap Promote to create your first post.</p><button className="btn" onClick={()=>setPtab('deals')}>Browse deals</button></div>}
      </>}
     
  </>;
  return <div className="app">
-  {!(tab==='inbox'&&chat)&&tab!=='profile'&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search" onClick={()=>setSearch(true)}><Ic.Search/></button>}</div></div>{d?<div className="tagl">Explore shopping</div>:<p className="sub">{TAG[tab]}</p>}</header>}
+  {!isCl&&btab!=='prof'&&<header className="hdr"><div className="hrow">{brand}{swBtn}</div><p className="sub">{(role==='merchant'?'Merchant':'Dropshipper')+' · '+BTAG[role][btab]}</p></header>}
+  {isCl&&!(tab==='inbox'&&chat)&&tab!=='profile'&&<header className="hdr"><div className="hrow">{brand}<div style={{display:'flex',gap:10}}>{d&&<button className="ico" aria-label="Search" onClick={()=>setSearch(true)}><Ic.Search/></button>}</div></div>{d?<div className="tagl">Explore shopping</div>:<p className="sub">{TAG[tab]}</p>}</header>}
   <main>
-   {tab==='inbox'&&<>
+   {!isCl&&btab!=='prof'&&<div className="page" key={role+btab}>{biz(role,btab,setBtab)}</div>}
+   {isCl&&tab==='inbox'&&<>
     <div className="tray"><div className="hs stories">{STORES.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i>{s.icon}</i><span className="dot"/></div><span>{s.name}</span></button>)}</div>
      <div className="sect" style={{paddingTop:14}}>Conversations</div></div>
     <div className="page" style={{padding:'4px 0 24px'}}>
@@ -1212,7 +1277,7 @@ function App(){
     </button>}):<p className="bd" style={{padding:'24px 20px',textAlign:'center'}}>No conversations yet. Tap a shop above to start chatting.</p>})()}
    </div></>}
 
-   {tab==='inbox'&&chat&&<div className="chat">
+   {isCl&&tab==='inbox'&&chat&&<div className="chat">
     <svg width="0" height="0" style={{position:'absolute'}} aria-hidden="true"><defs><linearGradient id="tkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#5bffa5"/><stop offset=".55" stopColor="#12c062"/><stop offset="1" stopColor="#079244"/></linearGradient></defs></svg>
     <div className="chdr"><button className="back" aria-label="Back" onClick={()=>setChat(null)}><Ic.Back/></button><div className="hav"><div className="av">{chat.icon}</div><i/></div>
      <div className="grow"><div className="nm"><span>{chat.name}</span><Verified s={15}/></div>{isTyp?<div key="t" className="ctyp"><span className="gtxt">typing</span><span className="gd"><i/><i/><i/></span></div>:<div key="c" className="ccat">{SCAT[chat.id]}</div>}</div><div className="cartic" aria-label="Cart"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 11.5a2 2 0 0 0 2 1.5h8.2a2 2 0 0 0 2-1.5L21.5 7H6"/></svg>{cnt(chat.id)>0&&<span key={cnt(chat.id)} className="cbd">{cnt(chat.id)>999?'999+':cnt(chat.id)}</span>}</div>
@@ -1229,10 +1294,10 @@ function App(){
    </div>}
 
    {d&&<div className="page" style={{padding:'6px 16px 24px'}} onTouchStart={e=>{pull.current=e.currentTarget.scrollTop===0?e.touches[0].clientY:null}} onTouchEnd={e=>{if(pull.current!==null&&e.changedTouches[0].clientY-pull.current>90)refresh();pull.current=null}}>
-    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} onProfile={()=>note('This is your own shop')} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,multi:p.multi,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} onProfile={()=>setSp(st.id)} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
+    {loading?<><Skel/><Skel/></>:<>{myPosts.map(p=>{const o={id:p.id,name:shop.name,icon:shop.icon,avatar:shop.avatar,tag:'#'+shop.name.replace(/\s/g,''),img:p.imgs[0],imgs:p.imgs,prods:[[p.name,p.price]],ts:p.t||(/^my\d+$/.test(String(p.id))?+String(p.id).slice(2):0),custom:true};COL[o.id]=p.imgs.map(()=>['','']);CAP[o.id]=p.cap||'Fresh in the store.';return <Post key={p.id} cc={12+(cmts[p.id]||[]).length} onComment={()=>setCm(p.id)} onStory={()=>{}} onProfile={()=>note('This is your own shop')} s={o} si={0} f={true} onFollow={()=>{}} liked={liked[p.id]} onLike={()=>flip(setLiked,p.id)} saved={saved[p.id]} onSave={()=>flip(setSaved,p.id)} onChat={()=>note('This is your own post')} onBuy={()=>{}} note={note} onDelete={()=>setMyPosts(m=>m.filter(x=>x.id!==p.id))}/>})}{FEED.map((p,si)=>{const st=STORES.find(x=>x.id===p.sid),o={...st,pid:p.pid,prods:[[p.name,p.price]],imgs:p.imgs,img:p.imgs[0],cols:p.cols,multi:p.multi,cap:p.cap,ago:p.ago};return <Post key={p.pid} cc={56+si*9+(cmts[p.pid]||[]).length} onComment={()=>setCm(p.pid)} onStory={()=>openStory(STORES.indexOf(st))} onProfile={()=>setSp(st.id)} s={o} si={si} f={fol[st.id]} onFollow={()=>flip(setFol,st.id)} liked={liked[p.pid]} onLike={()=>flip(setLiked,p.pid)} saved={saved[p.pid]} onSave={()=>flip(setSaved,p.pid)} onChat={m=>open(st,m)} onBuy={(i,pr)=>quick(st,i,pr)} note={note}/>})}</>}
    </div>}
 
-   {tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
+   {isCl&&tab==='orders'&&<div className="page" style={{overflow:'hidden',display:'flex',flexDirection:'column',paddingBottom:0}}>
     <div className="wh" style={{flexShrink:0}}><small>Total funds secured</small><b className="big">{ksh(totSec)}</b><div className="wrow"><div><small>Orders secured</small><b>{secured.length}</b></div><div><small>Delivery fees held</small><b>{ksh(secured.reduce((a,o)=>a+(o.fee||delFee(o.price)),0))}</b></div></div><small style={{marginTop:12}}>Held safely until you collect your orders</small></div>
     <div style={{flexShrink:0,fontSize:18,fontWeight:800,letterSpacing:'-.01em',margin:'2px 4px 12px'}}>Your Orders</div>
     <div style={{flex:1,minHeight:0,overflowY:'auto',scrollbarWidth:'none',paddingBottom:24}}>
@@ -1242,11 +1307,11 @@ function App(){
     </div>
    </div>}
 
-   {tab==='alerts'&&<div className="page">
+   {isCl&&tab==='alerts'&&<div className="page">
     {notifs.map(n=><div key={n.id} className={'card tapc nt'+(n.r?'':' un')} onClick={()=>{setNotifs(a=>a.map(x=>x.id===n.id?{...x,r:true}:x));setTab('orders')}}><div className="ch"><div className="nm" style={{fontSize:14.5}}><span className="nti">{CI[{secured:'lock',shipped:'truck',delivered:'pin',collected:'check'}[n.kind]]()}</span><span>{n.s.name}</span><Verified s={15}/></div><span style={{display:'flex',alignItems:'center',gap:8}}>{!n.r&&<span className="udot"/>}<span className="st mu">{fmtT(n.ts)}</span></span></div><p className="bd">{n.text}</p></div>)}
     {!notifs.length&&<p className="bd" style={{textAlign:'center',padding:'28px 12px'}}>No alerts yet. Order updates will appear here as they happen.</p>}
    </div>}
-   {tab==='profile'&&<div className="pfwrap">
+   {(isCl?tab==='profile':btab==='prof')&&<div className="pfwrap">
     <div className="pstick">
      {mode==='shop'?<>
       <div className="bkrow"><button aria-label="Back to profile" onClick={()=>setAcct('client')}><Ic.Back/></button><b>{role==='merchant'?'Merchant account':'Dropshipper account'}</b>{swBtn}</div>
@@ -1352,8 +1417,8 @@ function App(){
    </div></div>}
   {toast&&<div className="toast">{toast}</div>}
 
-  {!chat&&<div className="navw"><nav className="nav">
-   {nav.map(([k,l,Icon])=>{const b=k==='inbox'?Object.values(unread).reduce((a,c)=>a+c,0):k==='alerts'?notifs.filter(n=>!n.r).length:0;return <button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><span className="ni"><Icon/>{b>0&&<span className="nb">{b}</span>}</span><span>{l}</span></button>})}
+  {(!chat||!isCl)&&<div className="navw"><nav className={'nav'+(isCl?'':' biz')}>
+   {isCl?nav.map(([k,l,Icon])=>{const b=k==='inbox'?Object.values(unread).reduce((a,c)=>a+c,0):k==='alerts'?notifs.filter(n=>!n.r).length:0;return <button key={k} className={tab===k?'act':''} onClick={()=>{setTab(k);if(k==='inbox')setChat(null)}}><span className="ni"><Icon/>{b>0&&<span className="nb">{b}</span>}</span><span>{l}</span></button>}):bnav.map(([k,l,Icon,nf])=>{const b=k==='alerts'?bUn:k==='ords'?mord.filter(o=>o.status==='Secured').length:0;return <button key={k} className={(btab===k?'act':'')+(nf?' nofill':'')} onClick={()=>setBtab(k)}><span className="ni"><Icon s={24}/>{b>0&&<span className="nb">{b}</span>}</span><span>{l}</span></button>})}
   </nav></div>}
  </div>;
 }
@@ -1388,5 +1453,80 @@ const BOOT=Promise.all([
 BOOT.then(()=>{window.__DATA=1;window.dispatchEvent(new Event('teqx-data'))}).catch(()=>{});
 Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App/>));
 </script>
+<!-- Persistent "Install app" banner: shows on every visit until the app is installed -->
+<style>
+#pwa-install{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:2147483000;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surf,#151519);color:var(--text,#f5f5f7);border:1px solid var(--cardline,rgba(255,255,255,.1));box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.5));font:600 14px/1.35 'Plus Jakarta Sans',system-ui,sans-serif;max-width:480px;margin:0 auto}
+#pwa-install.show{display:flex}
+#pwa-install .pi-ico{width:40px;height:40px;border-radius:10px;flex:none;background:var(--grad,#ff5c0a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
+#pwa-install .pi-txt{flex:1;min-width:0}
+#pwa-install .pi-txt small{display:block;font-weight:500;color:var(--mut,#9b9ba8);font-size:12px;margin-top:2px}
+#pwa-install button{border:0;cursor:pointer;font:inherit}
+#pwa-install .pi-go{background:var(--grad,#ff5c0a);color:#fff;padding:9px 16px;border-radius:999px;font-weight:700;box-shadow:var(--glow,none)}
+#pwa-install .pi-later{background:transparent;color:var(--mut,#9b9ba8);padding:6px;font-weight:600;font-size:12px}
+</style>
+<div id="pwa-install" role="dialog" aria-label="Install app">
+  <div class="pi-ico">T</div>
+  <div class="pi-txt"><span id="pi-title">Install TeQx</span><small id="pi-sub">Get the full app experience</small></div>
+  <button class="pi-go" id="pi-go" type="button">Install</button>
+  <button class="pi-later" id="pi-later" type="button">Not now</button>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById('pwa-install'),go=document.getElementById('pi-go'),
+      later=document.getElementById('pi-later'),title=document.getElementById('pi-title'),sub=document.getElementById('pi-sub');
+  var deferred=null,installed=false,snoozed=false;
+  var ua=navigator.userAgent||'';
+  var isIOS=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  var isStandalone=function(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true};
+
+  function show(){ if(installed||snoozed||isStandalone())return; bar.classList.add('show'); }
+  function hide(){ bar.classList.remove('show'); }
+
+  // Already running as an installed app -> never show
+  if(isStandalone()){ installed=true; return; }
+
+  // Chrome / Edge / Android: capture the native prompt and show our own banner
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); deferred=e;
+    title.textContent='Install TeQx'; sub.textContent='Get the full app experience';
+    go.textContent='Install'; go.style.display='';
+    show();
+  });
+
+  go.addEventListener('click',function(){
+    if(deferred){
+      deferred.prompt();
+      deferred.userChoice.then(function(c){
+        deferred=null; // the native prompt can only be used once
+        if(c.outcome==='accepted'){ installed=true; hide(); }
+        else{
+          // Dismissed: keep the banner, with manual steps until the browser offers the prompt again
+          title.textContent='Install TeQx';
+          sub.textContent='Open your browser menu and tap “Install app”';
+          go.style.display='none';
+          show();
+        }
+      });
+    }
+  });
+
+  // Installed (from our button or the browser's own UI) -> stop for good
+  window.addEventListener('appinstalled',function(){ installed=true; hide(); });
+  window.matchMedia('(display-mode: standalone)').addEventListener&&
+    window.matchMedia('(display-mode: standalone)').addEventListener('change',function(e){ if(e.matches){installed=true;hide();} });
+
+  // "Not now" hides it for this visit only; it comes back on the next page load
+  later.addEventListener('click',function(){ snoozed=true; hide(); });
+
+  // iOS Safari has no install event: show manual instructions
+  if(isIOS && /safari/i.test(ua) && !/crios|fxios|edgios/i.test(ua)){
+    title.textContent='Install TeQx';
+    sub.textContent='Tap Share, then “Add to Home Screen”';
+    go.style.display='none';
+    window.addEventListener('load',function(){ setTimeout(show,1200); });
+  }
+})();
+</script>
+
 </body>
 </html>
