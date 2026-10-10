@@ -19,6 +19,16 @@ const cleanSpecs = (s) => {
   return o;
 };
 
+// Post photos must be images we host or https links.
+const cleanImgs = (a) =>
+  (Array.isArray(a) ? a : [])
+    .map((x) => String(x || ""))
+    .filter((x) => /^\/api\/images\/\d+$/.test(x) || /^https:\/\//.test(x))
+    .map((x) => x.slice(0, 300))
+    .slice(0, 6);
+
+const STATUS_RANK = { Secured: 0, Shipped: 1, Delivered: 2, Collected: 3 };
+
 const normPhone = (p) => {
   let d = String(p || "").replace(/\D/g, "");
   if (d.startsWith("0")) d = "254" + d.slice(1);
@@ -95,6 +105,16 @@ const ensureCols = async (db) => {
   const have = new Set(((await db.prepare("PRAGMA table_info(products)").all()).results || []).map((c) => c.name));
   for (const [c, t] of [["variants", "TEXT"], ["category", "TEXT"], ["description", "TEXT"], ["moq", "INTEGER"], ["cimg", "TEXT"], ["specs", "TEXT"]])
     if (!have.has(c)) await db.prepare("ALTER TABLE products ADD COLUMN " + c + " " + t).run();
+  // Promoted dropshipper posts, and which post/dropshipper an order came from.
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, device_id TEXT NOT NULL, store_id TEXT NOT NULL, pid TEXT, name TEXT, price INTEGER, pct INTEGER, caption TEXT, imgs TEXT, created_at INTEGER)"
+  ).run();
+  const pc = new Set(((await db.prepare("PRAGMA table_info(posts)").all()).results || []).map((c) => c.name));
+  for (const c of ["author_name", "author_icon", "author_img"])
+    if (!pc.has(c)) await db.prepare("ALTER TABLE posts ADD COLUMN " + c + " TEXT").run();
+  const oc = new Set(((await db.prepare("PRAGMA table_info(orders)").all()).results || []).map((c) => c.name));
+  for (const [c, t] of [["ds_device", "TEXT"], ["post_id", "INTEGER"], ["comm", "INTEGER"], ["qty", "INTEGER"]])
+    if (!oc.has(c)) await db.prepare("ALTER TABLE orders ADD COLUMN " + c + " " + t).run();
   colsOk = true;
 };
 
@@ -173,6 +193,63 @@ export default {
     };
 
     if (path === "/api/ping") return J({ ok: true });
+
+    // ---------- DROPSHIPPER POSTS ----------
+    if (path === "/api/posts" && m === "GET") {
+      await ensureCols(db);
+      const device = url.searchParams.get("device") || "";
+      const rows = (await db.prepare("SELECT * FROM posts ORDER BY id DESC LIMIT 100").all()).results;
+      return J(rows.map((r) => ({
+        id: r.id, store_id: r.store_id, pid: r.pid, name: r.name, price: r.price, pct: r.pct || 0,
+        caption: r.caption || "", imgs: readJ(r.imgs, []), created_at: r.created_at,
+        author_name: r.author_name || "", author_icon: r.author_icon || "", author_img: r.author_img || "",
+        mine: !!device && r.device_id === device,
+      })));
+    }
+
+    if (path === "/api/posts" && m === "POST") {
+      await ensureCols(db);
+      const b = await body();
+      if (!b.device_id || !b.store_id || !b.name) return J({ error: "missing fields" }, 400);
+      let pct = Math.max(0, Math.min(60, parseInt(b.pct, 10) || 0));
+      let price = parseInt(b.price, 10) || 0;
+      let name = String(b.name).slice(0, 80);
+      const mm = /^db(\d+)$/.exec(String(b.pid || ""));
+      if (mm) {
+        // A real merchant product: trust the server for its name, price and commission.
+        const pr = await db.prepare("SELECT store_id, name, price, pct FROM products WHERE id = ?").bind(Number(mm[1])).first();
+        if (!pr || pr.store_id !== b.store_id) return J({ error: "unknown product" }, 400);
+        pct = pr.pct || 0; price = pr.price; name = pr.name;
+      }
+      const imgs = cleanImgs(b.imgs);
+      if (!(price > 0) || !imgs.length) return J({ error: "price and a photo are required" }, 400);
+      const r = await db.prepare(
+        "INSERT INTO posts (device_id,store_id,pid,name,price,pct,caption,imgs,created_at,author_name,author_icon,author_img) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+      ).bind(b.device_id, b.store_id, String(b.pid || "").slice(0, 40), name, price, pct,
+        String(b.caption || "").slice(0, 500), JSON.stringify(imgs), Date.now(),
+        String(b.author_name || "").slice(0, 40), String(b.author_icon || "").slice(0, 8), cleanImgs([b.author_img])[0] || "").run();
+      return J({ ok: true, id: r.meta.last_row_id });
+    }
+
+    if (path.startsWith("/api/posts/") && m === "PATCH") {
+      await ensureCols(db);
+      const id = Number(path.split("/").pop());
+      const b = await body();
+      const imgs = cleanImgs(b.imgs);
+      await db.prepare(
+        "UPDATE posts SET caption = ?, imgs = CASE WHEN ? = '[]' THEN imgs ELSE ? END, author_name = COALESCE(NULLIF(?, ''), author_name), author_icon = COALESCE(NULLIF(?, ''), author_icon), author_img = COALESCE(NULLIF(?, ''), author_img) WHERE id = ? AND device_id = ?"
+      ).bind(String(b.caption || "").slice(0, 500), JSON.stringify(imgs), JSON.stringify(imgs),
+        String(b.author_name || "").slice(0, 40), String(b.author_icon || "").slice(0, 8), cleanImgs([b.author_img])[0] || "",
+        id, b.device_id || "").run();
+      return J({ ok: true });
+    }
+
+    if (path.startsWith("/api/posts/") && m === "DELETE") {
+      await ensureCols(db);
+      const id = Number(path.split("/").pop());
+      await db.prepare("DELETE FROM posts WHERE id = ? AND device_id = ?").bind(id, url.searchParams.get("device") || "").run();
+      return J({ ok: true });
+    }
 
     // ---------- STORES ----------
     if (path === "/api/stores" && m === "GET") {
@@ -364,6 +441,13 @@ export default {
 
     // ---------- ORDERS ----------
     if (path === "/api/orders" && m === "GET") {
+      await ensureCols(db);
+      const ds = url.searchParams.get("ds"), mer = url.searchParams.get("merchant");
+      const cols = "o.id, o.store_id, o.item, o.price, o.fee, o.status, o.created_at, o.comm, o.qty, o.post_id, (o.ds_device IS NOT NULL) AS via_ds";
+      if (ds)
+        return J((await db.prepare("SELECT " + cols + " FROM orders o WHERE o.ds_device = ? ORDER BY o.created_at DESC LIMIT 200").bind(ds).all()).results);
+      if (mer)
+        return J((await db.prepare("SELECT " + cols + " FROM orders o JOIN stores s ON s.id = o.store_id WHERE s.owner_device = ? ORDER BY o.created_at DESC LIMIT 200").bind(mer).all()).results);
       const device = url.searchParams.get("device");
       if (!device) return J([]);
       const rows = (await db.prepare("SELECT * FROM orders WHERE device_id = ? ORDER BY created_at DESC").bind(device).all()).results;
@@ -373,6 +457,27 @@ export default {
     if (path === "/api/orders" && m === "POST") {
       const o = await body();
       if (!o.id || !o.device_id) return J({ error: "missing id or device_id" }, 400);
+      await ensureCols(db);
+      // Came from a dropshipper's promoted post? Credit them (never the buyer themselves).
+      let dsDev = null, postId = null, comm = 0, qty = 1;
+      if (o.post_id) {
+        const po = await db.prepare("SELECT * FROM posts WHERE id = ?").bind(Number(o.post_id) || 0).first();
+        if (po && po.store_id === (o.store_id || "") && po.device_id !== o.device_id) {
+          dsDev = po.device_id; postId = po.id;
+          const lines = Array.isArray(o.lines) ? o.lines : [];
+          let base = 0, q = 0;
+          lines.forEach((l) => {
+            if (l && String(l.name || "").startsWith(po.name)) {
+              const n = Math.min(99, Math.max(1, parseInt(l.qty, 10) || 1));
+              base += Math.max(0, parseInt(l.price, 10) || 0) * n; q += n;
+            }
+          });
+          if (!lines.length && String(o.item || "").includes(po.name)) { base = o.price || 0; q = 1; }
+          base = Math.min(base, o.price || 0);
+          comm = Math.round((base * (po.pct || 0)) / 100);
+          qty = q || 1;
+        }
+      }
       let paid = 0;
       if (o.tx_ref) {
         const u = await db.prepare(
@@ -382,8 +487,8 @@ export default {
         paid = 1;
       }
       const ins = await db.prepare(
-        "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station, tx_ref, paid) VALUES (?,?,?,?,?,?,?,?,?,?)"
-      ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null, o.tx_ref || null, paid).run();
+        "INSERT OR IGNORE INTO orders (id, device_id, store_id, item, price, fee, status, station, tx_ref, paid, ds_device, post_id, comm, qty) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+      ).bind(o.id, o.device_id, o.store_id || null, o.item || "", o.price || 0, o.fee || 0, o.status || "Secured", o.station || null, o.tx_ref || null, paid, dsDev, postId, comm, qty).run();
       // Reduce stock only for a new order with a verified payment (set DEMO_MODE in wrangler.toml [vars] to test without payments)
       if (ins.meta && ins.meta.changes && (paid || env.DEMO_MODE) && o.store_id && Array.isArray(o.lines)) {
         try { await ensureCols(db); await takeStock(db, o.store_id, o.lines); } catch (e) {}
@@ -394,9 +499,11 @@ export default {
     if (path.startsWith("/api/orders/") && m === "PATCH") {
       const id = path.split("/").pop();
       const o = await body();
+      const cur = await db.prepare("SELECT status FROM orders WHERE id = ?").bind(id).first();
+      const ok = o.status && STATUS_RANK[o.status] !== undefined && cur && STATUS_RANK[o.status] >= (STATUS_RANK[cur.status] || 0);
       await db.prepare(
-        "UPDATE orders SET status = COALESCE(?, status), station = COALESCE(?, station) WHERE id = ? AND device_id = ?"
-      ).bind(o.status || null, o.station || null, id, o.device_id).run();
+        "UPDATE orders SET status = COALESCE(?, status), station = COALESCE(?, station) WHERE id = ? AND (device_id = ? OR store_id IN (SELECT id FROM stores WHERE owner_device = ?))"
+      ).bind(ok ? o.status : null, o.station || null, id, o.device_id || "", o.device_id || "").run();
       return J({ ok: true });
     }
 
