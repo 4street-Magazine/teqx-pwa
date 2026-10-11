@@ -1409,13 +1409,14 @@ function App(){
   <main>
    {!isCl&&btab!=='prof'&&<div className="page" key={role+btab}>{biz(role,btab,setBtab)}</div>}
    {isCl&&tab==='inbox'&&<>
+    {(()=>{const FS=STORES.filter(s=>fol[s.id]);return FS.length>0&&<div className="tray" style={{paddingTop:6,paddingBottom:0}}><div className="hs fstrip">{FS.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="ring"><i style={{overflow:'hidden'}}><SAv s={s}/></i></div><span>{s.name}</span></button>)}</div></div>})()}
     <div className="tray"><div className="sect" style={{paddingTop:14}}>Conversations</div></div>
     <div className="page" style={{padding:'4px 0 24px'}}>
-    {(()=>{const last=s=>((chats[s.id]||[]).slice(-1)[0]||{}).ts||0;const L=STORES.filter(s=>chats[s.id]||fol[s.id]).sort((x,y)=>last(y)-last(x));return L.length?L.map(s=>{const A=chats[s.id]||[],m=[...A].reverse().find(x=>x.text),l=A[A.length-1],dr=draftOf(s.id);return <button key={s.id} className="row" onClick={()=>open(s)}>
+    {(()=>{const last=s=>((chats[s.id]||[]).slice(-1)[0]||{}).ts||0;const L=STORES.filter(s=>chats[s.id]).sort((x,y)=>last(y)-last(x));return L.length?L.map(s=>{const A=chats[s.id]||[],m=[...A].reverse().find(x=>x.text),l=A[A.length-1],dr=draftOf(s.id);return <button key={s.id} className="row" onClick={()=>open(s)}>
      <div className="av" style={{overflow:'hidden'}}><SAv s={s}/></div>
      <div className="grow"><div className="nm"><span>{s.name}</span><Verified/></div><div className="pv">{typing[s.id]?'typing…':dr?<><b style={{color:'var(--accent)',fontWeight:700}}>Draft</b> · {dr.label}</>:m?m.text.replace(/\*\*/g,''):'Say hello'}</div></div>
      <div className="meta"><span className="tm">{l?fmtT(l.ts):''}</span>{unread[s.id]>0&&<span className="pill">{unread[s.id]}</span>}</div>
-    </button>}):<p className="bd" style={{padding:'24px 20px',textAlign:'center'}}>No conversations yet. Follow a shop or start a chat and it will show up here.</p>})()}
+    </button>}):<p className="bd" style={{padding:'24px 20px',textAlign:'center'}}>No conversations yet. {STORES.some(s=>fol[s.id])?'Tap a shop above to start chatting.':'Follow a shop to start chatting.'}</p>})()}
    </div></>}
 
    {isCl&&tab==='inbox'&&chat&&<div className="chat">
@@ -1638,6 +1639,31 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
 .post .pm .perk,.post .pm .pfoot .perk{color:#fff}
 .post .pm .perk i,.post .pm .pfoot .perk i{width:38px;height:38px;background:rgba(14,12,16,.5);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .post .pm .pfoot .cta button{border-radius:99px;padding:14px 10px;font-size:14.5px;font-weight:800;letter-spacing:.01em;text-transform:none;box-shadow:0 10px 26px -6px rgba(255,92,10,.6)}
+
+/* ===== v8: calmer sizes, whole photo (no zoom), small dots instead of top lines ===== */
+.post .pm .sl{aspect-ratio:5/6}
+.post .pm .sl img{object-fit:contain;object-position:center top}
+.post .pm .seg{left:auto;right:16px;top:28px;gap:4px;align-items:center}
+.post .pm .seg i{flex:none;width:16px;height:2px;border-radius:2px;background:rgba(255,255,255,.4);box-shadow:0 0 4px rgba(0,0,0,.4)}
+.post .pm .seg i.on{background:#fff}
+.post .pm .shopchip{top:14px;left:16px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:6px 12px;gap:6px}
+.post .pm .pmi:before{height:48%}
+.post .pm .pmi:after{height:58%}
+.post .pm .pfoot{left:16px;right:16px;bottom:16px;gap:12px}
+.post .pm .pt{font-size:16px;font-weight:700;line-height:1.3;margin:0 0 6px;letter-spacing:0}
+.post .pm .pmeta{gap:10px}
+.post .pm .pp{font-size:18px;font-weight:800;letter-spacing:0}
+.post .pm .rt{font-size:12px}
+.post .pm .perks{right:-4px;gap:6px}
+.post .pm .perk i,.post .pm .pfoot .perk i{width:34px;height:34px}
+.post .pm .pfoot .cta button{padding:13px 10px;font-size:14px;font-weight:700;letter-spacing:0}
+
+/* followed shops strip in the inbox */
+.fstrip{padding:0 20px 4px;gap:14px}
+.fstrip .story{color:var(--text);background:none;border:0;cursor:pointer}
+.fstrip .story:active{opacity:.7}
+.fstrip .story{width:72px;align-items:center}
+.fstrip .story span{max-width:72px;white-space:normal;text-align:center;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 <div id="pwa-install" role="dialog" aria-label="Install app">
   <div class="pi-ico">T</div>
