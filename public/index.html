@@ -946,13 +946,12 @@ function Post({cc,likes,onComment,onProfile,s,si,f,onFollow,liked,onLike,saved,o
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onProfile}><i><SAv s={s}/></i></button>
    <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified/></div><div className="tm">{s.custom?agoT(s.ts):(s.ago||si+2+'h ago')} · {s.tag}</div></div>
-   {!gone&&<div className={'folw'+(f?' out':'')}><button className={'fol'+(f?' on':'')} onClick={doFollow}>{f?'Following ✓':'Follow'}</button>{spark&&[...Array(8)].map((_,i)=><b key={i} className="sp" style={{'--a':i*45+'deg','--d':(i%2?26:36)+'px'}}>✦</b>)}</div>}{gone&&<div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
+   <div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
     {menu&&<><div className="kback" onClick={()=>setMenu(false)}/><div className="kmenu">
      <button onClick={()=>{onSave();setMenu(false)}}><Ic.Mark on={saved}/>{saved?'Remove from saved':'Save post'}</button>
      <button onClick={()=>{share();setMenu(false)}}><Ic.Share/>Share post</button>
-     {!s.custom&&<button onClick={()=>{onFollow();setGone(false);setMenu(false)}}><Ic.UserMinus s={18}/>Unfollow {s.name}</button>}
      {s.custom?<button className="dg" onClick={()=>{onDelete&&onDelete();setMenu(false)}}><Ic.Trash s={18}/>Delete post</button>:<button className="dg" onClick={()=>{note&&note('Thanks, we will review this post');setMenu(false)}}><Ic.Flag s={18}/>Report post</button>}
-    </div></>}</div>}</div>
+    </div></>}</div></div>
   {(s.cap||CAP[s.id])&&<div className="pcap">{s.cap||CAP[s.id]}</div>}
   <div className="pm" onClick={tap}>{burst&&<div className="burst"><Ic.Heart on/></div>}
    <div className="pmi">
@@ -1014,7 +1013,7 @@ function App(){
  useEffect(()=>{const f=()=>{setOrders(o=>o.length?o:(window.__ORD||[]));setTick(t=>t+1)};if(window.__DATA)f();window.addEventListener('teqx-data',f);return()=>window.removeEventListener('teqx-data',f)},[]);
  useEffect(()=>{const f=()=>{const P=window.__MYPROF;if(!P)return;setShop(x=>(x.bio||x.phone||x.loc||x.hours)||!(P.bio||P.phone||P.loc||P.hours)?x:{...x,bio:P.bio||x.bio,phone:P.phone||x.phone,loc:P.loc||x.loc,hours:P.hours||x.hours})};if(window.__DATA)f();window.addEventListener('teqx-data',f);return()=>window.removeEventListener('teqx-data',f)},[]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
- const [fol,setFol]=useState({}),[toast,setToast]=useState(''),[counts,setCounts]=useState({like:{},follow:{},comment:{}});
+ const [fol,setFol]=useState(()=>Object.fromEntries(STORES.map(x=>[x.id,true]))),[toast,setToast]=useState(''),[counts,setCounts]=useState({like:{},follow:{},comment:{}});
  const [init]=useState(()=>{try{const j=JSON.parse(localStorage.getItem('tumiqa-shop'))||{};if(j.v!==4){delete j.txs;delete j.earn;delete j.earnD;delete j.dsOrders}return j}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const goAcct=a=>{if(a==='client'){setAcct('client');return}if(!act[a]){setIntro(a);return}a==='merchant'?setPtab('dash'):setDtab('dash');setAcct(a)},mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':'dropshipper';
@@ -1499,7 +1498,7 @@ function App(){
     <div className="sph"><div className="spav"><ShopAv s={x} z={86}/></div>
      <div className="spn"><span>{x.name}</span><Verified s={18}/></div><div className="spt">{x.tag} · {SCAT[x.id]}</div>
      <div className="sps"><div><b>{fmt(base[0]+(f?1:0))}</b><span>Followers</span></div><div><b>{base[1].toLocaleString('en-KE')}</b><span>Orders delivered</span></div><div><b>{tiles.length}</b><span>Posts</span></div></div>
-     <div className="spa"><button className={'spf'+(f?' on':'')} onClick={()=>flip(setFol,x.id)}>{f?'Following ✓':'Follow'}</button><button className="spm" onClick={()=>{setSp(null);open(x)}}><Ic.Msg/>Message</button></div></div>
+     <div className="spa"><button className="spm" onClick={()=>{setSp(null);open(x)}}><Ic.Msg/>Message</button></div></div>
     <div className="spg-h"><span>Posts</span></div>
     <div className="spg">{tiles.map(t=><button key={t.k} className="spt2" onClick={()=>{setSp(null);open(x,t.name)}}><img src={t.img} alt={t.name} loading="lazy" onError={e=>{e.target.style.display='none'}}/>{t.n>1&&<i className="spm2">▣</i>}<span className="spc"><b>{t.name}</b><em>{ksh(t.price)}</em></span></button>)}</div>
    </div></div>})()}
@@ -1733,6 +1732,13 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
 .post .pm .msgbtn{display:flex;align-items:center;gap:7px;flex:none;height:42px;padding:0 16px;border-radius:99px;border:1.5px solid #ff5c0a;background:transparent;color:#ff5c0a;font-size:13px;font-weight:700;letter-spacing:.01em;transition:background .15s,transform .15s}
 .post .pm .msgbtn:active{background:rgba(255,92,10,.14);transform:scale(.97)}
 [data-theme=light] .post .pm .msgbtn{color:#d43f00;border-color:#e04a00}
+/* ===== v14: matching neutral bars around the uncropped photo (no top fade), lifted + lighter icon stack ===== */
+[data-theme] .post .pm:before{display:none;content:none}
+.post .pm .sl .bg{display:none}
+.post .pm .sl{background:var(--surf2)}
+.post .pm .seg{padding:5px 8px;border-radius:99px;background:rgba(10,8,6,.35)}
+[data-theme] .post .pm .perks{bottom:52px}
+[data-theme] .post .pm .perk i{background:rgba(10,8,6,.3);border-color:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:none}
 </style>
 <div id="pwa-install" role="dialog" aria-label="Install app">
   <div class="pi-ico">T</div>
