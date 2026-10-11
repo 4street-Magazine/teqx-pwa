@@ -960,14 +960,14 @@ function Post({cc,likes,onComment,onProfile,s,si,f,onFollow,liked,onLike,saved,o
      {(s.imgs&&s.imgs.length?s.imgs:[s.img]).map((src,i)=><Slide key={i} src={src} alt={s.multi?s.multi[i][0]:s.prods[0][0]+' in '+(cols[i]||'')} icon={<Ic.Store s={44}/>}/>)}
     </div>
     <div className="seg">{(s.imgs&&s.imgs.length?s.imgs:[s.img]).map((_,i)=><i key={i} className={i<=n?'on':''}/>)}</div>
+    <div className="perks">{PERKS.map(([E,t])=><div key={t} className="perk" title={t}><i><E s={18}/></i></div>)}</div>
    </div>
-   <div className="shopchip"><svg width="14" height="14" viewBox="0 0 24 24" fill="#ffd86b" aria-hidden="true"><path d="M10 3l2 6.2L18.2 11 12 13l-2 6.2L8 13 1.8 11 8 9.2z"/><path d="M19 2l.9 2.6 2.6.9-2.6.9L19 9l-.9-2.6-2.6-.9 2.6-.9z"/></svg>LATEST</div>
    <div className="pfoot" onClick={e=>e.stopPropagation()}>
     <div className="ptop"><div className="pinfo"><h3 className="pt">{pc(s,n)[0]}</h3><div className="pmeta"><span className="pp">{ksh(pc(s,n)[1])}</span><span className="rt"><b>★</b> {rateOf(s.orders)} {s.stock!=null&&<> ({s.stock})</>}</span></div></div>
-     <div className="perks">{PERKS.map(([E,t])=><div key={t} className="perk" title={t}><i><E s={18}/></i></div>)}</div></div>
+     <button className="msgbtn" onClick={()=>onChat(s.multi?`Hi, I'm interested in the ${pc(s,n)[0]}`:`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]||''}`)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3A9 9 0 1 1 7.5 19.8L3.2 21.4L3.31 14.33A9 9 0 0 1 12 3z"/><path d="M12.9 7.4L9.4 12h2.5l-.8 3.6 3.6-4.6h-2.5z" fill="currentColor" strokeWidth="1"/></svg>Message</button></div>
    </div>
   </div>
-  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(likes||0).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/><button className="chatbtn" onClick={()=>onChat(s.multi?`Hi, I'm interested in the ${pc(s,n)[0]}`:`Hi, I'm interested in the ${s.prods[0][0]} in ${cols[n]||''}`)}><Ic.Msg/>Chat with Shop</button></div>
+  <div className="acts"><button onClick={onLike} style={liked?{color:'#ff4d2e'}:null}><Ic.Heart on={liked}/>{(likes||0).toLocaleString()}</button><button onClick={onComment}><Ic.Msg/>{cc}</button><button><Ic.Share/>{32+si*5}</button><span style={{flex:1}}/></div>
  </article>;
 }
 
@@ -1717,6 +1717,22 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
 [data-theme] .post .pm .pfoot{z-index:4;bottom:18px}
 [data-theme] .post .pm .pt{text-shadow:0 1px 3px rgba(0,0,0,.5),0 2px 14px rgba(0,0,0,.55)}
 [data-theme] .post .pm .perk i,[data-theme] .post .pm .pfoot .perk i{background:rgba(10,8,6,.38);border-color:rgba(255,255,255,.34);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+/* ===== v13: photo above the details (uncropped, standard size), light overlay, 3 icons stacked on the photo corner, outlined Message button beside the product name ===== */
+.post .pm .sl{aspect-ratio:13/12;width:100%;height:auto}
+.post .pm .sl img{object-fit:contain;object-position:center}
+[data-theme] .post .pm .pmi:before,[data-theme] .post .pm .pmi:after{display:none;content:none;background:none}
+[data-theme] .post .pm:before{height:80px;background:linear-gradient(180deg,rgba(6,5,8,.32),rgba(6,5,8,0))}
+[data-theme] .post .pm .perks{position:absolute;right:12px;bottom:12px;left:auto;top:auto;z-index:4;flex-direction:column;gap:8px;padding:0;background:none;border:0}
+[data-theme] .post .pm .perk,[data-theme] .post .pm .pfoot .perk{color:#fff}
+[data-theme] .post .pm .perk i{width:38px;height:38px;background:rgba(10,8,6,.5);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+[data-theme] .post .pm .pfoot{position:static;left:auto;right:auto;bottom:auto;z-index:auto;padding:14px 16px 16px;gap:0;background:var(--surf);border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+[data-theme] .post .pm .ptop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+[data-theme] .post .pm .pt{color:var(--text);text-shadow:none}
+[data-theme] .post .pm .pp{filter:none;text-shadow:none}
+[data-theme] .post .pm .rt{color:var(--mut);text-shadow:none}
+.post .pm .msgbtn{display:flex;align-items:center;gap:7px;flex:none;height:42px;padding:0 16px;border-radius:99px;border:1.5px solid #ff5c0a;background:transparent;color:#ff5c0a;font-size:13px;font-weight:700;letter-spacing:.01em;transition:background .15s,transform .15s}
+.post .pm .msgbtn:active{background:rgba(255,92,10,.14);transform:scale(.97)}
+[data-theme=light] .post .pm .msgbtn{color:#d43f00;border-color:#e04a00}
 </style>
 <div id="pwa-install" role="dialog" aria-label="Install app">
   <div class="pi-ico">T</div>
