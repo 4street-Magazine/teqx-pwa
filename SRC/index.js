@@ -110,8 +110,33 @@ const ensureCols = async (db) => {
     "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, device_id TEXT NOT NULL, store_id TEXT NOT NULL, pid TEXT, name TEXT, price INTEGER, pct INTEGER, caption TEXT, imgs TEXT, created_at INTEGER)"
   ).run();
   const pc = new Set(((await db.prepare("PRAGMA table_info(posts)").all()).results || []).map((c) => c.name));
-  for (const c of ["author_name", "author_icon", "author_img"])
+  for (const c of ["author_name", "author_icon", "author_img", "cid"])
     if (!pc.has(c)) await db.prepare("ALTER TABLE posts ADD COLUMN " + c + " TEXT").run();
+  // Shop profile fields.
+  const sc = new Set(((await db.prepare("PRAGMA table_info(stores)").all()).results || []).map((c) => c.name));
+  for (const c of ["bio", "phone", "loc", "hours"])
+    if (!sc.has(c)) await db.prepare("ALTER TABLE stores ADD COLUMN " + c + " TEXT").run();
+  // One row per product per (paid) order. This is what the order-based rating counts.
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS order_items (order_id TEXT NOT NULL, store_id TEXT NOT NULL, product_id INTEGER NOT NULL, name TEXT, qty INTEGER, created_at INTEGER, PRIMARY KEY (order_id, product_id))"
+  ).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id)").run();
+  // Likes, saves, follows (and likes on comments). One row per phone per thing.
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS reactions (device_id TEXT NOT NULL, kind TEXT NOT NULL, target TEXT NOT NULL, created_at INTEGER, PRIMARY KEY (device_id, kind, target))"
+  ).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_reactions_target ON reactions(kind, target)").run();
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, target TEXT NOT NULL, device_id TEXT NOT NULL, author TEXT, text TEXT NOT NULL, parent TEXT, created_at INTEGER)"
+  ).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_comments_target ON comments(target)").run();
+  // Chat history, one row per phone per shop.
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS chats (device_id TEXT NOT NULL, store_id TEXT NOT NULL, data TEXT, unread INTEGER DEFAULT 0, updated_at INTEGER, draft TEXT, PRIMARY KEY (device_id, store_id))"
+  ).run();
+  // Unfinished order ("draft") saved with each chat so it can be picked up later.
+  const cc = new Set(((await db.prepare("PRAGMA table_info(chats)").all()).results || []).map((c) => c.name));
+  if (!cc.has("draft")) await db.prepare("ALTER TABLE chats ADD COLUMN draft TEXT").run();
   const oc = new Set(((await db.prepare("PRAGMA table_info(orders)").all()).results || []).map((c) => c.name));
   for (const [c, t] of [["ds_device", "TEXT"], ["post_id", "INTEGER"], ["comm", "INTEGER"], ["qty", "INTEGER"]])
     if (!oc.has(c)) await db.prepare("ALTER TABLE orders ADD COLUMN " + c + " " + t).run();
@@ -161,12 +186,40 @@ const totals = (vars, price, stock) => {
     : { price, stock };
 };
 
+// Work out which product an order line is for: same name in the shop, then the chosen options
+// ("Size: M, Color: Black") decide between products that share a name.
+const parseOpt = (opt) => {
+  const want = {};
+  String(opt || "").split(", ").forEach((part) => {
+    const i = part.indexOf(": ");
+    if (i > 0) want[part.slice(0, i)] = part.slice(i + 2);
+  });
+  return want;
+};
+const findProduct = async (db, storeId, ln) => {
+  const rows = ((await db.prepare("SELECT * FROM products WHERE store_id = ? AND name = ? ORDER BY id")
+    .bind(storeId, String((ln && ln.name) || "")).all()).results) || [];
+  if (rows.length <= 1) return rows[0] || null;
+  const want = parseOpt(ln && ln.opt), keys = Object.keys(want);
+  if (!keys.length) return rows[0];
+  let best = rows[0], bestScore = -1;
+  for (const p of rows) {
+    const vars = readJ(p.variants, []).filter((v) => !v.off), attrs = readAttrs(p.attrs);
+    let score;
+    if (vars.length) {
+      const hit = vars.some((v) => keys.every((k) => v.opts[k] === want[k]));
+      score = hit ? keys.length + 1 : Math.max(0, ...vars.map((v) => keys.filter((k) => v.opts[k] === want[k]).length));
+    } else score = keys.filter((k) => attrs.some((a) => a.k === k && a.v.includes(want[k]))).length;
+    if (score > bestScore) { best = p; bestScore = score; }
+  }
+  return best;
+};
+
 // Take bought quantities off stock. lines = [{ name, opt: "Size: M, Color: Black", qty }]
 const takeStock = async (db, storeId, lines) => {
   for (const ln of lines.slice(0, 30)) {
     const qty = Math.min(99, Math.max(1, parseInt(ln && ln.qty, 10) || 1));
-    const p = await db.prepare("SELECT * FROM products WHERE store_id = ? AND name = ?")
-      .bind(storeId, String((ln && ln.name) || "")).first();
+    const p = await findProduct(db, storeId, ln);
     if (!p) continue;
     const vars = readJ(p.variants, []);
     if (vars.length) {
@@ -185,6 +238,22 @@ const takeStock = async (db, storeId, lines) => {
       await db.prepare("UPDATE products SET stock = MAX(0, COALESCE(stock, 0) - ?) WHERE id = ?").bind(qty, p.id).run();
     }
   }
+};
+
+// Remember which products an order contained, so each product can show how many orders it has had.
+const recordItems = async (db, orderId, storeId, lines) => {
+  const seen = new Map();
+  for (const ln of lines.slice(0, 30)) {
+    const name = String((ln && ln.name) || "");
+    if (!name) continue;
+    const p = await findProduct(db, storeId, ln);
+    if (!p) continue;
+    const qty = Math.min(99, Math.max(1, parseInt(ln.qty, 10) || 1));
+    seen.set(p.id, { name, qty: ((seen.get(p.id) || {}).qty || 0) + qty });
+  }
+  for (const [pid, v] of seen)
+    await db.prepare("INSERT OR IGNORE INTO order_items (order_id,store_id,product_id,name,qty,created_at) VALUES (?,?,?,?,?,?)")
+      .bind(orderId, storeId, pid, v.name, v.qty, Date.now()).run();
 };
 
 export default {
@@ -228,11 +297,18 @@ export default {
       }
       const imgs = cleanImgs(b.imgs);
       if (!(price > 0) || !imgs.length) return J({ error: "price and a photo are required" }, 400);
+      // Same post sent twice (double tap, or a retry after a slow reply)? Return the one we already have.
+      const cid = String(b.cid || "").slice(0, 40), cap = String(b.caption || "").slice(0, 500);
+      const dupe = cid
+        ? await db.prepare("SELECT id FROM posts WHERE device_id = ? AND cid = ?").bind(b.device_id, cid).first()
+        : await db.prepare("SELECT id FROM posts WHERE device_id = ? AND store_id = ? AND pid = ? AND name = ? AND caption = ? AND created_at > ?")
+            .bind(b.device_id, b.store_id, String(b.pid || "").slice(0, 40), name, cap, Date.now() - 60000).first();
+      if (dupe) return J({ ok: true, id: dupe.id, existing: true });
       const r = await db.prepare(
-        "INSERT INTO posts (device_id,store_id,pid,name,price,pct,caption,imgs,created_at,author_name,author_icon,author_img) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+        "INSERT INTO posts (device_id,store_id,pid,name,price,pct,caption,imgs,created_at,author_name,author_icon,author_img,cid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
       ).bind(b.device_id, b.store_id, String(b.pid || "").slice(0, 40), name, price, pct,
-        String(b.caption || "").slice(0, 500), JSON.stringify(imgs), Date.now(),
-        String(b.author_name || "").slice(0, 40), String(b.author_icon || "").slice(0, 8), cleanImgs([b.author_img])[0] || "").run();
+        cap, JSON.stringify(imgs), Date.now(),
+        String(b.author_name || "").slice(0, 40), String(b.author_icon || "").slice(0, 8), cleanImgs([b.author_img])[0] || "", cid).run();
       return J({ ok: true, id: r.meta.last_row_id });
     }
 
@@ -262,15 +338,18 @@ export default {
       const device = url.searchParams.get("device") || "";
       const stores = (await db.prepare("SELECT * FROM stores").all()).results;
       const prods = (await db.prepare("SELECT * FROM products ORDER BY id").all()).results;
+      const sold = new Map(((await db.prepare("SELECT product_id, COUNT(*) AS n FROM order_items GROUP BY product_id").all()).results || []).map((r) => [r.product_id, r.n]));
       return J(stores.map((s) => {
         const mine = prods.filter((p) => p.store_id === s.id);
         return {
           id: s.id, name: s.name, tag: s.tag, icon: s.icon, category: s.category,
           img: s.img, open: s.open !== 0,
           mine: !!device && s.owner_device === device,
+          bio: s.bio || "", loc: s.loc || "", hours: s.hours || "",
+          phone: !!device && s.owner_device === device ? s.phone || "" : "", // contact number is only sent back to the owner
           prods: mine.map((p) => [p.name, p.price]),
           items: mine.map((p) => ({
-            id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0, attrs: readAttrs(p.attrs),
+            id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0, orders: sold.get(p.id) || 0, attrs: readAttrs(p.attrs),
             variants: readJ(p.variants, []), cimg: readJ(p.cimg, {}), specs: readJ(p.specs, {}), category: p.category || "", description: p.description || "", moq: p.moq || 0,
             imgs: (p.img_ids || "").split(",").filter(Boolean).map((i) => "/api/images/" + i),
           })),
@@ -279,6 +358,7 @@ export default {
     }
 
     if (path === "/api/stores" && m === "POST") {
+      await ensureCols(db);
       const b = await body();
       if (!b.device_id || !b.name) return J({ error: "name and device_id required" }, 400);
       const ex = await db.prepare("SELECT id FROM stores WHERE owner_device = ?").bind(b.device_id).first();
@@ -299,11 +379,12 @@ export default {
     }
 
     if (path.startsWith("/api/stores/") && m === "PATCH") {
+      await ensureCols(db);
       const id = path.split("/").pop();
       const b = await body();
       const img = b.img_id ? "/api/images/" + Number(b.img_id) : b.clear_img ? "" : null;
       await db.prepare(
-        "UPDATE stores SET name=COALESCE(?,name), icon=COALESCE(?,icon), img=COALESCE(?,img), open=COALESCE(?,open), category=COALESCE(?,category), tag=COALESCE(?,tag) WHERE id=? AND owner_device=?"
+        "UPDATE stores SET name=COALESCE(?,name), icon=COALESCE(?,icon), img=COALESCE(?,img), open=COALESCE(?,open), category=COALESCE(?,category), tag=COALESCE(?,tag), bio=COALESCE(?,bio), phone=COALESCE(?,phone), loc=COALESCE(?,loc), hours=COALESCE(?,hours) WHERE id=? AND owner_device=?"
       ).bind(
         b.name ? String(b.name).slice(0, 40) : null,
         b.icon ? String(b.icon).slice(0, 8) : null,
@@ -311,6 +392,10 @@ export default {
         b.open === undefined ? null : (b.open ? 1 : 0),
         b.category ? String(b.category).slice(0, 40) : null,
         b.tag ? String(b.tag).slice(0, 30) : null,
+        b.bio === undefined ? null : String(b.bio).slice(0, 300),
+        b.phone === undefined ? null : String(b.phone).slice(0, 20),
+        b.loc === undefined ? null : String(b.loc).slice(0, 80),
+        b.hours === undefined ? null : String(b.hours).slice(0, 80),
         id, b.device_id || ""
       ).run();
       return J({ ok: true });
@@ -509,6 +594,7 @@ export default {
       // Reduce stock only for a new order with a verified payment (set DEMO_MODE in wrangler.toml [vars] to test without payments)
       if (ins.meta && ins.meta.changes && (paid || env.DEMO_MODE) && o.store_id && Array.isArray(o.lines)) {
         try { await ensureCols(db); await takeStock(db, o.store_id, o.lines); } catch (e) {}
+        try { await recordItems(db, o.id, o.store_id, o.lines); } catch (e) {}
       }
       return J({ ok: true });
     }
@@ -521,6 +607,109 @@ export default {
       await db.prepare(
         "UPDATE orders SET status = COALESCE(?, status), station = COALESCE(?, station) WHERE id = ? AND (device_id = ? OR store_id IN (SELECT id FROM stores WHERE owner_device = ?))"
       ).bind(ok ? o.status : null, o.station || null, id, o.device_id || "", o.device_id || "").run();
+      return J({ ok: true });
+    }
+
+    // ---------- LIKES, SAVES, FOLLOWS ----------
+    const KINDS = ["like", "save", "follow", "clike"];
+    if (path === "/api/react" && m === "POST") {
+      await ensureCols(db);
+      const b = await body();
+      const kind = String(b.kind || ""), target = String(b.target || "").slice(0, 80);
+      if (!b.device_id || !KINDS.includes(kind) || !target) return J({ error: "bad reaction" }, 400);
+      if (b.on)
+        await db.prepare("INSERT OR IGNORE INTO reactions (device_id,kind,target,created_at) VALUES (?,?,?,?)")
+          .bind(b.device_id, kind, target, Date.now()).run();
+      else
+        await db.prepare("DELETE FROM reactions WHERE device_id = ? AND kind = ? AND target = ?")
+          .bind(b.device_id, kind, target).run();
+      const c = await db.prepare("SELECT COUNT(*) AS n FROM reactions WHERE kind = ? AND target = ?").bind(kind, target).first();
+      return J({ ok: true, count: (c && c.n) || 0 });
+    }
+
+    // Everything this phone has liked / saved / followed.
+    if (path === "/api/me" && m === "GET") {
+      await ensureCols(db);
+      const device = url.searchParams.get("device") || "";
+      const out = { like: [], save: [], follow: [], clike: [] };
+      if (device)
+        for (const r of (await db.prepare("SELECT kind, target FROM reactions WHERE device_id = ? LIMIT 5000").bind(device).all()).results || [])
+          if (out[r.kind]) out[r.kind].push(r.target);
+      return J(out);
+    }
+
+    // Real like / follower / comment totals.
+    if (path === "/api/counts" && m === "GET") {
+      await ensureCols(db);
+      const out = { like: {}, follow: {}, comment: {} };
+      for (const r of (await db.prepare("SELECT kind, target, COUNT(*) AS n FROM reactions WHERE kind IN ('like','follow') GROUP BY kind, target LIMIT 3000").all()).results || [])
+        out[r.kind][r.target] = r.n;
+      for (const r of (await db.prepare("SELECT target, COUNT(*) AS n FROM comments GROUP BY target LIMIT 3000").all()).results || [])
+        out.comment[r.target] = r.n;
+      return J(out);
+    }
+
+    // ---------- COMMENTS ----------
+    if (path === "/api/comments" && m === "GET") {
+      await ensureCols(db);
+      const target = String(url.searchParams.get("target") || "").slice(0, 80), device = url.searchParams.get("device") || "";
+      if (!target) return J([]);
+      // "likes" leaves out the asking phone's own like; the app adds it back itself.
+      const rows = (await db.prepare(
+        "SELECT c.*, (SELECT COUNT(*) FROM reactions r WHERE r.kind = 'clike' AND r.target = 'c' || c.id AND r.device_id != ?) AS likes FROM comments c WHERE c.target = ? ORDER BY c.id DESC LIMIT 300"
+      ).bind(device, target).all()).results || [];
+      return J(rows.reverse().map((r) => ({
+        id: r.id, author: r.author || "", text: r.text, parent: r.parent || null,
+        created_at: r.created_at, likes: r.likes || 0, mine: !!device && r.device_id === device,
+      })));
+    }
+
+    if (path === "/api/comments" && m === "POST") {
+      await ensureCols(db);
+      const b = await body();
+      const text = String(b.text || "").trim().slice(0, 500), target = String(b.target || "").slice(0, 80);
+      if (!b.device_id || !target || !text) return J({ error: "missing fields" }, 400);
+      const recent = await db.prepare("SELECT COUNT(*) AS n FROM comments WHERE device_id = ? AND created_at > ?")
+        .bind(b.device_id, Date.now() - 60000).first();
+      if (recent && recent.n >= 15) return J({ error: "slow down" }, 429);
+      const r = await db.prepare("INSERT INTO comments (target,device_id,author,text,parent,created_at) VALUES (?,?,?,?,?,?)")
+        .bind(target, b.device_id, String(b.author || "").trim().slice(0, 30), text, b.parent ? String(b.parent).slice(0, 20) : null, Date.now()).run();
+      return J({ ok: true, id: r.meta.last_row_id });
+    }
+
+    if (path.startsWith("/api/comments/") && m === "DELETE") {
+      await ensureCols(db);
+      const id = Number(path.split("/").pop()), device = url.searchParams.get("device") || "";
+      const own = await db.prepare("SELECT id FROM comments WHERE id = ? AND device_id = ?").bind(id, device).first();
+      if (own) {
+        await db.prepare("DELETE FROM comments WHERE id = ? OR parent = ?").bind(id, "c" + id).run();
+        await db.prepare("DELETE FROM reactions WHERE kind = 'clike' AND target = ?").bind("c" + id).run();
+      }
+      return J({ ok: true });
+    }
+
+    // ---------- CHAT HISTORY ----------
+    if (path === "/api/chats" && m === "GET") {
+      await ensureCols(db);
+      const device = url.searchParams.get("device") || "";
+      if (!device) return J([]);
+      const rows = (await db.prepare("SELECT store_id, data, unread, updated_at, draft FROM chats WHERE device_id = ? ORDER BY updated_at DESC LIMIT 100").bind(device).all()).results || [];
+      const fresh = Date.now() - 14 * 864e5; // drafts older than two weeks are dropped
+      return J(rows.map((r) => ({ store_id: r.store_id, msgs: readJ(r.data, []), unread: r.unread || 0, updated_at: r.updated_at, draft: r.updated_at > fresh ? readJ(r.draft, null) : null })));
+    }
+
+    if (path.startsWith("/api/chats/") && m === "PUT") {
+      await ensureCols(db);
+      const sid = decodeURIComponent(path.split("/").pop()).slice(0, 40), b = await body();
+      if (!b.device_id || !sid || !Array.isArray(b.msgs)) return J({ error: "bad chat" }, 400);
+      const data = JSON.stringify(b.msgs.slice(-200));
+      if (data.length > 300000) return J({ error: "chat too large" }, 413);
+      let draft = null;
+      try { draft = b.draft && typeof b.draft === "object" ? JSON.stringify(b.draft) : null; } catch (e) {}
+      if (draft && draft.length > 20000) draft = null;
+      await db.prepare(
+        "INSERT INTO chats (device_id,store_id,data,unread,updated_at,draft) VALUES (?,?,?,?,?,?) ON CONFLICT(device_id,store_id) DO UPDATE SET data = excluded.data, unread = excluded.unread, updated_at = excluded.updated_at, draft = excluded.draft"
+      ).bind(b.device_id, sid, data, Math.max(0, parseInt(b.unread, 10) || 0), Date.now(), draft).run();
       return J({ ok: true });
     }
 
