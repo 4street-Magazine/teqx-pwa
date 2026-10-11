@@ -1693,10 +1693,11 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
 /* ===== v10: no overlay on the post image; photo fills the whole container, uncropped (no zoom) ===== */
 .post .pm .pmi:before,.post .pm .pmi:after,[data-theme=light] .post .pm .pmi:after{display:none;content:none;background:none}
 .post .pm .sl:before{display:none}
-.post .pm .sl img{inset:0;width:100%;height:100%;max-height:none;object-fit:contain;object-position:center}
+.post .pm .sl{aspect-ratio:4/5;width:100%;height:auto}
+.post .pm .sl img{inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center}
 
-/* ===== v11: readable details on the photo: frosted panel behind the text + text shadows (both themes) ===== */
-[data-theme] .post .pm .pfoot{left:12px;right:12px;bottom:12px;padding:12px;gap:12px;border-radius:22px;background:rgba(14,12,16,.5);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+/* ===== v11: no panel/overlay; readable details via text shadow only (both themes) ===== */
+[data-theme] .post .pm .pfoot{left:16px;right:16px;bottom:16px;padding:0;gap:14px;border-radius:0;background:none;border:0;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
 [data-theme] .post .pm .pt{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.55)}
 [data-theme] .post .pm .pp{filter:drop-shadow(0 1px 6px rgba(0,0,0,.5))}
 [data-theme] .post .pm .rt{color:rgba(255,255,255,.92);text-shadow:0 1px 6px rgba(0,0,0,.55)}
