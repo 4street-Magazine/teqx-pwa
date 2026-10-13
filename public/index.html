@@ -907,6 +907,14 @@ function Card({store,i,onAdd}){
 }
 
 
+const LOGO_ONLY=['apex','fresh','peak','sav','sole'];
+const LOGO2={
+ apex:['#0b1b4d','#2563eb',<><path d="M12 3 3.500 20h4l1.300-3h6.400l1.300 3h4z" fill="#fff" stroke="none"/><path d="M13 9.500 9.800 14.500h2.300L11 18.500l3.600-5.200h-2.400z" fill="#2563eb" stroke="none"/></>],
+ fresh:['#15803d','#a3e635',<><path d="M12 21c-4.200 0-7-2.800-7-6.500C5 10 9 6.500 12 3c3 3.500 7 7 7 11.500 0 3.700-2.800 6.500-7 6.500z" fill="#fff" stroke="none"/><path d="M12 19.500v-8M12 15.500l-3-2.500M12 13l3-2.500" stroke="#15803d" strokeWidth="1.600" fill="none"/></>],
+ peak:['#312e81','#06b6d4',<><path d="M1.500 20 9 6.500l4 7 2.500-3.500L22.500 20z" fill="#fff" stroke="none"/><path d="M9 6.500l-2 3.500 2 1.500 2-1.500z" fill="#06b6d4" stroke="none"/><path d="M15.500 3.500v5M15.500 3.500l4 1.500-4 1.500" stroke="#fff" strokeWidth="1.400" fill="none"/></>],
+ sav:['#7c2d12','#f59e0b',<><circle cx="17" cy="7" r="3.200" fill="#fde68a" stroke="none"/><path d="M3 20h18M12 20v-8M12 14c-3 0-6-1-8-3.500 3-2 6.500-1.800 8 .5 1.500-2.300 5-2.500 8-.5-2 2.500-5 3.500-8 3.500z" stroke="#fff" strokeWidth="1.800" fill="none"/></>],
+ sole:['#be123c','#fb923c',<><path d="M2.500 17.500c0-3 1.500-4.500 3.500-5l2-4.500 3.500 3 3-.5c3 .3 6 2.500 6 6.500v1.500H2.500z" fill="#fff" stroke="none"/><path d="M2.500 17.500h19M9.500 11l1.500 2.500M12 10.500l1.500 2.500" stroke="#be123c" strokeWidth="1.300" fill="none"/></>]
+};
 const LOGO={
  apex:['#2563eb','#7c3aed',<path d="M13 3 5 13.500h6L10 21l9-11.500h-6z"/>],
  luxe:['#111827','#b45309',<path d="M12 5.500a2 2 0 1 1 2 2c-1 .5-2 1-2 2v1M12 11 3.500 17h17z"/>],
@@ -925,9 +933,9 @@ const LOGO={
  page:['#1d4ed8','#7c3aed',<path d="M12 6c-2-1.500-5-2-8-2v14c3 0 6 .5 8 2 2-1.500 5-2 8-2V4c-3 0-6 .5-8 2zM12 6v14"/>],
  lens:['#0f172a','#475569',<><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.500"/><path d="M12 3l3 5.500M20 8.500h-6.500M19 17l-3.500-5M12 21l-3-5.500M4 15.500h6.500M5 7l3.500 5"/></>]
 };
-function Logo({id}){const l=LOGO[id];if(!l)return null;return <svg viewBox="0 0 24 24" style={{width:'100%',height:'100%',display:'block'}} aria-hidden="true"><defs><linearGradient id={'lg'+id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={l[0]}/><stop offset="1" stopColor={l[1]}/></linearGradient></defs><rect width="24" height="24" fill={'url(#lg'+id+')'}/><circle cx="19" cy="5" r="7" fill="#fff" opacity=".12"/><g transform="translate(4.800 4.800) scale(.6)" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{l[2]}</g></svg>}
-function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=s.avatar||s.av;return <span className="cav" style={{width:z,height:z}}>{bad||!src?(LOGO[s.id]?<Logo id={s.id}/>:<em>{s.icon}</em>):<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
-function SAv({s}){const [bad,setBad]=useState(false),src=s.avatar||s.av;useEffect(()=>{setBad(false)},[src]);return (bad||!src)?(LOGO[s.id]?<Logo id={s.id}/>:<>{s.icon}</>):<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
+function Logo({id}){const l=LOGO2[id]||LOGO[id];if(!l)return null;return <svg viewBox="0 0 24 24" style={{width:'100%',height:'100%',display:'block'}} aria-hidden="true"><defs><linearGradient id={'lg'+id} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={l[0]}/><stop offset="1" stopColor={l[1]}/></linearGradient></defs><rect width="24" height="24" fill={'url(#lg'+id+')'}/><circle cx="19" cy="5" r="7" fill="#fff" opacity=".12"/><g transform={LOGO2[id]?'translate(2.400 2.400) scale(.8)':'translate(4.800 4.800) scale(.6)'} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{l[2]}</g></svg>}
+function ShopAv({s,z=28}){const [bad,setBad]=useState(false),src=LOGO_ONLY.includes(s.id)?'':(s.avatar||s.av);return <span className="cav" style={{width:z,height:z}}>{bad||!src?(LOGO[s.id]?<Logo id={s.id}/>:<em>{s.icon}</em>):<img src={src} alt={s.name} onError={()=>setBad(true)}/>}</span>}
+function SAv({s}){const [bad,setBad]=useState(false),src=LOGO_ONLY.includes(s.id)?'':(s.avatar||s.av);useEffect(()=>{setBad(false)},[src]);return (bad||!src)?(LOGO[s.id]?<Logo id={s.id}/>:<>{s.icon}</>):<img src={src} alt="" onError={()=>setBad(true)} style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',display:'block'}}/>}
 function Slide({src:raw,alt,icon}){const src=/images\.unsplash\.com/.test(raw)&&!/[?&]h=/.test(raw)?raw+'&h=830&crop=entropy':raw;const [bad,setBad]=useState(false),[mk,setMk]=useState(null);const fit=e=>{const im=e.target,b=im.parentNode,W=b.clientWidth,H=b.clientHeight,nw=im.naturalWidth,nh=im.naturalHeight;if(!W||!H||!nw||!nh)return;const k=Math.min(W/nw,H/nh),ix=(W-nw*k)/2/W*100,iy=(H-nh*k)/2/H*100,F=18;setMk({'--ix':ix.toFixed(2)+'%','--iy':iy.toFixed(2)+'%','--fx':(ix>.5?F/W*100:0).toFixed(2)+'%','--fy':(iy>.5?F/H*100:0).toFixed(2)+'%'})};return <div className="sl"><i className="bg" style={bad?null:{backgroundImage:`url("${src}")`}}/>{bad?<div className="slx">{icon}</div>:<img src={src} alt={alt} loading="lazy" style={mk} onLoad={fit} onError={()=>setBad(true)}/>}</div>}
 const PERKS=[[Ic.Truck,'Fast Delivery'],[Ic.Shield,'Secure Payments'],[Ic.Undo,'Easy Returns']];
 const agoT=t=>{if(!t)return 'Earlier';const m=Math.floor((Date.now()-t)/6e4);if(m<1)return 'Just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';const d=Math.floor(h/24);return d<7?d+'d ago':new Date(t).toLocaleDateString([],{day:'numeric',month:'short'})};
@@ -1069,7 +1077,7 @@ function App(){
  const qref=useRef({}),pend=useRef({}),flowRef=useRef({});
  /* every shop reply lands after a 3.4s typing delay; replies to the same shop are queued in order */
  const say=(id,msgs)=>{pend.current[id]=(pend.current[id]||0)+1;setTyping(t=>({...t,[id]:true}));
-  const run=async()=>{for(const m of msgs){await wait(3400);const {delay,...mm}=m;push(id,{from:'bot',...mm})}pend.current[id]--;if(!pend.current[id])setTyping(t=>({...t,[id]:false}))};
+  const run=async()=>{for(const m of msgs){const {delay,...mm}=m;await wait(delay!=null?delay:3400);push(id,{from:'bot',...mm})}pend.current[id]--;if(!pend.current[id])setTyping(t=>({...t,[id]:false}))};
   qref.current[id]=(qref.current[id]||Promise.resolve()).then(run);return qref.current[id]};
 
  const open=(s,m,pc,dp)=>{if(m)attribRef.current[s.id]=dp?{post:dp.id}:null;setSearch(false);setQ('');setTab('inbox');setChat(s);setUnread(u=>({...u,[s.id]:0}));
@@ -1090,11 +1098,11 @@ function App(){
   say(s.id,[{text:t,qr:['Keep Shopping','Complete Order']}])};
  const sumCard=s=>{const c=cartOf(s.id),items=c.reduce((a,x)=>a+x.price*x.qty,0);return{lines:c.map(x=>[`${lbl(x)} × ${x.qty}`,x.price*x.qty]),items,fee:FEE,total:items+FEE}};
  const [payDlg,setPayDlg]=useState(null),[payPhone,setPayPhone]=useState(()=>{try{return localStorage.getItem('teqx-phone')||''}catch(e){return ''}}),payRun=useRef(0),[simPin,setSimPin]=useState('');
- const finishPay=(s,f,tx)=>{const sc=sumCard(s),lines=cartOf(s.id).map(x=>({name:x.name,opt:x.opt||'',qty:x.qty,price:x.price})),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx,lines);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
+ const finishPay=(s,f,tx,on)=>{const sc=sumCard(s),lines=cartOf(s.id).map(x=>({name:x.name,opt:x.opt||'',qty:x.qty,price:x.price})),id=secure(s,sc.lines.map(l=>l[0]).join(', '),sc.items,FEE,tx,lines,on);f.cs='done';track(id,s.id,f.station);setC(s.id,[]);
   say(s.id,[{text:'Confirmed, **payment secured** ✅ Your funds are now held safely under TeQx Buyer Protection Policy, and your order is ready for shipping.\nFor order status, feel free to track your order anytime on the **Orders tab**.'},{text:`Thank you so much for shopping with ${s.name}! 😊 Enjoy your day, and we can’t wait to see you again 💛`,qr:['Keep Shopping','Track Order']}])};
- const payNow=(s,f)=>{f.cs='phone';return{text:'Almost there! 😊 Please type your **M-Pesa number** in the message bar below and send it, e.g. 0712345678. The payment prompt will pop up on your phone right away.',qr:['Cancel Order']}};
+ const payNow=(s,f)=>{f.cs='phone';return{text:'Almost there! 😊 Please enter your **M-Pesa number** for transactions.',qr:['Cancel Order']}};
  const payFail=(s,f,msg)=>{f.cs='pay';say(s.id,[{text:msg,qr:['Try again','Cancel Order']}])};
- const startPay=(s,f,phone)=>{const sc=sumCard(s),d={s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),err:''},reply={text:`Sending the **M-Pesa payment prompt** to **${phone}**…`};try{localStorage.setItem('teqx-phone',phone)}catch(e){}f.cs='stk';
+ const startPay=(s,f,phone)=>{const sc=sumCard(s),d={s,f,amount:sc.total,item:sc.lines.map(l=>l[0]).join(', '),err:''},reply=[],on='TQ-'+Math.floor(100000+Math.random()*900000);d.on=on;try{localStorage.setItem('teqx-phone',phone)}catch(e){}f.cs='stk';
   if(SIM_PAY){const run0=++payRun.current;setTimeout(()=>{if(payRun.current===run0)setPayDlg({...d,phase:'confirm'})},600);return reply}
   const run=++payRun.current;setPayDlg({...d,phase:'wait'});
   (async()=>{try{
@@ -1104,7 +1112,7 @@ function App(){
    while(payRun.current===run&&Date.now()-t0<120000){
     await new Promise(x=>setTimeout(x,3000));if(payRun.current!==run)return;
     const st=await apiJ('/api/pay/status?tx_ref='+encodeURIComponent(r.tx_ref)+'&device='+encodeURIComponent(DEV));
-    if(st.status==='successful'){payRun.current++;setPayDlg(null);finishPay(d.s,d.f,r.tx_ref);return}
+    if(st.status==='successful'){payRun.current++;setPayDlg(null);finishPay(d.s,d.f,r.tx_ref,d.on);return}
     if(st.status==='failed')throw new Error('The payment was declined or cancelled');
    }
    if(payRun.current===run)throw new Error('We did not receive your payment in time. If money left your M-Pesa, keep the message and contact support.')
@@ -1114,7 +1122,7 @@ function App(){
  const simOk=()=>{const d=payDlg;if(!d||simPin.length!==4)return;const run=++payRun.current;setPayDlg({...d,phase:'wait',err:''});
   setTimeout(()=>{if(payRun.current!==run)return;
    if(simPin==='0000'){setSimPin('');setPayDlg(x=>x?{...x,phase:'confirm',err:'Wrong M-PESA PIN. Please try again.'}:x);return}
-   setSimPin('');payRun.current++;setPayDlg(null);finishPay(d.s,d.f,null)},2200)};
+   setSimPin('');payRun.current++;setPayDlg(null);finishPay(d.s,d.f,null,d.on)},2200)};
  const scr=(s,text,f,q)=>{const c=cartOf(s.id);
   if(q==='keep shopping'||q==='explore more products')return{text:"Of course! 😊 Here are a few more things we think you’ll love 👇",catalog:true};
   if(q==='complete order'&&c.length){f.cs='addr';return{text:'Wonderful! 😊 Where should we send your order? Please type your **delivery address or town**, e.g. Nairobi.'}}
@@ -1127,7 +1135,7 @@ function App(){
   if(q==='change order'&&c.length){f.cs=null;return{text:'No problem at all! 😊 Add more items below, then tap **Complete Order** whenever you’re ready.',catalog:true,qr:['Complete Order']}}
   if((q==='cancel'||q==='cancel order')&&['addr','station','sum','pay','phone'].includes(f.cs)){f.cs=null;return{text:"No worries at all 😊 I’m right here whenever you’re ready.",qr:c.length?['Keep Shopping','Complete Order']:undefined}}
   if(f.cs==='phone'){const ph=text.replace(/[\s\-]/g,'');if(PHONE_RX.test(ph))return startPay(s,f,ph);return{text:'That does not look like a valid M-Pesa number 🤔 Please type it like **0712345678**.',qr:['Cancel Order']}}
-  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Thank you! 😊 Our parcel delivery is handled by **EMS Posta Kenya**. Here are the available **pickup points** in **${loc}**. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['Pickup Point '+'ABC'[n-1],FEE])}}}
+  if(f.cs==='addr'&&q.length>1){const loc=text.trim().replace(/\b\w/g,x=>x.toUpperCase());f.cs='station';return{text:`Thank you! 😊 Our parcel delivery is handled by **Posta Kenya**. Here are the available **Pickup points** in **${loc}**. Please pick the one that suits you 👇`,stations:{loc,rows:[1,2,3].map(n=>['Pickup Point '+'ABC'[n-1],FEE])}}}
   return null};
 
  
@@ -1144,7 +1152,7 @@ function App(){
   if(st==='done')return{text:'Anything else I can help with?',qr:QD};
   return{text:'What would you like to do?',qr:QB}};
  const place=(s,f)=>{const fee=feeOf(f),nm=f.item+(f.opt||f.col?` (${[f.opt,f.col].filter(Boolean).join(', ')})`:''),id=secure(s,nm,f.price,fee);f.st='done';track(id,s.id);
-  return [{text:`Thank you, your order ${id} is confirmed! 🎉\n${f.pay==='Cash on delivery'?'Please have the **cash ready** for the rider.':'Your payment is held **securely** until your order arrives.'} I’ll update you here at every step.`,placed:id},{delay:1500,text:`Thank you so much for shopping with ${s.name}! 😊 Enjoy your day, and we can’t wait to see you again 💛`}]};
+  return [{text:`Thank you, your order ${id} is confirmed! 🎉\n${f.pay==='Cash on delivery'?'Please have the **cash ready** for the rider.':'Your payment is held **securely** until your order arrives.'} I’ll update you here at every step.`,placed:id},{delay:8000,text:`Thank you so much for shopping with ${s.name}! 😊 Enjoy your day, and we can’t wait to see you again 💛`}]};
  const eng=(s,text,first)=>{const f=fl(s.id),q=strip(text),T=q.split(' '),hi=first?`Hi there 😊 Welcome to ${s.name}.\n`:'',W=o=>({...o,text:hi+o.text});
   const sr=scr(s,text,f,q);if(sr)return Array.isArray(sr)?sr:W(sr);
   const go=(st,pre)=>{f.st=st;const a=ask(s,f);return W({...a,text:(pre||'')+a.text})};
@@ -1185,7 +1193,7 @@ function App(){
 
  const [notifs,setNotifs]=useState([]),ordMeta=useRef({}),attribRef=useRef({});
  const addN=(s,kind,text)=>{ping();return setNotifs(n=>[{id:Math.random(),ts:Date.now(),s,kind,text,r:false},...n])};
- const secure=(s,item,price,fe,tx,lines)=>{const fee=fe!=null?fe:delFee(price),id='TQ-'+Math.floor(100000+Math.random()*900000);
+ const secure=(s,item,price,fe,tx,lines,pid)=>{const fee=fe!=null?fe:delFee(price),id=pid||'TQ-'+Math.floor(100000+Math.random()*900000);
   ordMeta.current[id]={s,price};apiSaveOrder({id,store_id:s&&s.id,item,price,fee,status:'Secured',tx_ref:tx,lines,post_id:(s&&(attribRef.current[s.id]||{}).post)||undefined});setOrders(o=>[{id,store:s,item,price,fee,status:'Secured'},...o]);
   addN(s,'secured',`Payment secured. Your ${ksh(price+fee)} is safe with TeQx until your order reaches you. Order no. ${id}.`);return id};
  const track=async(id,sid,stn)=>{const M=ordMeta.current[id]||{},sh=M.s||STORES.find(x=>x.id===sid),up=v=>{apiPatchOrder(id,v,stn);setOrders(o=>o.map(x=>x.id===id?{...x,status:v,station:stn||x.station}:x))},ms=v=>setMord(m=>m.map(x=>x.id===id?{...x,status:v}:x)),ev=(k,t)=>{if(sid)push(sid,{from:'sys',text:t});if(sh)addN(sh,k,t)};
@@ -1242,7 +1250,7 @@ function App(){
   if(m.from==='me')return <div key={m.k} className={'mr me'+(gs?' gs':'')}><div className="mc"><div className="bb me">{m.text}</div><div className="mt"><span>{fmtT(m.ts)}</span><Ticks/></div></div></div>;
   const last=!nx||nx.from!=='bot';
   return <div key={m.k} style={{display:'contents'}}>
-   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')} style={{overflow:'hidden'}}><SAv s={chat}/></div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>pickup points</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection Policy</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
+   {(m.text||m.summary||m.placed||m.stations||m.osum||m.info)&&<div className={'mr'+(gs?' gs':'')+(!gs&&pv&&pv.from==='bot'?' cn':'')}><div className={'mav'+(last&&!m.catalog?'':' sp')} style={{overflow:'hidden'}}><SAv s={chat}/></div><div className="mc">{m.text&&<div className="bb bot"><Rich t={m.text}/></div>}{m.stations&&<div className="rcpt stc2"><div className="chd"><span className="chi">{CI.pin()}</span><div><b>Posta Services</b><small>{m.stations.loc}</small></div></div>{m.stations.rows.map(r=><button key={r[0]} className="stn" onClick={()=>send(r[0])}><span className="stp">{CI.pin()}</span><span className="stt"><b>{r[0]}</b><small>Parcel fee</small></span><span className="stf">{ksh(r[1])}</span><span className="stg">›</span></button>)}</div>}{m.osum&&(()=>{const n=v=>v.toLocaleString('en-KE');return <div className="rcpt osm"><div className="chd"><span className="chi">{CI.receipt()}</span><div><b>Order summary</b><small>Review before you pay</small></div></div><div className="oh"><span>Item</span><span>Value</span></div>{m.osum.lines.map(l=><div key={l[0]} className="orw"><span>{l[0]}</span><b>{n(l[1])}</b></div>)}<div className="osep"/><div className="orw"><span>Items subtotal</span><b>{n(m.osum.items)}</b></div><div className="orw"><span>Parcel fee</span><b className="gr">{n(m.osum.fee)}</b></div><div className="otot"><span>Total</span><b>{ksh(m.osum.total)}</b></div></div>})()}{m.info&&<div className="rcpt icard"><div className="chd"><span className="chi">{CI[m.info.icon]()}</span><div><b>{m.info.title}</b><small>TeQx Buyer Protection Policy</small></div></div>{m.info.steps.map((x,i)=><div key={i} className="ist"><span className="isi">{CI[x[0]]()}</span><div><b>{x[1]}</b><small>{x[2]}</small></div></div>)}{m.info.foot&&<div className="ifoot">{m.info.foot}</div>}</div>}{m.summary&&<Rcpt r={m.summary}/>}{m.placed&&<div className="okc"><i>✓</i><div><b>Order {m.placed}</b><small>Secured · updates will appear here</small></div></div>}</div></div>}
    {m.catalog&&<div className="catrow"><ShopAv s={chat}/><div className="hs cat">{(()=>{const ps=m.pcat?{...chat,prods:m.pcat.map(x=>[x.n,x.p]),attrs:m.pcat.map(x=>x.a),vars:m.pcat.map(x=>x.v),cimgs:m.pcat.map(()=>({})),pimgs:m.pcat.map(x=>x.i)}:chat;return ps.prods.map((_,i)=><Card key={i} store={ps} i={i} onAdd={addCart}/>)})()}</div></div>}
   </div>};
  chatIdRef.current=chat?chat.id:null;
@@ -1471,14 +1479,10 @@ function App(){
       <Fields rows={MEROWS} val={me} edit={edMe} set={(k,v)=>setMe(x=>({...x,[k]:v}))}/>
       {me.avatar&&edMe&&<button className="lnk" style={{marginTop:12}} onClick={()=>setMe(x=>({...x,avatar:undefined}))}>Remove profile photo</button>}
       {edMe&&<button className="btn" style={{marginTop:18}} onClick={()=>{setEdMe(false);note('Details saved')}}>Save</button>}</Acc>
-     <Acc icon={<Ic.Pkg s={18}/>} title="Recent orders" badge={<span className="pc">{orders.length}</span>} action={orders.length>0&&<button className="lnk" onClick={()=>setTab('orders')}>View all</button>}>
-      {orders.length?orders.slice(0,3).map(o=><button key={o.id} className="row" style={{padding:'9px 0'}} onClick={()=>setTab('orders')}><div className="av" style={{width:42,height:42,fontSize:19}}>{<Ic.Store s={20}/>}</div><div className="grow"><div className="nm"><span>{o.item}</span></div><div className="pv">{o.id} · {ksh(o.price)}</div></div><span className="stc">{o.status}</span></button>):<p className="bd" style={{margin:0}}>No orders yet.</p>}</Acc>
-     <Acc icon={<Ic.Users s={18}/>} title="Following" badge={<span className="pc">{Object.values(fol).filter(Boolean).length}</span>}>{(()=>{const L=STORES.filter(x=>fol[x.id]);return L.length?L.map(x=><button key={x.id} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}><Ic.Store s={18}/></div><div className="grow nm">{x.name}</div></button>):<p className="bd" style={{margin:0}}>Follow a shop from the Discover feed.</p>})()}</Acc>
      <Acc icon={<Ic.Mark s={18}/>} title="Saved" badge={<span className="pc">{Object.values(saved).filter(Boolean).length}</span>}>{(()=>{const L=FEED.filter(p=>saved[p.pid]);return L.length?L.map(p=>{const x=STORES.find(z=>z.id===p.sid);return <button key={p.pid} className="row" style={{padding:'8px 0'}} onClick={()=>open(x)}><div className="av" style={{width:40,height:40,fontSize:18}}><Ic.Store s={18}/></div><div className="grow"><div className="nm"><span>{p.name}</span></div><div className="pv">{x.name} · {ksh(p.price)}</div></div></button>}):<p className="bd" style={{margin:0}}>Tap the bookmark on a post to save it.</p>})()}</Acc>
      <Acc icon={<Ic.Store s={18}/>} title="Business accounts">
       <button className="row" style={{padding:'11px 0'}} onClick={()=>goAcct('dropshipper')}><span className="acci"><Ic.Tag s={18}/></span><div className="grow"><div className="nm">Dropshipper</div><div className="pv">Promote merchant deals and earn commission</div></div><span className="mu"><Ic.Chev s={16}/></span></button>
       <button className="row" style={{padding:'11px 0'}} onClick={()=>goAcct('merchant')}><span className="acci"><Ic.Pkg s={18}/></span><div className="grow"><div className="nm">Merchant</div><div className="pv">Upload products and fulfil orders</div></div><span className="mu"><Ic.Chev s={16}/></span></button></Acc>
-     <Acc icon={<Ic.Wallet s={18}/>} title="Payment"><p className="bd" style={{margin:0}}>M-Pesa · Cash on delivery</p></Acc>
      <Acc icon={<Ic.Gear s={18}/>} title="Preferences">
       <Toggle label="Dark mode" on={dark} onClick={()=>setDark(!dark)}/>
       <Toggle label="Notifications" sub="Order updates and new arrivals from shops you follow" on={me.notif} onClick={()=>setMe(x=>({...x,notif:!x.notif}))}/></Acc>
@@ -1528,14 +1532,14 @@ function App(){
     <input className="fi" placeholder="Post title" value={edp.name} onChange={e=>setEdp(v=>({...v,name:e.target.value}))}/>
     <textarea className="fi" rows={3} placeholder="Write a caption" value={edp.cap} onChange={e=>setEdp(v=>({...v,cap:e.target.value}))}/>
     <button className="btn" style={{marginTop:14}} onClick={saveEdit}>Save changes</button></div></div></div>}
-  {payDlg&&(()=>{const stk=payDlg.phase==='confirm'||(SIM_PAY&&payDlg.phase==='wait');return <div style={{position:'fixed',inset:0,zIndex:9999,background:stk?'rgba(0,0,0,.72)':'rgba(0,0,0,.6)',display:'flex',alignItems:stk?'flex-start':'flex-end',justifyContent:'center',padding:stk?'calc(env(safe-area-inset-top,0px) + 14vh) 0 0':0,overscrollBehavior:'contain',touchAction:'none'}}>
+  {payDlg&&(()=>{const stk=payDlg.phase==='confirm'||(SIM_PAY&&payDlg.phase==='wait');return <div style={{position:'fixed',inset:0,zIndex:9999,background:stk?'rgba(0,0,0,.72)':'rgba(0,0,0,.6)',display:'flex',alignItems:stk?'flex-start':'flex-end',justifyContent:'center',padding:stk?'calc(env(safe-area-inset-top,0px) + 24vh) 0 0':0,overscrollBehavior:'contain',touchAction:'none'}}>
    <div style={stk?{width:'calc(100% - 56px)',maxWidth:330,background:'var(--surf)',color:'var(--text)',borderRadius:22,padding:0,overflow:'hidden',boxShadow:'0 28px 70px rgba(0,0,0,.6)',border:'1px solid var(--cardline)',animation:'pop .22s ease'}:{width:'100%',maxWidth:480,background:'var(--surf)',color:'var(--text)',borderRadius:'20px 20px 0 0',padding:'20px 18px calc(20px + env(safe-area-inset-bottom,0px))'}}>
     {!stk&&<><h3 style={{margin:'0 0 4px'}}>Pay with M-Pesa</h3>
     <div style={{color:'var(--mut)',fontSize:13,marginBottom:14}}>Total <b style={{color:'var(--text)'}}>{ksh(payDlg.amount)}</b> · held under TeQx Buyer Protection</div></>}
     {payDlg.phase==='confirm'?<div style={{textAlign:'center'}}>
      <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 16px',background:'linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%)',color:'#fff',fontWeight:800,letterSpacing:3,fontSize:15}}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>M-PESA</div>
      <div style={{padding:'22px 22px 4px'}}>
-      <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{'KSH '+payDlg.amount.toLocaleString('en-KE')}</b> to <b>POSTAPAY</b> for Account <b>TeQx Market Ltd</b>? Enter M-PESA PIN:</p>
+      <p style={{margin:'0 0 16px',fontSize:15,lineHeight:1.5}}>Do you want to pay <b style={{color:'#12c062'}}>{'KSH '+payDlg.amount.toLocaleString('en-KE')}</b> to <b>TeQx Market Ltd</b> for Order no: <b>{payDlg.on||''}</b>? Enter M-PESA PIN:</p>
       <input className="fi" type="password" inputMode="numeric" maxLength={4} autoFocus placeholder="••••" style={{textAlign:'center',letterSpacing:8,margin:0,fontWeight:700,fontSize:16}} value={simPin} onChange={e=>setSimPin(e.target.value.replace(/\D/g,'').slice(0,4))}/>
       <p style={{color:'#e5484d',fontSize:13,margin:'10px 0 0',minHeight:18,lineHeight:'18px'}}>{payDlg.err||''}</p>
      </div>
