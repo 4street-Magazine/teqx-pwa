@@ -1466,8 +1466,8 @@ function App(){
   <main>
    {!isCl&&btab!=='prof'&&<div className="page" key={role+btab}>{biz(role,btab,setBtab)}</div>}
    {isCl&&tab==='inbox'&&<>
-    {(()=>{const FS=STORES.filter(s=>fol[s.id]);return FS.length>0&&<div className="tray" style={{paddingTop:0,marginTop:-8,paddingBottom:0}}><div className="hs fstrip">{FS.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="fav"><SAv s={s}/></div><span>{s.name}</span></button>)}</div></div>})()}
-    <div className="tray" style={{paddingTop:0}}><div className="sect" style={{paddingTop:2,paddingBottom:8}}>Conversations</div></div>
+    {(()=>{const FS=STORES.filter(s=>fol[s.id]);return FS.length>0&&<div className="tray" style={{paddingTop:18,marginTop:0,paddingBottom:0}}><div className="hs fstrip">{FS.map(s=><button key={s.id} className="story" onClick={()=>open(s)}><div className="fav"><SAv s={s}/></div><span>{s.name}</span></button>)}</div></div>})()}
+    <div className="tray" style={{paddingTop:26}}><div className="sect" style={{paddingTop:2,paddingBottom:10}}>Conversations</div></div>
     <div className="page" style={{padding:'4px 0 24px'}}>
     {(()=>{const last=s=>((chats[s.id]||[]).slice(-1)[0]||{}).ts||0;const L=STORES.filter(s=>chats[s.id]).sort((x,y)=>last(y)-last(x));return L.length?L.map(s=>{const A=chats[s.id]||[],m=[...A].reverse().find(x=>x.text),l=A[A.length-1],dr=draftOf(s.id);return <button key={s.id} className="row" onClick={()=>open(s)}>
      <div className="av" style={{overflow:'hidden'}}><SAv s={s}/></div>
