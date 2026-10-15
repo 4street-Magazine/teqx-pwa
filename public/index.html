@@ -1977,5 +1977,11 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
  });
 })();
 </script>
+<style id="teqx-feed-gap">
+/* tighter spacing under posts so there is no dead strip above the bottom nav */
+.post{margin-bottom:24px}
+.post:last-child{margin-bottom:0}
+.page:has(>.post){padding-bottom:6px!important}
+</style>
 </body>
 </html>
