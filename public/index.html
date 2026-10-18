@@ -12,6 +12,7 @@
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script>if(!window.htmlToImage){var _h=document.createElement("script");_h.src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js";document.head.appendChild(_h)}</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap');
 :root{--green:linear-gradient(135deg,#34e68a 0%,#12c062 50%,#079244 100%);--gglow:0 6px 16px rgba(18,192,98,.4);--grad:linear-gradient(135deg,#ff8f1c 0%,#ff5c0a 48%,#f03a0e 100%);--accent:#ff5c0a;--glow:0 6px 18px rgba(255,92,10,.42)}
@@ -745,24 +746,37 @@ const ksh=n=>'KSh '+n.toLocaleString('en-KE');
 const SITE='https://teqxmarket.co.ke';
 const refBody=()=>{try{const r=JSON.parse(localStorage.getItem('teqx-ref')||'null');if(r&&r.ref&&Date.now()-r.t<6048e5)return {ref_device:r.ref,ref_pid:r.pid}}catch(e){}return {}};
 const SHARE_PCT=5; // commission % earned per sale made through a shared post
-async function snapPost(node,n){ /* renders the post image container to a PNG: perks sit where the Message button is */
- const src=node.closest('article'),ps=node.querySelector('.ps'),W=ps?ps.clientWidth:0,wrap=document.createElement('div'),art=document.createElement('article'),c=node.cloneNode(true);
+async function snapOnce(node,n,full,skip){
+ const src=node.closest('article'),ps=node.querySelector('.ps'),W=ps?ps.clientWidth:0,wrap=document.createElement('div'),c=node.cloneNode(true);
  const P=(el,o)=>Object.keys(o).forEach(k=>el.style.setProperty(k,o[k],'important'));
- wrap.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none;width:'+(src?src.offsetWidth:node.offsetWidth)+'px';
- art.className=src?src.className:'post';P(art,{animation:'none',opacity:'1',transform:'none',margin:'0'});
- c.querySelectorAll('.msgbtn,.burst,.seg').forEach(e=>e.remove());
+ wrap.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none;width:'+((full&&src)?src.offsetWidth:node.offsetWidth)+'px';
+ c.querySelectorAll('.msgbtn,.burst'+(full?',.seg':'')).forEach(e=>e.remove());
  const cps=c.querySelector('.ps');if(cps){cps.style.overflow='hidden';if(cps.firstElementChild)cps.firstElementChild.style.marginLeft=(-n*W)+'px'}
- const perks=c.querySelector('.perks'),top=c.querySelector('.ptop');
- if(perks&&top){top.appendChild(perks);
-  P(perks,{position:'static',display:'flex','flex-direction':'row',gap:'8px',padding:'0',margin:'0',background:'none',border:'0','backdrop-filter':'none','-webkit-backdrop-filter':'none',right:'auto',left:'auto',top:'auto',bottom:'auto',transform:'none',width:'auto',height:'auto',flex:'none'});
-  perks.querySelectorAll('.perk').forEach(p=>P(p,{width:'auto',color:'#fff'}));
-  perks.querySelectorAll('.perk i').forEach(i=>P(i,{width:'38px',height:'38px','backdrop-filter':'none','-webkit-backdrop-filter':'none',background:'rgba(255,255,255,.14)',border:'1px solid rgba(255,255,255,.32)','border-radius':'50%',display:'grid','place-items':'center'}));
+ if(full){
+  const perks=c.querySelector('.perks'),top=c.querySelector('.ptop');
+  if(perks&&top){top.appendChild(perks);
+   P(perks,{position:'static',display:'flex','flex-direction':'row',gap:'8px',padding:'0',margin:'0',background:'none',border:'0','backdrop-filter':'none','-webkit-backdrop-filter':'none',right:'auto',left:'auto',top:'auto',bottom:'auto',transform:'none',width:'auto',height:'auto',flex:'none'});
+   perks.querySelectorAll('.perk').forEach(p=>P(p,{width:'auto',color:'#fff'}));
+   perks.querySelectorAll('.perk i').forEach(i=>P(i,{width:'38px',height:'38px','backdrop-filter':'none','-webkit-backdrop-filter':'none',background:'rgba(255,255,255,.14)',border:'1px solid rgba(255,255,255,.32)','border-radius':'50%',display:'grid','place-items':'center'}));
+  }
+  const meta=c.querySelector('.pmeta'),rt=c.querySelector('.rt');
+  if(meta)P(meta,{display:'flex','flex-direction':'row','align-items':'center','flex-wrap':'nowrap',gap:'12px'});
+  if(rt){P(rt,{display:'inline-flex','flex-direction':'row','align-items':'center',gap:'5px','white-space':'nowrap',margin:'0'});rt.querySelectorAll('b').forEach(b=>P(b,{display:'inline',margin:'0'}))}
+  const art=document.createElement('article');art.className=src?src.className:'post';
+  P(art,{animation:'none',opacity:'1',transform:'none',margin:'0','content-visibility':'visible',contain:'none',overflow:'visible'});
+  art.appendChild(c);wrap.appendChild(art);
+ }else wrap.appendChild(c);
+ document.body.appendChild(wrap);
+ try{await new Promise(r=>setTimeout(r,80));
+  const blob=await window.htmlToImage.toBlob(c,{pixelRatio:2,cacheBust:true,skipFonts:!!skip,backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0c'});
+  return blob?new File([blob],'teqx-post.png',{type:'image/png'}):null}finally{wrap.remove()}
+}
+async function snapPost(node,n){ /* tries the full share layout first, then simpler captures */
+ let err='';
+ for(const [full,skip] of [[true,false],[true,true],[false,true]]){
+  try{const f=await snapOnce(node,n,full,skip);if(f&&f.size>8000)return f;err='blank image'}catch(e){err=(e&&e.message)||(e&&e.type)||String(e)}
  }
- const meta=c.querySelector('.pmeta'),rt=c.querySelector('.rt');
- if(meta)P(meta,{display:'flex','flex-direction':'row','align-items':'center','flex-wrap':'nowrap',gap:'12px'});
- if(rt){P(rt,{display:'inline-flex','flex-direction':'row','align-items':'center',gap:'5px','white-space':'nowrap',margin:'0'});rt.querySelectorAll('b').forEach(b=>P(b,{display:'inline',margin:'0'}))}
- art.appendChild(c);wrap.appendChild(art);document.body.appendChild(wrap);
- try{await new Promise(r=>setTimeout(r,60));const blob=await window.htmlToImage.toBlob(c,{pixelRatio:2,cacheBust:true,backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0c'});return blob?new File([blob],'teqx-post.png',{type:'image/png'}):null}finally{wrap.remove()}
+ throw new Error(err||'capture failed');
 }
 const U=(id)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=85`;
 const STORES=[
@@ -1079,7 +1093,7 @@ function App(){
  useEffect(()=>{const f=()=>{setOrders(o=>o.length?o:(window.__ORD||[]));setTick(t=>t+1)};if(window.__DATA)f();window.addEventListener('teqx-data',f);return()=>window.removeEventListener('teqx-data',f)},[]);
  useEffect(()=>{const f=()=>{const P=window.__MYPROF;if(!P)return;setShop(x=>(x.bio||x.phone||x.loc||x.hours)||!(P.bio||P.phone||P.loc||P.hours)?x:{...x,bio:P.bio||x.bio,phone:P.phone||x.phone,loc:P.loc||x.loc,hours:P.hours||x.hours})};if(window.__DATA)f();window.addEventListener('teqx-data',f);return()=>window.removeEventListener('teqx-data',f)},[]);
  const [liked,setLiked]=useState({}),[saved,setSaved]=useState({});
- const [fol,setFol]=useState(()=>Object.fromEntries(STORES.map(x=>[x.id,true]))),[toast,setToast]=useState(''),[shr,setShr]=useState(null),shrF=useRef(null),[counts,setCounts]=useState({like:{},follow:{},comment:{},share:{}});
+ const [fol,setFol]=useState(()=>Object.fromEntries(STORES.map(x=>[x.id,true]))),[toast,setToast]=useState(''),[shr,setShr]=useState(null),[shrSt,setShrSt]=useState(''),shrF=useRef(null),shrP=useRef(null),[counts,setCounts]=useState({like:{},follow:{},comment:{},share:{}});
  const [init]=useState(()=>{try{const j=JSON.parse(localStorage.getItem('tumiqa-shop'))||{};if(j.v!==4){delete j.txs;delete j.earn;delete j.earnD;delete j.dsOrders}return j}catch(e){return{}}});
  const [acct,setAcct]=useState('client'),[shop,setShop]=useState({name:'My Shop',icon:'🏪',open:true,notif:true,...(init.shop||{})}),[photos,setPhotos]=useState(init.photos||[]),[myPosts,setMyPosts]=useState(init.myPosts||[]),[sel,setSel]=useState([]),[pf,setPf]=useState({name:'',price:'',cap:''});
  const goAcct=a=>{if(a==='client'){setAcct('client');return}if(a==='posta'){setDtab('dash');setAcct('posta');return}if(!act[a]){setIntro(a);return}a==='merchant'?setPtab('dash'):setDtab('dash');setAcct(a)},mode=acct==='client'?'client':'shop',role=acct==='merchant'?'merchant':acct==='posta'?'posta':'dropshipper';
@@ -1097,8 +1111,13 @@ function App(){
  const pickAva=set=>async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const d=await readImg(f,360);if(d){set(v=>({...v,avatar:d}));note('Profile photo updated')}else note('Could not read that image')};
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
- useEffect(()=>{shrF.current=null;if(!shr||!shr.node||!window.htmlToImage)return;let off=false;snapPost(shr.node,shr.n).then(f=>{if(!off)shrF.current=f}).catch(()=>{});return()=>{off=true}},[shr]);
- const doShare=()=>{const i=shr;if(!i)return;const url=SITE+'/post/'+encodeURIComponent(i.id)+'?ref='+encodeURIComponent(DEV),text=i.name+'\nFor Orders & Pay on Delivery '+url,f=shrF.current;setShr(null);apiJ('/api/react','POST',{device_id:DEV,kind:'share',target:i.id,on:true}).then(r=>{if(r&&r.ok)setCounts(c=>({...c,share:{...(c.share||{}),[i.id]:r.count}}))}).catch(()=>{});
+ useEffect(()=>{shrF.current=null;shrP.current=null;if(!shr||!shr.node){setShrSt('');return}
+  if(!window.htmlToImage){setShrSt('fail:image library not loaded');return}
+  let off=false;setShrSt('busy');
+  const p=snapPost(shr.node,shr.n).then(f=>{if(!off){shrF.current=f;setShrSt(f?'ok':'fail:empty image')}return f}).catch(e=>{if(!off)setShrSt('fail:'+String((e&&e.message)||(e&&e.type)||e||'unknown').slice(0,70));return null});
+  shrP.current=p;return()=>{off=true}},[shr]);
+ const doShare=async()=>{const i=shr;if(!i)return;const p=shrP.current,url=SITE+'/post/'+encodeURIComponent(i.id)+'?ref='+encodeURIComponent(DEV),text=i.name+'\nFor Orders & Pay on Delivery '+url;let f=shrF.current;setShr(null);apiJ('/api/react','POST',{device_id:DEV,kind:'share',target:i.id,on:true}).then(r=>{if(r&&r.ok)setCounts(c=>({...c,share:{...(c.share||{}),[i.id]:r.count}}))}).catch(()=>{});
+  if(!f&&p){try{f=await Promise.race([p,new Promise(r=>setTimeout(()=>r(null),6000))])}catch(e){}}
   if(navigator.share){const d=f&&navigator.canShare&&navigator.canShare({files:[f]})?{files:[f],text}:{title:i.name,text};navigator.share(d).catch(()=>{})}
   else{try{navigator.clipboard.writeText(url);if(f){const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()}note('Link copied. Paste it to share')}catch(e){note('Sharing is not supported on this device')}}};
  const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
@@ -1593,7 +1612,7 @@ function App(){
    <div style={{padding:'0 20px 20px'}}><div className="deal" style={{padding:0,border:0}}><img src={shr.img} alt=""/><div className="grow"><div className="pn2">{shr.name}</div><small>{ksh(shr.price)}</small></div></div>
     <div className="card" style={{margin:'14px 0 0',textAlign:'center'}}><b className="big" style={{color:'#0fb85b'}}>{SHARE_PCT}% commission</b><p className="bd" style={{margin:'6px 0 0'}}>You earn <b>{ksh(Math.round(shr.price*SHARE_PCT/100))}</b> each time someone buys this product through your shared link.</p></div>
     <div style={{display:'grid',gap:9,margin:'14px 0 0'}}>{['The post image is shared together with your link','Buyers who open your link can message the shop and order','Commission is released after the buyer collects the order'].map(t=><div key={t} className="bd" style={{margin:0,display:'flex',gap:8}}><b style={{color:'#0fb85b'}}>✓</b><span>{t}</span></div>)}</div>
-    <button className="btn" style={{width:'100%',marginTop:16}} onClick={doShare}>Promote Deal</button><button className="lnk" style={{display:'block',margin:'12px auto 0'}} onClick={()=>setShr(null)}>Not now</button></div></div></div>}
+    <button className="btn" style={{width:'100%',marginTop:16}} onClick={doShare}>Promote Deal</button>{shrSt&&shrSt!=='ok'&&<div className="bd" style={{margin:'10px 0 0',textAlign:'center',fontSize:12}}>{shrSt==='busy'?'Preparing the image…':"Couldn't create the image ("+shrSt.slice(5)+'). The link will be shared without it.'}</div>}<button className="lnk" style={{display:'block',margin:'12px auto 0'}} onClick={()=>setShr(null)}>Not now</button></div></div></div>}
   {promo&&<div className="ov sheetw" onClick={()=>setPromo(null)}><div className="sheet" onClick={e=>e.stopPropagation()}><div className="grip"><i/></div><div className="nm" style={{padding:'0 20px 10px',justifyContent:'center'}}>Promote this deal</div>
    <div style={{padding:'0 20px 20px',maxHeight:'68vh',overflowY:'auto'}}><div className="sect" style={{padding:'0 0 8px'}}>Photos for your post ({psel.length} selected)</div><p className="bd" style={{margin:'0 0 10px'}}>Tap photos to include them in the order people will swipe, or add your own.</p><div className="hs" style={{gap:10}}><label className="pt3 addp"><span>+</span><small>Add photos</small><input type="file" accept="image/*" multiple hidden onChange={addPromoPhotos}/></label>{plist.map((im,i)=>{const k=psel.indexOf(i);return <button key={i} className={'pt3 pk'+(k>-1?' on':'')} onClick={()=>setPsel(v=>k>-1?v.filter(x=>x!==i):[...v,i])}><img src={im} alt=""/>{k>-1&&<span className="ck">{k+1}</span>}</button>})}</div>
     <div className="nm" style={{marginTop:12}}>{promo.name}</div>
