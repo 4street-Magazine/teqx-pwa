@@ -740,18 +740,29 @@ const Ic={
  HeartS:({s=14})=><I s={s}><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.500 2-1.500-1.500-2.700-2-4.500-2A5.5 5.5 0 0 0 2 8.500c0 2.300 1.500 4 3 5.500l7 7z"/></I>,
  MsgS:({s=14})=><I s={s}><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></I>
 };
-const Verified=({s=16,g=false})=><svg width={s} height={s} viewBox="0 0 24 24" style={{flexShrink:0}} aria-label={g?"Verified agent":"Verified shop"}>{g&&<defs><linearGradient id="vgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4ff09c"/><stop offset="1" stopColor="#06a244"/></linearGradient></defs>}<path fill={g?"url(#vgG)":"#0b3fd1"} d="M22.250 12c0-1.430-.88-2.670-2.190-3.340.46-1.390.2-2.900-.81-3.910s-2.520-1.270-3.910-.81c-.66-1.310-1.910-2.190-3.340-2.190s-2.670.88-3.330 2.190c-1.400-.46-2.910-.2-3.920.81s-1.260 2.520-.8 3.910C2.640 9.330 1.750 10.570 1.750 12s.89 2.670 2.200 3.340c-.46 1.390-.21 2.900.8 3.910s2.520 1.260 3.910.81c.67 1.310 1.910 2.190 3.340 2.190s2.680-.88 3.340-2.190c1.390.45 2.900.2 3.910-.81s1.270-2.520.81-3.910c1.310-.67 2.190-1.910 2.190-3.340z"/><path d="m8.500 12.300 2.400 2.400 4.700-4.900" fill="none" stroke="#fff" strokeWidth="2.200" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const Verified=({s=16,g=true})=><svg width={s} height={s} viewBox="0 0 24 24" style={{flexShrink:0}} aria-label={g?"Verified merchant":"Verified agent"}>{g&&<defs><linearGradient id="vgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4ff09c"/><stop offset="1" stopColor="#06a244"/></linearGradient></defs>}<path fill={g?"url(#vgG)":"#0b3fd1"} d="M22.250 12c0-1.430-.88-2.670-2.190-3.340.46-1.390.2-2.900-.81-3.910s-2.520-1.270-3.910-.81c-.66-1.310-1.910-2.190-3.340-2.190s-2.670.88-3.330 2.190c-1.400-.46-2.910-.2-3.920.81s-1.260 2.520-.8 3.910C2.640 9.330 1.750 10.570 1.750 12s.89 2.670 2.200 3.340c-.46 1.390-.21 2.900.8 3.910s2.520 1.260 3.910.81c.67 1.310 1.910 2.190 3.340 2.190s2.680-.88 3.340-2.190c1.390.45 2.900.2 3.910-.81s1.270-2.520.81-3.910c1.310-.67 2.190-1.910 2.190-3.340z"/><path d="m8.500 12.300 2.400 2.400 4.700-4.900" fill="none" stroke="#fff" strokeWidth="2.200" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const ksh=n=>'KSh '+n.toLocaleString('en-KE');
 const SITE='https://teqxmarket.co.ke';
 const refBody=()=>{try{const r=JSON.parse(localStorage.getItem('teqx-ref')||'null');if(r&&r.ref&&Date.now()-r.t<6048e5)return {ref_device:r.ref,ref_pid:r.pid}}catch(e){}return {}};
 const SHARE_PCT=5; // commission % earned per sale made through a shared post
-async function snapPost(node,n){ /* renders the post image container (without the Message button) to a PNG file */
- const ps=node.querySelector('.ps'),W=ps?ps.clientWidth:0,wrap=document.createElement('div'),c=node.cloneNode(true);
- wrap.style.cssText='position:fixed;left:-9999px;top:0;width:'+node.offsetWidth+'px;pointer-events:none';
- c.querySelectorAll('.msgbtn,.burst').forEach(e=>e.remove());
+async function snapPost(node,n){ /* renders the post image container to a PNG: perks sit where the Message button is */
+ const src=node.closest('article'),ps=node.querySelector('.ps'),W=ps?ps.clientWidth:0,wrap=document.createElement('div'),art=document.createElement('article'),c=node.cloneNode(true);
+ const P=(el,o)=>Object.keys(o).forEach(k=>el.style.setProperty(k,o[k],'important'));
+ wrap.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none;width:'+(src?src.offsetWidth:node.offsetWidth)+'px';
+ art.className=src?src.className:'post';P(art,{animation:'none',opacity:'1',transform:'none',margin:'0'});
+ c.querySelectorAll('.msgbtn,.burst,.seg').forEach(e=>e.remove());
  const cps=c.querySelector('.ps');if(cps){cps.style.overflow='hidden';if(cps.firstElementChild)cps.firstElementChild.style.marginLeft=(-n*W)+'px'}
- wrap.appendChild(c);document.body.appendChild(wrap);
- try{const blob=await window.htmlToImage.toBlob(c,{pixelRatio:2,cacheBust:true,backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0c'});return blob?new File([blob],'teqx-post.png',{type:'image/png'}):null}finally{wrap.remove()}
+ const perks=c.querySelector('.perks'),top=c.querySelector('.ptop');
+ if(perks&&top){top.appendChild(perks);
+  P(perks,{position:'static',display:'flex','flex-direction':'row',gap:'8px',padding:'0',margin:'0',background:'none',border:'0','backdrop-filter':'none','-webkit-backdrop-filter':'none',right:'auto',left:'auto',top:'auto',bottom:'auto',transform:'none',width:'auto',height:'auto',flex:'none'});
+  perks.querySelectorAll('.perk').forEach(p=>P(p,{width:'auto',color:'#fff'}));
+  perks.querySelectorAll('.perk i').forEach(i=>P(i,{width:'38px',height:'38px','backdrop-filter':'none','-webkit-backdrop-filter':'none',background:'rgba(255,255,255,.14)',border:'1px solid rgba(255,255,255,.32)','border-radius':'50%',display:'grid','place-items':'center'}));
+ }
+ const meta=c.querySelector('.pmeta'),rt=c.querySelector('.rt');
+ if(meta)P(meta,{display:'flex','flex-direction':'row','align-items':'center','flex-wrap':'nowrap',gap:'12px'});
+ if(rt){P(rt,{display:'inline-flex','flex-direction':'row','align-items':'center',gap:'5px','white-space':'nowrap',margin:'0'});rt.querySelectorAll('b').forEach(b=>P(b,{display:'inline',margin:'0'}))}
+ art.appendChild(c);wrap.appendChild(art);document.body.appendChild(wrap);
+ try{await new Promise(r=>setTimeout(r,60));const blob=await window.htmlToImage.toBlob(c,{pixelRatio:2,cacheBust:true,backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0c'});return blob?new File([blob],'teqx-post.png',{type:'image/png'}):null}finally{wrap.remove()}
 }
 const U=(id)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=85`;
 const STORES=[
@@ -961,7 +972,7 @@ function Post({cc,likes,onComment,onProfile,s,si,f,onFollow,liked,onLike,saved,o
  const pmr=useRef(null),share=()=>{if(s.agent){note&&note("Agent posts can't be shared. Share the merchant's post instead");return}if(onShare)onShare({s,n,name:pc(s,n)[0],price:pc(s,n)[1],img:(s.imgs&&s.imgs.length?s.imgs:[s.img])[n]||s.img,node:pmr.current});else note&&note('Sharing is not available here')};
  return <article className="post">
   <div className="ph"><button className="pav" onClick={onProfile}><i><SAv s={s}/></i></button>
-   <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified g={!!s.agent}/></div><div className="tm">{s.custom?agoT(s.ts):(s.ago||si+2+'h ago')} · {s.agent?'#Agent':'#Merchant'}</div></div>
+   <div className="grow"><div className="nm"><button className="nmb" onClick={onProfile}>{s.name}</button><Verified g={!s.agent}/></div><div className="tm">{s.custom?agoT(s.ts):(s.ago||si+2+'h ago')} · {s.agent?'#Agent':'#Merchant'}</div></div>
    <div className="kw"><button className="kb" aria-label="More options" onClick={e=>{e.stopPropagation();setMenu(v=>!v)}}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
     {menu&&<><div className="kback" onClick={()=>setMenu(false)}/><div className="kmenu">
      <button onClick={()=>{onSave();setMenu(false)}}><Ic.Mark on={saved}/>{saved?'Remove from saved':'Save post'}</button>
@@ -1087,7 +1098,7 @@ function App(){
  const shareShop=async()=>{try{if(navigator.share)await navigator.share({title:shop.name,text:'Check out '+shop.name+' on TeQx'});else note('Sharing is not supported on this device')}catch(e){}};
  const note=m=>{setToast(m);setTimeout(()=>setToast(''),2200)};
  useEffect(()=>{shrF.current=null;if(!shr||!shr.node||!window.htmlToImage)return;let off=false;snapPost(shr.node,shr.n).then(f=>{if(!off)shrF.current=f}).catch(()=>{});return()=>{off=true}},[shr]);
- const doShare=()=>{const i=shr;if(!i)return;const url=SITE+'/post/'+encodeURIComponent(i.id)+'?ref='+encodeURIComponent(DEV),text=i.name+' · '+ksh(i.price)+'\nFor Orders & Pay on Delivery '+url,f=shrF.current;setShr(null);apiJ('/api/react','POST',{device_id:DEV,kind:'share',target:i.id,on:true}).then(r=>{if(r&&r.ok)setCounts(c=>({...c,share:{...(c.share||{}),[i.id]:r.count}}))}).catch(()=>{});
+ const doShare=()=>{const i=shr;if(!i)return;const url=SITE+'/post/'+encodeURIComponent(i.id)+'?ref='+encodeURIComponent(DEV),text=i.name+'\nFor Orders & Pay on Delivery '+url,f=shrF.current;setShr(null);apiJ('/api/react','POST',{device_id:DEV,kind:'share',target:i.id,on:true}).then(r=>{if(r&&r.ok)setCounts(c=>({...c,share:{...(c.share||{}),[i.id]:r.count}}))}).catch(()=>{});
   if(navigator.share){const d=f&&navigator.canShare&&navigator.canShare({files:[f]})?{files:[f],text}:{title:i.name,text};navigator.share(d).catch(()=>{})}
   else{try{navigator.clipboard.writeText(url);if(f){const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()}note('Link copied. Paste it to share')}catch(e){note('Sharing is not supported on this device')}}};
  const addPhotos=async e=>{const fs=[...e.target.files];e.target.value='';const out=[];for(const f of fs){const d=await readImg(f);if(d)out.push({id:Date.now()+Math.random(),src:d})}setPhotos(p=>[...out,...p]);setSel(v=>[...v,...out.map(x=>x.id)])};
