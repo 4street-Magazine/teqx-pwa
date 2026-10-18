@@ -747,7 +747,7 @@ export default {
         if (pr) {
           const first = String(pr.img_ids || "").split(",").filter(Boolean)[0];
           tags += '<meta property="og:type" content="website"><meta property="og:site_name" content="TeQx">' +
-            '<meta property="og:title" content="' + esc(pr.name + " · KSh " + Number(pr.price).toLocaleString("en-KE")) + '">' +
+            '<meta property="og:title" content="' + esc(pr.name) + '">' +
             '<meta property="og:description" content="Chat with the shop and order securely on TeQx.">' +
             '<meta property="og:url" content="' + esc(url.origin + path) + '">' +
             (first ? '<meta property="og:image" content="' + esc(url.origin + "/api/images/" + Number(first)) + '"><meta name="twitter:card" content="summary_large_image">' : "");
