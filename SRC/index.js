@@ -1,5 +1,8 @@
 const J = (d, s = 200) => Response.json(d, { status: s });
 
+// Commission is fixed at 5% on every sale made through an agent's post.
+const FIXED_PCT = 5;
+
 const cleanAttrs = (a) =>
   (Array.isArray(a) ? a : [])
     .map((x) => ({
@@ -274,7 +277,7 @@ export default {
       const device = url.searchParams.get("device") || "";
       const rows = (await db.prepare("SELECT * FROM posts ORDER BY id DESC LIMIT 100").all()).results;
       return J(rows.map((r) => ({
-        id: r.id, store_id: r.store_id, pid: r.pid, name: r.name, price: r.price, pct: r.pct || 0,
+        id: r.id, store_id: r.store_id, pid: r.pid, name: r.name, price: r.price, pct: FIXED_PCT,
         caption: r.caption || "", imgs: readJ(r.imgs, []), created_at: r.created_at,
         author_name: r.author_name || "", author_icon: r.author_icon || "", author_img: r.author_img || "",
         mine: !!device && r.device_id === device,
@@ -285,7 +288,7 @@ export default {
       await ensureCols(db);
       const b = await body();
       if (!b.device_id || !b.store_id || !b.name) return J({ error: "missing fields" }, 400);
-      let pct = Math.max(0, Math.min(60, parseInt(b.pct, 10) || 0));
+      let pct = FIXED_PCT;
       let price = parseInt(b.price, 10) || 0;
       let name = String(b.name).slice(0, 80);
       const mm = /^db(\d+)$/.exec(String(b.pid || ""));
@@ -293,7 +296,7 @@ export default {
         // A real merchant product: trust the server for its name, price and commission.
         const pr = await db.prepare("SELECT store_id, name, price, pct FROM products WHERE id = ?").bind(Number(mm[1])).first();
         if (!pr || pr.store_id !== b.store_id) return J({ error: "unknown product" }, 400);
-        pct = pr.pct || 0; price = pr.price; name = pr.name;
+        pct = FIXED_PCT; price = pr.price; name = pr.name;
       }
       const imgs = cleanImgs(b.imgs);
       if (!(price > 0) || !imgs.length) return J({ error: "price and a photo are required" }, 400);
@@ -349,7 +352,7 @@ export default {
           phone: !!device && s.owner_device === device ? s.phone || "" : "", // contact number is only sent back to the owner
           prods: mine.map((p) => [p.name, p.price]),
           items: mine.map((p) => ({
-            id: p.id, name: p.name, price: p.price, pct: p.pct || 0, stock: p.stock || 0, orders: sold.get(p.id) || 0, attrs: readAttrs(p.attrs),
+            id: p.id, name: p.name, price: p.price, pct: FIXED_PCT, stock: p.stock || 0, orders: sold.get(p.id) || 0, attrs: readAttrs(p.attrs),
             variants: readJ(p.variants, []), cimg: readJ(p.cimg, {}), specs: readJ(p.specs, {}), category: p.category || "", description: p.description || "", moq: p.moq || 0,
             imgs: (p.img_ids || "").split(",").filter(Boolean).map((i) => "/api/images/" + i),
           })),
@@ -417,7 +420,7 @@ export default {
         "INSERT INTO products (store_id,name,price,pct,stock,img_ids,attrs,variants,category,description,moq,cimg,specs) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
       ).bind(
         b.store_id, String(b.name).slice(0, 80), t.price,
-        parseInt(b.pct, 10) || 0, t.stock, ids, JSON.stringify(attrs),
+        FIXED_PCT, t.stock, ids, JSON.stringify(attrs),
         JSON.stringify(vars), String(b.category || "").slice(0, 40), String(b.description || "").slice(0, 500),
         Math.max(0, parseInt(b.moq, 10) || 0), JSON.stringify(cleanCimg(b.cimg)), JSON.stringify(cleanSpecs(b.specs))
       ).run();
@@ -576,8 +579,25 @@ export default {
           });
           if (!lines.length && String(o.item || "").includes(po.name)) { base = o.price || 0; q = 1; }
           base = Math.min(base, o.price || 0);
-          comm = Math.round((base * (po.pct || 0)) / 100);
+          comm = Math.round((base * FIXED_PCT) / 100);
           qty = q || 1;
+        }
+      }
+      // Bought through a shared link (?ref=<agent device>)? Credit that agent 5% of the shared product's lines.
+      if (!dsDev && o.ref_device && o.ref_device !== o.device_id && /^db\d+$/.test(String(o.ref_pid || ""))) {
+        const rp = await db.prepare("SELECT store_id, name FROM products WHERE id = ?").bind(Number(String(o.ref_pid).slice(2))).first();
+        if (rp && rp.store_id === (o.store_id || "")) {
+          const lines = Array.isArray(o.lines) ? o.lines : [];
+          let base = 0, q = 0;
+          lines.forEach((l) => {
+            if (l && String(l.name || "").startsWith(rp.name)) {
+              const n = Math.min(99, Math.max(1, parseInt(l.qty, 10) || 1));
+              base += Math.max(0, parseInt(l.price, 10) || 0) * n; q += n;
+            }
+          });
+          if (!lines.length && String(o.item || "").includes(rp.name)) { base = o.price || 0; q = 1; }
+          base = Math.min(base, o.price || 0);
+          if (base > 0) { dsDev = String(o.ref_device).slice(0, 80); comm = Math.round((base * FIXED_PCT) / 100); qty = q || 1; }
         }
       }
       let paid = 0;
@@ -611,7 +631,7 @@ export default {
     }
 
     // ---------- LIKES, SAVES, FOLLOWS ----------
-    const KINDS = ["like", "save", "follow", "clike"];
+    const KINDS = ["like", "save", "follow", "clike", "share"];
     if (path === "/api/react" && m === "POST") {
       await ensureCols(db);
       const b = await body();
@@ -641,8 +661,8 @@ export default {
     // Real like / follower / comment totals.
     if (path === "/api/counts" && m === "GET") {
       await ensureCols(db);
-      const out = { like: {}, follow: {}, comment: {} };
-      for (const r of (await db.prepare("SELECT kind, target, COUNT(*) AS n FROM reactions WHERE kind IN ('like','follow') GROUP BY kind, target LIMIT 3000").all()).results || [])
+      const out = { like: {}, follow: {}, comment: {}, share: {} };
+      for (const r of (await db.prepare("SELECT kind, target, COUNT(*) AS n FROM reactions WHERE kind IN ('like','follow','share') GROUP BY kind, target LIMIT 3000").all()).results || [])
         out[r.kind][r.target] = r.n;
       for (const r of (await db.prepare("SELECT target, COUNT(*) AS n FROM comments GROUP BY target LIMIT 3000").all()).results || [])
         out.comment[r.target] = r.n;
@@ -711,6 +731,30 @@ export default {
         "INSERT INTO chats (device_id,store_id,data,unread,updated_at,draft) VALUES (?,?,?,?,?,?) ON CONFLICT(device_id,store_id) DO UPDATE SET data = excluded.data, unread = excluded.unread, updated_at = excluded.updated_at, draft = excluded.draft"
       ).bind(b.device_id, sid, data, Math.max(0, parseInt(b.unread, 10) || 0), Date.now(), draft).run();
       return J({ ok: true });
+    }
+
+    // Shared post link: serve the app (so it opens on that post) with a preview card for chats.
+    const pmatch = /^\/post\/([^/]+)\/?$/.exec(path);
+    if (pmatch && m === "GET") {
+      const pid = decodeURIComponent(pmatch[1]);
+      const page = await env.ASSETS.fetch(new Request(url.origin + "/", { method: "GET" }));
+      let html = await page.text();
+      const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+      let tags = '<base href="/">';
+      const mm = /^db(\d+)$/.exec(pid);
+      if (mm) {
+        const pr = await db.prepare("SELECT name, price, img_ids FROM products WHERE id = ?").bind(Number(mm[1])).first();
+        if (pr) {
+          const first = String(pr.img_ids || "").split(",").filter(Boolean)[0];
+          tags += '<meta property="og:type" content="website"><meta property="og:site_name" content="TeQx">' +
+            '<meta property="og:title" content="' + esc(pr.name + " · KSh " + Number(pr.price).toLocaleString("en-KE")) + '">' +
+            '<meta property="og:description" content="Chat with the shop and order securely on TeQx.">' +
+            '<meta property="og:url" content="' + esc(url.origin + path) + '">' +
+            (first ? '<meta property="og:image" content="' + esc(url.origin + "/api/images/" + Number(first)) + '"><meta name="twitter:card" content="summary_large_image">' : "");
+        }
+      }
+      html = html.replace("<head>", "<head>" + tags);
+      return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache, must-revalidate" } });
     }
 
     const res = await env.ASSETS.fetch(request);
