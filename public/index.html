@@ -748,30 +748,30 @@ const ksh=n=>'KSh '+n.toLocaleString('en-KE');
 const SITE='https://teqxmarket.co.ke';
 const refBody=()=>{try{const r=JSON.parse(localStorage.getItem('teqx-ref')||'null');if(r&&r.ref&&Date.now()-r.t<6048e5)return {ref_device:r.ref,ref_pid:r.pid}}catch(e){}return {}};
 const SHARE_PCT=5; // commission % earned per sale made through a shared post
-function qrSvg(url,px){ /* crisp inline-SVG QR code, '' if the library is missing */
- try{if(!window.qrcode)return '';const Q=window.qrcode(0,'M');Q.addData(url);Q.make();const n=Q.getModuleCount();let d='';
+function qrSvg(url,px,logo){ /* crisp inline-SVG QR code with optional TeQx mark in the centre, '' if the library is missing */
+ try{if(!window.qrcode)return '';const Q=window.qrcode(0,logo?'Q':'M');Q.addData(url);Q.make();const n=Q.getModuleCount();let d='';
   for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(Q.isDark(r,c))d+='M'+c+','+r+'h1v1h-1z';
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+n+' '+n+'" width="'+px+'" height="'+px+'" shape-rendering="crispEdges" style="display:block"><path d="'+d+'" fill="#111"/></svg>'}catch(e){return ''}}
-async function snapCard(info){ /* share image: plain product photo + designed "Scan to Order" strip with QR code */
+  let mark='';if(logo){const bx=Math.round(n*.25),o=(n-bx)/2,p=bx*.14;
+   mark='<rect x="'+o+'" y="'+o+'" width="'+bx+'" height="'+bx+'" rx="'+bx*.26+'" fill="#fff"/><svg x="'+(o+p)+'" y="'+(o+p)+'" width="'+(bx-2*p)+'" height="'+(bx-2*p)+'" viewBox="0 -1 34 32"><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="#ff5c0a" stroke-width="2.8" stroke-linecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="none" stroke="#ff5c0a" stroke-width="2.6" stroke-linejoin="round"/><path d="M28.5 -.2C29.02 2.95 30.2 4.99 34.2 5.5C30.2 6.01 29.02 8.05 28.5 11.2C27.98 8.05 26.8 6.01 22.8 5.5C26.8 4.99 27.98 2.95 28.5 -.2z" fill="#ff5c0a"/></g></svg>'}
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+n+' '+n+'" width="'+px+'" height="'+px+'" shape-rendering="crispEdges" style="display:block"><path d="'+d+'" fill="#111"/>'+mark+'</svg>'}catch(e){return ''}}
+async function snapCard(info){ /* share image: rounded card, full-bleed uncropped product photo + white "Scan to Order" footer with QR code */
  const url=SITE+'/post/'+encodeURIComponent(info.id||'')+'?ref='+encodeURIComponent(typeof DEV!=='undefined'?DEV:'');
- const qr=qrSvg(url,96);
+ const qr=qrSvg(url,68,true);
  const wrap=document.createElement('div');wrap.style.cssText='position:fixed;left:-9999px;top:0;pointer-events:none';
- wrap.innerHTML='<div style="width:360px;background:#ff5a00;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden;border:0;outline:0">'+
-  '<div style="height:360px;background:#26262c"><img data-k="img" style="width:100%;height:360px;object-fit:cover;display:block"/></div>'+
-  '<div style="position:relative;overflow:hidden;padding:16px 16px 16px 18px;background:linear-gradient(135deg,#ff8a1f 0%,#ff5a00 48%,#e63600 100%);display:flex;align-items:center;justify-content:space-between;gap:12px">'+
-   '<span style="position:absolute;right:-46px;top:-60px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.12)"></span>'+
-   '<span style="position:absolute;left:-40px;bottom:-70px;width:130px;height:130px;border-radius:50%;background:rgba(0,0,0,.10)"></span>'+
-   '<div style="position:relative;min-width:0">'+
-    '<div style="font-size:11px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.9)">SCAN TO ORDER</div>'+
-    '<div style="font-size:23px;font-weight:800;line-height:1.12;margin:5px 0 9px;text-shadow:0 1px 6px rgba(0,0,0,.18)">Via Pay on<br/>Delivery</div>'+
-    '<div style="display:inline-flex;align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,.30);height:26px;padding:0 12px 0 9px;box-sizing:border-box;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1;white-space:nowrap"><svg width="16" height="16" viewBox="0 -1 33 33" style="display:block;overflow:visible;flex-shrink:0"><g transform="translate(-1.5 0)"><path d="M10 12V9.5a4.6 4.6 0 0 1 9.2 0V12" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><path d="M5.2 11.2h18.6l1.6 15.4a2.4 2.4 0 0 1-2.4 2.7H6a2.4 2.4 0 0 1-2.4-2.7z" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M28.5 -.2C29.02 2.95 30.2 4.99 34.2 5.5C30.2 6.01 29.02 8.05 28.5 11.2C27.98 8.05 26.8 6.01 22.8 5.5C26.8 4.99 27.98 2.95 28.5 -.2z" fill="#fff"/></g></svg><span style="display:block;line-height:1;padding-top:1px">teqxmarket.co.ke</span></div>'+
+ wrap.innerHTML='<div style="width:360px;background:#fff;color:#17212b;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden;border:0;outline:0;border-radius:24px">'+
+  '<img data-k="img" style="width:100%;height:auto;display:block"/>'+
+  '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:#fff">'+
+   '<div style="min-width:0">'+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#0f766e">SCAN TO ORDER</div>'+
+    '<div style="font-size:17px;font-weight:700;line-height:1.2;margin:4px 0 3px;color:#17212b">Via Pay on Delivery</div>'+
+    '<div style="font-size:12px;font-weight:500;color:#6b7780">teqxmarket.co.ke</div>'+
    '</div>'+
-   (qr?'<div style="position:relative;flex-shrink:0;background:#fff;padding:8px;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.25)">'+qr+'</div>':'')+
+   (qr?'<div style="flex-shrink:0;line-height:0">'+qr+'</div>':'')+
   '</div></div>';
  const q=k=>wrap.querySelector('[data-k="'+k+'"]'),card=wrap.firstChild;
  const im=q('img');document.body.appendChild(wrap);
  try{await new Promise(r=>{im.onload=im.onerror=r;im.src=info.img;setTimeout(r,6000)});
-  for(const pr of [3,2]){try{const blob=await window.htmlToImage.toBlob(card,{pixelRatio:pr,cacheBust:true,skipFonts:true,backgroundColor:'#ff5a00'});if(blob&&blob.size>8000)return new File([blob],'teqx-post.png',{type:'image/png'})}catch(e){if(pr===2)throw e}}
+  for(const pr of [3,2]){try{const blob=await window.htmlToImage.toBlob(card,{pixelRatio:pr,cacheBust:true,skipFonts:true});if(blob&&blob.size>8000)return new File([blob],'teqx-post.png',{type:'image/png'})}catch(e){if(pr===2)throw e}}
   throw new Error('blank card')}finally{wrap.remove()}
 }
 async function snapPost(node,n,info){ /* designed card first, plain product photo as backup */
