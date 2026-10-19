@@ -1,7 +1,7 @@
 const J = (d, s = 200) => Response.json(d, { status: s });
 
-// Commission is fixed at 5% on every sale made through an agent's post.
-const FIXED_PCT = 5;
+// Commission is fixed at 8% on every sale made through an agent's post.
+const FIXED_PCT = 8;
 
 const cleanAttrs = (a) =>
   (Array.isArray(a) ? a : [])
@@ -133,6 +133,11 @@ const ensureCols = async (db) => {
     "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, target TEXT NOT NULL, device_id TEXT NOT NULL, author TEXT, text TEXT NOT NULL, parent TEXT, created_at INTEGER)"
   ).run();
   await db.prepare("CREATE INDEX IF NOT EXISTS idx_comments_target ON comments(target)").run();
+  // Short share links (teqxmarket.co.ke/s/<code>) -> product post + the agent who shared it (for commission).
+  await db.prepare(
+    "CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, pid TEXT NOT NULL, ref TEXT, created_at INTEGER)"
+  ).run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_links_pid_ref ON links(pid, ref)").run();
   // Chat history, one row per phone per shop.
   await db.prepare(
     "CREATE TABLE IF NOT EXISTS chats (device_id TEXT NOT NULL, store_id TEXT NOT NULL, data TEXT, unread INTEGER DEFAULT 0, updated_at INTEGER, draft TEXT, PRIMARY KEY (device_id, store_id))"
@@ -583,7 +588,7 @@ export default {
           qty = q || 1;
         }
       }
-      // Bought through a shared link (?ref=<agent device>)? Credit that agent 5% of the shared product's lines.
+      // Bought through a shared link (?ref=<agent device>)? Credit that agent 8% of the shared product's lines.
       if (!dsDev && o.ref_device && o.ref_device !== o.device_id && /^db\d+$/.test(String(o.ref_pid || ""))) {
         const rp = await db.prepare("SELECT store_id, name FROM products WHERE id = ?").bind(Number(String(o.ref_pid).slice(2))).first();
         if (rp && rp.store_id === (o.store_id || "")) {
@@ -632,6 +637,23 @@ export default {
 
     // ---------- LIKES, SAVES, FOLLOWS ----------
     const KINDS = ["like", "save", "follow", "clike", "share"];
+    // Short, readable share link: "Air Max Retro Horizon" -> /s/airmax (same product + same agent always reuses the same code).
+    if (path === "/api/short" && m === "POST") {
+      await ensureCols(db);
+      const b = await body();
+      const pid = String(b.pid || "").slice(0, 80), ref = String(b.device_id || "").slice(0, 80);
+      if (!pid) return J({ error: "bad link" }, 400);
+      const old = await db.prepare("SELECT code FROM links WHERE pid = ? AND ref = ?").bind(pid, ref).first();
+      if (old) return J({ ok: true, code: old.code });
+      const base = (String(b.name || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean).slice(0, 2).join("") || "item").slice(0, 16);
+      for (let i = 0; i < 8; i++) {
+        const code = i === 0 ? base : base + Math.random().toString(36).slice(2, i < 4 ? 4 : 6);
+        const r = await db.prepare("INSERT OR IGNORE INTO links (code,pid,ref,created_at) VALUES (?,?,?,?)").bind(code, pid, ref, Date.now()).run();
+        if (r && r.meta && r.meta.changes) return J({ ok: true, code });
+      }
+      return J({ error: "busy" }, 500);
+    }
+
     if (path === "/api/react" && m === "POST") {
       await ensureCols(db);
       const b = await body();
@@ -735,12 +757,23 @@ export default {
 
     // Shared post link: serve the app (so it opens on that post) with a preview card for chats.
     const pmatch = /^\/post\/([^/]+)\/?$/.exec(path);
-    if (pmatch && m === "GET") {
-      const pid = decodeURIComponent(pmatch[1]);
+    const smatch = /^\/s\/([A-Za-z0-9_-]+)\/?$/.exec(path);
+    if ((pmatch || smatch) && m === "GET") {
+      let pid, sref = "";
+      if (smatch) {
+        await ensureCols(db);
+        const l = await db.prepare("SELECT pid, ref FROM links WHERE code = ?").bind(smatch[1].toLowerCase()).first();
+        if (!l) return Response.redirect(url.origin + "/", 302);
+        pid = l.pid; sref = l.ref || "";
+      } else pid = decodeURIComponent(pmatch[1]);
       const page = await env.ASSETS.fetch(new Request(url.origin + "/", { method: "GET" }));
       let html = await page.text();
       const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
       let tags = '<base href="/">';
+      // Short link: hand the app the normal /post/<id>?ref=<agent> address so it opens on the post and credits the agent.
+      if (smatch)
+        tags += "<script>try{history.replaceState(null,'','/post/'+encodeURIComponent(" + JSON.stringify(pid).replace(/</g, "\\u003c") +
+          ")+'?ref='+encodeURIComponent(" + JSON.stringify(sref).replace(/</g, "\\u003c") + "))}catch(e){}</script>";
       const mm = /^db(\d+)$/.exec(pid);
       if (mm) {
         const pr = await db.prepare("SELECT name, price, img_ids FROM products WHERE id = ?").bind(Number(mm[1])).first();
