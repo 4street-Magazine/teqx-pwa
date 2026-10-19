@@ -138,6 +138,9 @@ const ensureCols = async (db) => {
     "CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, pid TEXT NOT NULL, ref TEXT, created_at INTEGER)"
   ).run();
   await db.prepare("CREATE INDEX IF NOT EXISTS idx_links_pid_ref ON links(pid, ref)").run();
+  // One short link per image of a multi-product post (n = which image/product was shared).
+  const lc = new Set(((await db.prepare("PRAGMA table_info(links)").all()).results || []).map((c) => c.name));
+  if (!lc.has("n")) await db.prepare("ALTER TABLE links ADD COLUMN n INTEGER DEFAULT 0").run();
   // Chat history, one row per phone per shop.
   await db.prepare(
     "CREATE TABLE IF NOT EXISTS chats (device_id TEXT NOT NULL, store_id TEXT NOT NULL, data TEXT, unread INTEGER DEFAULT 0, updated_at INTEGER, draft TEXT, PRIMARY KEY (device_id, store_id))"
@@ -643,12 +646,13 @@ export default {
       const b = await body();
       const pid = String(b.pid || "").slice(0, 80), ref = String(b.device_id || "").slice(0, 80);
       if (!pid) return J({ error: "bad link" }, 400);
-      const old = await db.prepare("SELECT code FROM links WHERE pid = ? AND ref = ?").bind(pid, ref).first();
+      const n = Math.max(0, Math.min(50, parseInt(b.n, 10) || 0));
+      const old = await db.prepare("SELECT code FROM links WHERE pid = ? AND ref = ? AND COALESCE(n,0) = ?").bind(pid, ref, n).first();
       if (old) return J({ ok: true, code: old.code });
       const base = (String(b.name || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean).slice(0, 2).join("") || "item").slice(0, 16);
       for (let i = 0; i < 8; i++) {
         const code = i === 0 ? base : base + Math.random().toString(36).slice(2, i < 4 ? 4 : 6);
-        const r = await db.prepare("INSERT OR IGNORE INTO links (code,pid,ref,created_at) VALUES (?,?,?,?)").bind(code, pid, ref, Date.now()).run();
+        const r = await db.prepare("INSERT OR IGNORE INTO links (code,pid,ref,created_at,n) VALUES (?,?,?,?,?)").bind(code, pid, ref, Date.now(), n).run();
         if (r && r.meta && r.meta.changes) return J({ ok: true, code });
       }
       return J({ error: "busy" }, 500);
