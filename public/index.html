@@ -989,7 +989,7 @@ function LatestCm({cid,rc,total,seed,author,open,onPosted}){
  const q=t=>{clearTimeout(bt.current);setFo(true);setV(t);setEr('');ir.current&&ir.current.focus()};
  useEffect(()=>()=>clearTimeout(bt.current),[]);
  return <div className="lcm" onClick={e=>e.stopPropagation()}>
-  <div className="lcmh"><span className="lcmt"><span className="lcmi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20.5 11.8a8 8 0 0 1-11.6 7.1L3.8 20.4l1.5-4.6A8 8 0 1 1 20.5 11.8z"/><path d="M12.2 7.6l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z" fill="currentColor" stroke="none"/></svg></span>{c?'Latest comment':'Comments'}</span>{total>0&&<button className="lcmva" onClick={open}>View all {total}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>}</div>
+  <div className="lcmh"><span className="lcmt"><span className="lcmi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20.5 11.8a8 8 0 0 1-11.6 7.1L3.8 20.4l1.5-4.6A8 8 0 1 1 20.5 11.8z"/><path d="M12.2 7.6l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/></svg></span><b>{c?'Latest comment':'Comments'}</b></span>{total>0&&<button className="lcmva" onClick={open}>View all {total}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>}</div>
   {c?<div className="lcmr"><div className="lcma" style={{background:c.u==='You'?'var(--grad)':gr(c.u)}}>{c.u[0].toUpperCase()}</div>
    <div className={'lcmb'+(sw?' sw':'')}><div className="lcmn"><b>{c.u}</b><span className={'lcms'+(c.u==='You'?' me':'')}>{c.u==='You'?'You':'Shopper'}</span><em>{c.ts?tAgo(c.ts):c.ago}</em></div><div className="lcmx">{c.t}</div></div></div>
    :<div className="lcme">Be the first to ask about this product.</div>}
@@ -1877,38 +1877,38 @@ Promise.race([BOOT,new Promise(r=>setTimeout(r,300))]).then(()=>root.render(<App
 .navw{max-height:140px;transition:max-height .28s ease,padding .28s ease,opacity .2s ease,transform .28s ease}
 .navw.hide{max-height:0;padding-top:0;padding-bottom:0;opacity:0;transform:translateY(40px);overflow:hidden;pointer-events:none}
 
-.lcm{position:relative;overflow:hidden;margin:10px 10px 12px;padding:14px 14px 14px;border-radius:22px;border:1.5px solid transparent;background:linear-gradient(155deg,rgba(255,143,28,.16) 0%,rgba(255,92,10,.06) 48%,rgba(240,58,14,.14) 100%) padding-box,linear-gradient(var(--surf),var(--surf)) padding-box,linear-gradient(135deg,#ffb347 0%,#ff8f1c 22%,#ff5c0a 62%,#f03a0e 100%) border-box;box-shadow:0 10px 28px rgba(255,92,10,.18),0 2px 6px rgba(240,58,14,.10)}
-.lcm:before{content:"";position:absolute;right:-46px;top:-52px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,143,28,.34) 0%,rgba(255,92,10,0) 68%);pointer-events:none}
-.lcm>*{position:relative}
+.lcm{position:relative;margin:10px 12px 12px;padding:0}
+.lcm:before{content:"";display:block;height:2px;border-radius:2px;margin-bottom:14px;background:linear-gradient(90deg,#ff8f1c 0%,#ff5c0a 55%,rgba(240,58,14,0) 100%)}
 .lcmh{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
-.lcmt{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;letter-spacing:.01em;color:var(--text)}
-.lcmi{width:28px;height:28px;border-radius:10px;flex:none;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#ffb347 0%,#ff8f1c 30%,#ff5c0a 68%,#f03a0e 100%);box-shadow:0 5px 14px rgba(255,92,10,.45),inset 0 1px 0 rgba(255,255,255,.4)}
-.lcmva{display:flex;align-items:center;gap:2px;font-size:12px;font-weight:800;color:#ff6a1a;background:rgba(255,92,10,.12);border:1px solid rgba(255,92,10,.28);border-radius:99px;padding:5px 8px 5px 11px}
+.lcmt{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.01em}
+.lcmt b{font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lcmi{width:24px;height:24px;flex:none;display:grid;place-items:center;color:var(--accent)}
+.lcmva{display:flex;align-items:center;gap:2px;font-size:12px;font-weight:800;color:var(--accent);background:rgba(255,92,10,.12);border:1px solid rgba(255,92,10,.28);border-radius:99px;padding:5px 8px 5px 11px}
 .lcmva:active{background:rgba(255,92,10,.22)}
 .lcmr{display:flex;gap:10px;align-items:flex-end}
-.lcma{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;border:0;box-shadow:0 4px 12px rgba(255,92,10,.25)}
-.lcmb{position:relative;flex:1;min-width:0;background:var(--surf);border:1px solid rgba(255,92,10,.26);border-radius:4px 18px 18px 18px;padding:10px 14px 11px 17px;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .3s,opacity .3s}
-.lcmb:before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3.5px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#ffb347,#ff5c0a 60%,#f03a0e)}
+.lcma{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;border:0;box-shadow:none}
+.lcmb{position:relative;flex:1;min-width:0;background:var(--surf);border:1px solid rgba(255,92,10,.26);border-radius:4px 18px 18px 18px;padding:10px 14px 11px 17px;transition:transform .3s,opacity .3s}
+.lcmb:before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3.5px;border-radius:0 4px 4px 0;background:var(--grad)}
 .lcmb.sw{transform:translateX(14px);opacity:0}
 .lcmn{display:flex;align-items:center;gap:6px;font-size:13px}
 .lcmn b{font-weight:800;color:var(--text)}
-.lcms{font-size:11px;font-weight:800;background:linear-gradient(135deg,rgba(255,143,28,.24),rgba(240,58,14,.20));color:#ff7a2e;border-radius:99px;padding:1px 9px}
+.lcms{font-size:11px;font-weight:800;background:rgba(255,92,10,.16);color:var(--accent);border-radius:99px;padding:1px 9px}
 .lcms.me{background:var(--surf2);color:var(--mut)}
 .lcmn em{margin-left:auto;font-style:normal;font-size:12px;color:var(--mut)}
 .lcmx{font-size:14px;line-height:1.5;margin-top:3px;color:var(--text);word-break:break-word}
-.lcme{font-size:13.5px;font-weight:600;color:var(--text);padding:12px 14px;border-radius:16px;background:rgba(255,92,10,.08);border:1px dashed rgba(255,92,10,.4)}
+.lcme{font-size:14px;font-weight:600;color:var(--text);padding:2px 2px 0}
 .lcmc{display:flex;gap:7px;margin:12px 0 0;flex-wrap:wrap;animation:lcmin .22s ease-out}
 @keyframes lcmin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.lcmc button{height:31px;border-radius:99px;font-size:13px;font-weight:700;padding:0 13px;border:1px solid rgba(255,92,10,.35);background:rgba(255,92,10,.08);color:#ff7a2e}
+.lcmc button{height:34px;border-radius:99px;font-size:13px;font-weight:700;padding:0 13px;border:1px solid rgba(255,92,10,.35);background:rgba(255,92,10,.08);color:var(--accent)}
 .lcmc button:active{background:var(--grad);border-color:transparent;color:#fff}
-.lcmp{display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--surf);border:1px solid rgba(255,92,10,.28);border-radius:30px;padding:5px 5px 5px 16px;transition:border-color .2s,box-shadow .2s}
-.lcmp:focus-within{border-color:#ff6a1a;box-shadow:0 0 0 3px rgba(255,92,10,.22)}
+.lcmp{display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--surf);border:1px solid rgba(255,92,10,.28);border-radius:30px;padding:5px 5px 5px 16px;transition:border-color .2s}
+.lcmp:focus-within{border-color:var(--accent)}
 .lcmp input{flex:1;min-width:0;border:0;background:transparent;height:34px;font-size:16px;color:var(--text);outline:none;box-shadow:none;padding:0}
-.lcmsd{width:36px;height:36px;border-radius:50%;border:0;flex:none;display:flex;align-items:center;justify-content:center;background:var(--surf2);color:var(--mut);transition:background .2s,color .2s,transform .2s,box-shadow .2s}
-.lcmsd.on{background:linear-gradient(135deg,#ff8f1c 0%,#ff5c0a 52%,#f03a0e 100%);color:#fff;box-shadow:0 5px 14px rgba(255,92,10,.5)}
+.lcmsd{width:40px;height:40px;border-radius:50%;border:0;flex:none;display:flex;align-items:center;justify-content:center;background:var(--surf2);color:var(--mut);transition:background .2s,color .2s,transform .2s}
+.lcmsd.on{background:var(--grad);color:#fff}
 .lcmsd.on:active{transform:scale(.9)}
 .lcmer,.lcmok{font-size:12px;margin:8px 0 0 14px}
-.lcmer{color:#f03a0e}.lcmok{color:#ff7a2e;font-weight:700}
+.lcmer{color:#f03a0e}.lcmok{color:var(--accent);font-weight:700}
 </style>
 <div id="pwa-install" role="dialog" aria-label="Install app">
   <div class="pi-ico">T</div>
